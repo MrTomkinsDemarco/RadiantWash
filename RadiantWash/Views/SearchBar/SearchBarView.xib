@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchBarView" customModule="RadiantWash" customModuleProvider="target">
+            <connections>
+                <outlet property="baseView" destination="glb-46-RaR" id="Yis-px-NIl"/>
+                <outlet property="cancelButton" destination="4xB-aT-iqG" id="9Gd-QY-399"/>
+                <outlet property="containerView" destination="lvc-UE-Moh" id="amX-Cu-izd"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="lvc-UE-Moh">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="glb-46-RaR">
+                    <rect key="frame" x="20" y="5" width="294" height="40"/>
+                    <subviews>
+                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="2BA-nc-8WJ">
+                            <rect key="frame" x="0.0" y="0.0" width="294" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="R8h-oh-GRh"/>
+                            </constraints>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search" smartDashesType="no"/>
+                        </searchBar>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="2BA-nc-8WJ" firstAttribute="top" secondItem="glb-46-RaR" secondAttribute="top" id="9po-CN-M4z"/>
+                        <constraint firstItem="2BA-nc-8WJ" firstAttribute="leading" secondItem="glb-46-RaR" secondAttribute="leading" id="PSl-jU-pga"/>
+                        <constraint firstAttribute="trailing" secondItem="2BA-nc-8WJ" secondAttribute="trailing" id="QLY-qm-cC8"/>
+                        <constraint firstAttribute="bottom" secondItem="2BA-nc-8WJ" secondAttribute="bottom" id="gId-sW-uOF"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4xB-aT-iqG">
+                    <rect key="frame" x="324" y="5" width="90" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="H2D-QA-gSI"/>
+                        <constraint firstAttribute="width" constant="90" id="Lln-ct-DVA"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" title="Button"/>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="uJi-dZ-m8H"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="4xB-aT-iqG" firstAttribute="top" secondItem="2BA-nc-8WJ" secondAttribute="top" id="3i8-6a-sff"/>
+                <constraint firstItem="4xB-aT-iqG" firstAttribute="bottom" secondItem="2BA-nc-8WJ" secondAttribute="bottom" id="60G-Yp-Grw"/>
+                <constraint firstItem="glb-46-RaR" firstAttribute="top" secondItem="lvc-UE-Moh" secondAttribute="top" constant="5" id="BVe-bi-JB4"/>
+                <constraint firstAttribute="bottom" secondItem="glb-46-RaR" secondAttribute="bottom" constant="5" id="Hny-84-QlV"/>
+                <constraint firstAttribute="trailing" secondItem="4xB-aT-iqG" secondAttribute="trailing" id="Ruh-Ke-PYZ"/>
+                <constraint firstItem="4xB-aT-iqG" firstAttribute="leading" secondItem="glb-46-RaR" secondAttribute="trailing" constant="10" id="bd5-Xj-HAz"/>
+                <constraint firstItem="glb-46-RaR" firstAttribute="leading" secondItem="uJi-dZ-m8H" secondAttribute="leading" constant="20" id="nVE-al-4Nb"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="131.8840579710145" y="116.51785714285714"/>
+        </view>
+    </objects>
+</document>
