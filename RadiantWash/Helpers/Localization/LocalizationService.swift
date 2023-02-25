@@ -5,9 +5,9 @@
 //  Created by Mac Mini on 19.02.2023.
 //
 
-import Foundation
+import UIKit
 
-struct  LocalizationService {
+struct LocalizationService {
   
   struct Main {
     

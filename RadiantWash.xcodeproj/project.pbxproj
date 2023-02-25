@@ -258,6 +258,7 @@
 		9A45FE7E29A0D7D800AAA6C6 /* AVFileTypeExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE7D29A0D7D800AAA6C6 /* AVFileTypeExt.swift */; };
 		9A45FE8029A0D80000AAA6C6 /* ThreadExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE7F29A0D80000AAA6C6 /* ThreadExt.swift */; };
 		9A45FE8229A0D84200AAA6C6 /* OperationQueueExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE8129A0D84200AAA6C6 /* OperationQueueExt.swift */; };
+		9A95E28F29A9E5AF00100A4B /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 9A95E28E29A9E5AF00100A4B /* Lottie */; };
 		9AAACD3429A34B0B00446095 /* OperationServiceQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACD3329A34B0B00446095 /* OperationServiceQueue.swift */; };
 		9AAACD3629A34B2400446095 /* ConcurentPhotoProcessOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACD3529A34B2400446095 /* ConcurentPhotoProcessOperation.swift */; };
 		9AAACD3829A34B4000446095 /* OperationProcessingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACD3729A34B4000446095 /* OperationProcessingQueue.swift */; };
@@ -392,6 +393,13 @@
 		9AD8F43229A8AAD200E700E4 /* photo.json in Resources */ = {isa = PBXBuildFile; fileRef = 9AD8F42D29A8AAD200E700E4 /* photo.json */; };
 		9AD8F43329A8AAD200E700E4 /* contacts.json in Resources */ = {isa = PBXBuildFile; fileRef = 9AD8F42E29A8AAD200E700E4 /* contacts.json */; };
 		9AD8F43429A8AAD200E700E4 /* fading-colourized-percussion_150bpm_B_major.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9AD8F42F29A8AAD200E700E4 /* fading-colourized-percussion_150bpm_B_major.wav */; };
+		9AD8F43729A94D1000E700E4 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F43629A94D1000E700E4 /* PhoneNumberKit */; };
+		9AD8F43A29A94D5100E700E4 /* CocoaImageHashing in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F43929A94D5100E700E4 /* CocoaImageHashing */; };
+		9AD8F43D29A94F4600E700E4 /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F43C29A94F4600E700E4 /* SwiftMessages */; };
+		9AD8F44029A94F7A00E700E4 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F43F29A94F7A00E700E4 /* Connectivity */; };
+		9AD8F44329A9517300E700E4 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F44229A9517300E700E4 /* GoogleMobileAds */; };
+		9AD8F44629A9521700E700E4 /* SwiftRater in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F44529A9521700E700E4 /* SwiftRater */; };
+		9AD8F44929A9530900E700E4 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9AD8F44829A9530900E700E4 /* SwiftyStoreKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -793,6 +801,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AD8F43729A94D1000E700E4 /* PhoneNumberKit in Frameworks */,
+				9AD8F43D29A94F4600E700E4 /* SwiftMessages in Frameworks */,
+				9AD8F44929A9530900E700E4 /* SwiftyStoreKit in Frameworks */,
+				9AD8F44329A9517300E700E4 /* GoogleMobileAds in Frameworks */,
+				9AD8F44629A9521700E700E4 /* SwiftRater in Frameworks */,
+				9AD8F43A29A94D5100E700E4 /* CocoaImageHashing in Frameworks */,
+				9AD8F44029A94F7A00E700E4 /* Connectivity in Frameworks */,
+				9A95E28F29A9E5AF00100A4B /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1187,7 +1203,6 @@
 		9A45FD2429A0B3ED00AAA6C6 = {
 			isa = PBXGroup;
 			children = (
-				9AAACD8629A354D000446095 /* Header.h */,
 				9A45FD2F29A0B3ED00AAA6C6 /* RadiantWash */,
 				9A45FD2E29A0B3ED00AAA6C6 /* Products */,
 			);
@@ -1204,6 +1219,7 @@
 		9A45FD2F29A0B3ED00AAA6C6 /* RadiantWash */ = {
 			isa = PBXGroup;
 			children = (
+				9AAACD8629A354D000446095 /* Header.h */,
 				9AD8F42929A8AA2300E700E4 /* Assets */,
 				9AC4C76929A58AD50062464D /* Cells */,
 				9AC4C76B29A58AF40062464D /* Storyboards */,
@@ -2084,6 +2100,16 @@
 			dependencies = (
 			);
 			name = RadiantWash;
+			packageProductDependencies = (
+				9AD8F43629A94D1000E700E4 /* PhoneNumberKit */,
+				9AD8F43929A94D5100E700E4 /* CocoaImageHashing */,
+				9AD8F43C29A94F4600E700E4 /* SwiftMessages */,
+				9AD8F43F29A94F7A00E700E4 /* Connectivity */,
+				9AD8F44229A9517300E700E4 /* GoogleMobileAds */,
+				9AD8F44529A9521700E700E4 /* SwiftRater */,
+				9AD8F44829A9530900E700E4 /* SwiftyStoreKit */,
+				9A95E28E29A9E5AF00100A4B /* Lottie */,
+			);
 			productName = RadiantWash;
 			productReference = 9A45FD2D29A0B3ED00AAA6C6 /* RadiantWash.app */;
 			productType = "com.apple.product-type.application";
@@ -2094,7 +2120,7 @@
 		9A45FD2529A0B3ED00AAA6C6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
+				BuildIndependentTargetsInParallel = NO;
 				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
@@ -2112,6 +2138,16 @@
 				Base,
 			);
 			mainGroup = 9A45FD2429A0B3ED00AAA6C6;
+			packageReferences = (
+				9AD8F43529A94D1000E700E4 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
+				9AD8F43829A94D5100E700E4 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
+				9AD8F43B29A94F4600E700E4 /* XCRemoteSwiftPackageReference "SwiftMessages" */,
+				9AD8F43E29A94F7A00E700E4 /* XCRemoteSwiftPackageReference "Connectivity" */,
+				9AD8F44129A9517300E700E4 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				9AD8F44429A9521700E700E4 /* XCRemoteSwiftPackageReference "SwiftRater" */,
+				9AD8F44729A9530900E700E4 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				9A95E28D29A9E5AF00100A4B /* XCRemoteSwiftPackageReference "lottie-ios" */,
+			);
 			productRefGroup = 9A45FD2E29A0B3ED00AAA6C6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2577,7 +2613,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2631,7 +2667,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -2650,21 +2686,31 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiantWash/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ECleaner;
+				INFOPLIST_KEY_NSContactsUsageDescription = "$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please grant access to your Photo Library in order to access its contents in the app";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "Example Description";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clean.RadiantWash;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clean.RadiantWash.a;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = RadiantWash/Header.h;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -2677,21 +2723,31 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiantWash/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ECleaner;
+				INFOPLIST_KEY_NSContactsUsageDescription = "$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please grant access to your Photo Library in order to access its contents in the app";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "Example Description";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clean.RadiantWash;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clean.RadiantWash.a;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = RadiantWash/Header.h;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -2717,6 +2773,116 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9A95E28D29A9E5AF00100A4B /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 4.1.0;
+			};
+		};
+		9AD8F43529A94D1000E700E4 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		9AD8F43829A94D5100E700E4 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		9AD8F43B29A94F4600E700E4 /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftKickMobile/SwiftMessages";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		9AD8F43E29A94F7A00E700E4 /* XCRemoteSwiftPackageReference "Connectivity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rwbutler/Connectivity";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		9AD8F44129A9517300E700E4 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		9AD8F44429A9521700E700E4 /* XCRemoteSwiftPackageReference "SwiftRater" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/takecian/SwiftRater";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		9AD8F44729A9530900E700E4 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9A95E28E29A9E5AF00100A4B /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9A95E28D29A9E5AF00100A4B /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		9AD8F43629A94D1000E700E4 /* PhoneNumberKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F43529A94D1000E700E4 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
+			productName = PhoneNumberKit;
+		};
+		9AD8F43929A94D5100E700E4 /* CocoaImageHashing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F43829A94D5100E700E4 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */;
+			productName = CocoaImageHashing;
+		};
+		9AD8F43C29A94F4600E700E4 /* SwiftMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F43B29A94F4600E700E4 /* XCRemoteSwiftPackageReference "SwiftMessages" */;
+			productName = SwiftMessages;
+		};
+		9AD8F43F29A94F7A00E700E4 /* Connectivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F43E29A94F7A00E700E4 /* XCRemoteSwiftPackageReference "Connectivity" */;
+			productName = Connectivity;
+		};
+		9AD8F44229A9517300E700E4 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F44129A9517300E700E4 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		9AD8F44529A9521700E700E4 /* SwiftRater */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F44429A9521700E700E4 /* XCRemoteSwiftPackageReference "SwiftRater" */;
+			productName = SwiftRater;
+		};
+		9AD8F44829A9530900E700E4 /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AD8F44729A9530900E700E4 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9A45FD2529A0B3ED00AAA6C6 /* Project object */;
 }

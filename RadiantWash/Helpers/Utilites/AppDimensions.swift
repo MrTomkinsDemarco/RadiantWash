@@ -5,6 +5,8 @@
 //  Created by Mac Mini on 19.02.2023.
 //
 
+import UIKit
+
 struct AppDimensions {
   
   private static let screenSize = Screen.size

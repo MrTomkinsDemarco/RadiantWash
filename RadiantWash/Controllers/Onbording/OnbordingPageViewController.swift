@@ -10,7 +10,7 @@ import Lottie
 
 class OnboardingPageViewController: UIViewController {
   
-  @IBOutlet weak var animationView: AnimationView!
+  @IBOutlet weak var animationView: LottieAnimationView!
   @IBOutlet weak var thumbnailView: UIImageView!
   @IBOutlet weak var titleTextLabel: UILabel!
   @IBOutlet weak var subtitleTextLabel: UILabel!
@@ -58,7 +58,7 @@ extension OnboardingPageViewController {
     sceneTitle = onboarding.rawValue
     titleTextLabel.text = onboarding.title
     subtitleTextLabel.text = onboarding.description
-    animationView.animation = Animation.named(onboarding.animationName)
+    animationView.animation = LottieAnimation.named(onboarding.animationName)
     animationView.loopMode = .loop
     animationView.backgroundBehavior = .pauseAndRestore
     

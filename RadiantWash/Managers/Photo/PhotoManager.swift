@@ -70,13 +70,13 @@ class PhotoManager {
   
   private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
 
-  public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets,
+  public let phassetProcessingOperationQueuer = OperationProcessingQueue(name: Constants.key.operation.queue.phassets,
                                       maxConcurrentOperationCount: 10,
                                       qualityOfService: .background)
-  public let serviceUtilityOperationsQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.utils,
+  public let serviceUtilityOperationsQueuer = OperationProcessingQueue(name: Constants.key.operation.queue.utils,
                                           maxConcurrentOperationCount: 5,
                                       qualityOfService: .userInteractive)
-    public let prefetchOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.preetchPHasssetQueue,
+    public let prefetchOperationQueue = OperationProcessingQueue(name: C.key.operation.queue.preetchPHasssetQueue,
                                   maxConcurrentOperationCount: 5,
                                   qualityOfService: .background)
   

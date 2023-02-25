@@ -5,7 +5,7 @@
 //  Created by Mac Mini on 19.02.2023.
 //
 
-import Foundation
+import UIKit
 
 class ConcurrentProcessOperation: Operation {
   
@@ -98,11 +98,11 @@ class ConcurrentProcessOperation: Operation {
 
 extension ConcurrentProcessOperation {
   
-  func addToQueuer(_ queue: OperationProcessingQueuer) {
+  func addToQueuer(_ queue: OperationProcessingQueue) {
     queue.addOperation(self)
   }
   
   func addToSharedQueuer() {
-    OperationProcessingQueuer.shared.addOperation(self)
+    OperationProcessingQueue.shared.addOperation(self)
   }
 }

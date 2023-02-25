@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UserNotifications
 
 enum UserNotificationType: CaseIterable {
   case cleanContacts

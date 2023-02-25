@@ -16,7 +16,7 @@ class SmartCleanManager {
   private var fetchManager = PHAssetFetchManager.shared
   private var progressNotificationManager = ProgressSearchNotificationManager.instance
   
-  public let smarCleanOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.smartClean, maxConcurrentOperationCount: 4, qualityOfService: .background)
+  public let smarCleanOperationQueue = OperationProcessingQueue(name: C.key.operation.queue.smartClean, maxConcurrentOperationCount: 4, qualityOfService: .background)
   
   public func startSmartCleanFetch(_ scanOptions: [PhotoMediaType], lowerBoundDate: Date, upperBoundDate: Date,
                    handler: @escaping ([PhotoMediaType]) -> Void,

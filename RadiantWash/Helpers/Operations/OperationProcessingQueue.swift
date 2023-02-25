@@ -129,7 +129,7 @@ public extension OperationProcessingQueue {
   typealias QList = [OperationState]
   
   func state() -> QList {
-    return OperationProcessingQueuer.state(of: operationQueue)
+    return OperationProcessingQueue.state(of: operationQueue)
   }
   
   static func state(of queue: OperationQueue) -> QList {

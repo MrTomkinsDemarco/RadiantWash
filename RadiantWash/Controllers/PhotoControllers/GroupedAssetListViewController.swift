@@ -46,7 +46,7 @@ class GroupedAssetListViewController: UIViewController {
   }
   public var isDeepCleaningSelectableFlow: Bool = false
   public var changedPhassetGroupCompletionHandler: ((_ phassetGroup: [PhassetGroup]) -> Void)?
-  public let phassetsTechnicalUseOperation = OperationProcessingQueuer(name: Constants.key.operation.queue.techUseQueue, maxConcurrentOperationCount: 2, qualityOfService: .userInteractive)
+  public let phassetsTechnicalUseOperation = OperationProcessingQueue(name: Constants.key.operation.queue.techUseQueue, maxConcurrentOperationCount: 2, qualityOfService: .userInteractive)
   
   private var selectedAssets: [PHAsset] = []
   private var selectedSection: Set<Int> = []

@@ -5,7 +5,7 @@
 //  Created by Mac Mini on 18.02.2023.
 //
 
-import Foundation
+import UIKit
 import Photos
 import Contacts
 
@@ -16,8 +16,8 @@ class DeepCleanManager {
   private var fetchManager = PHAssetFetchManager.shared
   private var progressNotificationManager = ProgressSearchNotificationManager.instance
   
-  let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
-  let deepCleanOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
+  let wholeCleanOperationQueuer = OperationProcessingQueue(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
+  let deepCleanOperationQueue = OperationProcessingQueue(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
   
   public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
                                      handler: @escaping ([PhotoMediaType]) -> Void,

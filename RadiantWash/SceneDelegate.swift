@@ -64,7 +64,6 @@ extension SceneDelegate {
     
     let navController = UINavigationController()
     coordinator = ApplicationCoordinator(navigationController: navController)
-    devopmentEnviroment()
     coordinator?.start()
   }
 }

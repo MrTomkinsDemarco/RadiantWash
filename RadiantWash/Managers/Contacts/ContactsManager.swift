@@ -5,7 +5,7 @@
 //  Created by Mac Mini on 18.02.2023.
 //
 
-import Foundation
+import UIKit
 import PhoneNumberKit
 import Contacts
 
@@ -25,7 +25,7 @@ class ContactsManager {
   private var phoneNumberKit = PhoneNumberKit()
   private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
   
-  public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .userInteractive)
+  public let contactsProcessingOperationQueuer = OperationProcessingQueue(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .userInteractive)
 
     /// `fetching keys`
   private let fetchingKeys: [CNKeyDescriptor] = [
