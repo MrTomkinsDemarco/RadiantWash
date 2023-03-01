@@ -23,11 +23,6 @@ class UIPresenter {
     completionHandler?(navigationController)
   }
   
-  public static func showWebController(of type: PresentedControllerType, web: WebLink) {
-    
-    
-  }
-  
   public static func closePresentedWindow() {
     guard let _ = currentScene as? UIWindowScene else { return }
     Utils.sceneDelegate.presentedWindow?.frame = .zero
@@ -127,7 +122,12 @@ extension UIPresenter {
                           buttonTapHandler: { _ in
       
       SwiftMessages.hide()
-      UIPresenter.showViewController(of: .subscription)
+      if let topController = topController() {
+        let pc = PresentedControllerType.subscription.navigationController
+        pc.modalPresentationStyle = .fullScreen
+        topController.present(pc, animated: true) {
+        }
+      }
     })
     
     var config = SwiftMessages.defaultConfig
@@ -158,18 +158,11 @@ extension UIPresenter {
   
   @objc static func handleTapAction(_ sender: UIButton) {
     SwiftMessages.hide()
-    UIPresenter.showViewController(of: .subscription)
-  }
-  
-  public static func showAlertLine(with message: String, of color: UIColor) {
-    
-    let statusLine = MessageView.viewFromNib(layout: .statusLine)
-    var statusLineConfig = SwiftMessages.defaultConfig
-    statusLine.backgroundColor = color
-    statusLine.bodyLabel?.textColor = .white
-    statusLine.configureContent(body: message)
-    statusLineConfig.presentationContext = .window(windowLevel: U.topLevel + 2)
-    
-    SwiftMessages.show(config: statusLineConfig, view: statusLine)
+    if let topController = topController() {
+      let pc = PresentedControllerType.subscription.navigationController
+      pc.modalPresentationStyle = .fullScreen
+      topController.present(pc, animated: true) {
+      }
+    }
   }
 }

@@ -37,7 +37,7 @@ class LocationHeaderCollectionReusableView: UICollectionReusableView {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
   
   @IBAction func didTapRemoveAllLocationActionButton(_ sender: ShadowButton) {
@@ -107,7 +107,7 @@ extension LocationHeaderCollectionReusableView: Themeble {
     dateComponentsTextLabel.font = FontManager.contactsFont(of: .headetTitle)
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     locationTitleTextLabel.textColor = mediaContentType.screenAcentTintColor
     dateComponentsTextLabel.textColor = theme.helperTitleTextColor

@@ -195,7 +195,7 @@ extension PhotoCollectionViewCell: Themeble {
     buttonView.layoutIfNeeded()
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     baseView.backgroundColor = theme.backgroundColor
     photoCheckmarkImageView.tintColor = theme.accentBackgroundColor

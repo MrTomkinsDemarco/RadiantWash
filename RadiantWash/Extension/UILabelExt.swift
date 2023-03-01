@@ -51,13 +51,6 @@ extension UILabel {
     }
   }
   
-  func calculateTextHeight () -> CGFloat {
-    
-    let attributedText = NSAttributedString(string: self.text!, attributes: [NSAttributedString.Key.font: self.font as UIFont])
-    let rect = attributedText.boundingRect(with: CGSize(width: self.frame.size.width, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
-    return ceil(rect.size.height)
-  }
-  
   var maxNumberOfLines: Int {
     let maxSize = CGSize(width: frame.size.width, height: CGFloat(MAXFLOAT))
     let text = (self.text ?? "") as NSString

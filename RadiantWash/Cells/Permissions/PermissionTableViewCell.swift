@@ -39,21 +39,11 @@ extension PermissionTableViewCell {
   public func configure(with permission: Permission) {
     
     setupUI()
-    updateColors()
-    
-    //    roundedShadowViewWidthConstraint.constant = AppDimensions.PermissionsCell.thumbnailDimensions
-    //    reuseRoundedShadowView.layoutIfNeeded()
-    //    reuseRoundedShadowView.updateImagesLayout()
+    setupAppearance()
     
     self.permission = permission
     self.setButtonState(for: permission)
-    let imageSizeWidth = AppDimensions.PermissionsCell.thumbnailDimensions / 1.8
-    let roundedShadowImageSize = CGSize(width: imageSizeWidth, height: imageSizeWidth)
     permissionImageView.image = permission.permissionImage
-    //    reuseRoundedShadowView.setImageWithCustomBackground(image: permission.permissionImage,
-    //                              tineColor: .white,
-    //                              size: roundedShadowImageSize,
-    //                              colors: permission.permissionAccentColors)
     titleTextLabel.font = FontManager.permissionFont(of: .title)
     titleTextLabel.text = permission.permissionName
     
@@ -72,23 +62,6 @@ extension PermissionTableViewCell {
       subtitleCustomLabel.bottomAnchor.constraint(equalTo: baseView.bottomAnchor, constant: 10).isActive = true
       
       subtitleCustomLabel.layoutIfNeeded()
-      //      shadowButtonView.removeConstraints(shadowButtonView.constraints)
-      //
-      //      shadowButtonView.translatesAutoresizingMaskIntoConstraints = false
-      //      shadowButtonView.widthAnchor.constraint(equalToConstant: AppDimensions.PermissionsCell.buttonWidth).isActive = true
-      //      shadowButtonView.topAnchor.constraint(equalTo: baseView.topAnchor, constant: 15).isActive = true
-      //      shadowButtonView.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -20).isActive = true
-      //      shadowButtonView.heightAnchor.constraint(equalToConstant: 25).isActive = true
-      //      permissionButton.translatesAutoresizingMaskIntoConstraints = false
-      //
-      //      permissionButton.leadingAnchor.constraint(equalTo: shadowButtonView.leadingAnchor).isActive = true
-      //      permissionButton.trailingAnchor.constraint(equalTo: shadowButtonView.trailingAnchor).isActive = true
-      //      permissionButton.topAnchor.constraint(equalTo: shadowButtonView.topAnchor).isActive = true
-      //      permissionButton.bottomAnchor.constraint(equalTo: shadowButtonView.bottomAnchor).isActive = true
-      //      permissionButton.updateConstraints()
-      //      permissionButton.layoutIfNeeded()
-      //      shadowButtonView.layoutIfNeeded()
-      //      shadowButtonView.layoutSubviews()
     } else {
       subtitleTextLabel.isHidden = false
       subtitleTextLabel.text = permission.permissionDescription
@@ -115,7 +88,7 @@ extension PermissionTableViewCell: Themeble {
     subtitleTextLabel.sizeToFit()
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     baseView.backgroundColor = .clear
     backgroundColor = Theme.light.cellBackGroundColor

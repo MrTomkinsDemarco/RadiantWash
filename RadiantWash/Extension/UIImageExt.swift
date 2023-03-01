@@ -34,56 +34,6 @@ extension UIImage {
     return gradientImage!
   }
   
-  func tintedGradient(colors: [CGColor], start: CoordinateSide, end: CoordinateSide) -> UIImage {
-    
-    UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
-    
-    guard let context = UIGraphicsGetCurrentContext(), let image = self.cgImage else { return UIImage() }
-    
-    let width = self.size.width
-    let height = self.size.height
-    
-    context.translateBy(x: .zero, y: height)
-    context.scaleBy(x: 1, y: -1)
-    context.setBlendMode(.normal)
-    let rect = CGRect(x: 0, y: 0, width: width, height: height)
-    let colorsArray = colors as CFArray
-    let space = CGColorSpaceCreateDeviceRGB()
-    
-    guard let gradient = CGGradient(colorsSpace: space, colors: colorsArray, locations: nil) else { return UIImage() }
-    context.clip(to: rect, mask: image)
-  
-    var startPoint: CGPoint {
-      switch start {
-        case .topLeft:    return .init(x: .zero, y: height)
-        case .top:         return .init(x: width / 2, y: height)
-        case .topRight:   return .init(x: width, y: height)
-        case .right:         return .init(x: width, y: height / 2)
-        case .bottomRight:   return .init(x: width, y: .zero)
-        case .bottom:        return .init(x: width / 2, y: .zero)
-        case .bottomLeft:   return .zero
-        case .left:         return .init(x: .zero, y: height / 2)
-      }
-    }
-    
-    var endPoint: CGPoint {
-      switch end {
-        case .topLeft:    return .init(x: .zero, y: height)
-        case .top:         return .init(x: width / 2, y: height)
-        case .topRight:   return .init(x: width, y: height)
-        case .right:         return .init(x: width, y: height / 2)
-        case .bottomRight:   return .init(x: width, y: .zero)
-        case .bottom:        return .init(x: width / 2, y: .zero)
-        case .bottomLeft:   return .zero
-        case .left:         return .init(x: .zero, y: height / 2)
-      }
-    }
-  
-    context.drawLinearGradient(gradient, start: startPoint, end: endPoint, options: .drawsAfterEndLocation)
-    let gradientImage = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-    return gradientImage ?? UIImage()
-  }
 }
 
 extension UIImage {

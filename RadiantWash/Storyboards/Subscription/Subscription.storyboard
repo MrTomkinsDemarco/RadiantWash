@@ -2,16 +2,17 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="V1j-jr-ElV">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Subscription View Controller-->
+        <!--Subscription Controller-->
         <scene sceneID="QIY-bZ-0Z8">
             <objects>
-                <viewController storyboardIdentifier="SubscriptionViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="V1j-jr-ElV" customClass="SubscriptionViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SubscriptionController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="V1j-jr-ElV" customClass="SubscriptionController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="IWR-4D-rHN">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="902"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -288,10 +289,10 @@
             </objects>
             <point key="canvasLocation" x="131.8840579710145" y="116.51785714285714"/>
         </scene>
-        <!--Life Time Subscription View Controller-->
+        <!--Life Time Subscription Controller-->
         <scene sceneID="dx1-iS-wIv">
             <objects>
-                <viewController storyboardIdentifier="LifeTimeSubscriptionViewController" id="or7-9d-04B" customClass="LifeTimeSubscriptionViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LifeTimeSubscriptionController" id="or7-9d-04B" customClass="LifeTimeSubscriptionController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="btc-kM-ZQs">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="438"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

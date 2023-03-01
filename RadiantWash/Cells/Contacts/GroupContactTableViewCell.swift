@@ -44,7 +44,7 @@ class GroupContactTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
   
   override func layoutSubviews() {
@@ -133,7 +133,7 @@ extension GroupContactTableViewCell: Themeble {
     selectableContactImageViewWidthConstraint.constant = AppDimensions.ContactsController.Collection.selectableGoupAssetViewWidth
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     self.backgroundColor = Theme.light.cellBackGroundColor
     self.tintColor = Theme.light.bottomShadowColor
@@ -167,9 +167,6 @@ extension GroupContactTableViewCell: Themeble {
   }
   
   private func superReuseElemnt() {
-    
-    /// for best reuse background shadows and reuse corners radii need renove somer parsts of ui
-    /// in section shadow need remove layers with corners radii
     
     isSelected = false
     

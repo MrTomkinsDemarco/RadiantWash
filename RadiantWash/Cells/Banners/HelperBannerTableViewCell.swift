@@ -15,15 +15,11 @@ class HelperBannerTableViewCell: UITableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     
-    setupCellUI()
+    setupUI()
   }
 }
 
 extension HelperBannerTableViewCell {
-  
-  public func cellConfigure(with model: SettingsModel) {
-    
-  }
   
   public func cellConfigure(with image: UIImage) {
     bannerImageView.image = image
@@ -32,7 +28,7 @@ extension HelperBannerTableViewCell {
 
 extension HelperBannerTableViewCell {
   
-  func setupCellUI() {
+  func setupUI() {
     
     selectionStyle = .none
     baseView.setCorner(14)

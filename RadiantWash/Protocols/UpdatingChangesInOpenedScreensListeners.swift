@@ -9,5 +9,4 @@ import Foundation
 
 protocol UpdatingChangesInOpenedScreensListeners {
   func getUpdatingScreenShots()
-  func getUpdatingSelfies()
 }

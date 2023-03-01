@@ -45,7 +45,7 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
     circleProgressView.setProgress(progress: 0.0, animated: false)
   }
 }
@@ -103,7 +103,7 @@ extension DeepCleanInfoTableViewCell: Themeble {
     totalSpaceTitleLabel.font =   FontManager.deepCleanScreenFont(of: .subtitle)
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     backgroundColor = Theme.light.cellBackGroundColor
     

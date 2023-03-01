@@ -492,33 +492,33 @@ class Constants {
     }
     
     struct viewControllers {
-      static let advertise = "AdvertisementViewController"
-      static let main = "MainViewController"
-      static let content = "MediaContentViewController"
-      static let datePicker = "DateSelectorViewController"
-      static let assetsList = "SimpleAssetsListViewController"
-      static let groupedList = "GroupedAssetListViewController"
-      static let media = "MediaViewController"
-      static let videoCompressCollection = "VideoCollectionCompressingViewController"
-      static let videoCompressing = "VideoCompressingViewController"
+      static let advertise = "AdvertisementController"
+      static let main = "MainController"
+      static let content = "MediaContentController"
+      static let datePicker = "DateSelectorController"
+      static let assetsList = "AssetsListController"
+      static let groupedList = "GroupedAssetListController"
+      static let media = "MediaController"
+      static let videoCompressCollection = "VideoCollectionCompressingController"
+      static let videoCompressing = "VideoCompressingController"
       static let preview = "PreviewViewController"
-      static let contacts = "ContactsViewController"
-      static let deepClean = "DeepCleaningViewController"
-      static let contactsGroup = "ContactsGroupViewController"
-      static let expordContacts = "ExportContactsViewController"
-      static let settings = "SettingsViewController"
-      static let customCompression = "VideoCompressionCustomSettingsViewController"
-      static let permissions = "PermissionsViewController"
-      static let onboarding = "OnboardingViewController"
-      static let onboardingPage = "OnboardingPageViewController"
-      static let subscription = "SubscriptionViewController"
-      static let lifeTime = "LifeTimeSubscriptionViewController"
-      static let contactBackup = "BackupContactsViewController"
-      static let contactsInfo = "ContactsInfoViewController"
-      static let location = "LocationViewController"
-      static let locationGrid = "LocationGridViewController"
-      static let locationInfo = "LocationInfoViewController"
-      static let web = "WebViewController"
+      static let contacts = "ContactsController"
+      static let deepClean = "DeepCleaningController"
+      static let contactsGroup = "ContactsGroupController"
+      static let expordContacts = "ExportContactsController"
+      static let settings = "SettingsController"
+      static let customCompression = "VideoCompressionController"
+      static let permissions = "PermissionsController"
+      static let onboarding = "OnboardingController"
+      static let onboardingPage = "OnboardingPageController"
+      static let subscription = "SubscriptionController"
+      static let lifeTime = "LifeTimeSubscriptionController"
+      static let contactBackup = "BackupContactsController"
+      static let contactsInfo = "ContactsInfoController"
+      static let location = "LocationController"
+      static let locationGrid = "LocationGridController"
+      static let locationInfo = "LocationInfoController"
+      static let web = "WebController"
     }
     
     struct cells {
@@ -599,7 +599,7 @@ class Constants {
       static let navigationBar = "NavigationBar"
       
       /// controllers
-      static let location = "LocationGridViewController"
+      static let location = "LocationGridController"
     }
     
     struct mapAnnotation {
@@ -614,14 +614,14 @@ class Constants {
     }
     
     struct segue {
-      static let showLowerDatePicker = "ShowDatePickerLowerDateSelectorViewController"
-      static let showUpperDatePicker = "ShowDatePickerUpperDateSelectorViewController"
-      static let showExportContacts = "ShowExportContactsViewControllerSegue"
+      static let showLowerDatePicker = "ShowDatePickerLowerDateSelectorController"
+      static let showUpperDatePicker = "ShowDatePickerUpperDateSelectorController"
+      static let showExportContacts = "ShowExportContactsControllerSegue"
       static let showSizeSelector = "ShowVideoSizeSelectorSegue"
       static let showCustomCompression = "ShowCustomCompressionSegue"
-      static let lifeTime = "ShowLifeTimeViewControllerSegue"
+      static let lifeTime = "ShowLifeTimeControllerSegue"
       static let backupContacts = "ShowContactsBackupViewControllerSegue"
-      static let location = "ShowLocationInfoViewControllerSegue"
+      static let location = "ShowLocationInfoControllerSegue"
     }
   }
   

@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Onboarding Page View Controller-->
+        <!--Onboarding Page Controller-->
         <scene sceneID="9wx-vr-Esa">
             <objects>
-                <viewController storyboardIdentifier="OnboardingPageViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fIa-QX-VLQ" customClass="OnboardingPageViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OnboardingPageController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fIa-QX-VLQ" customClass="OnboardingPageController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OBI-KY-Q1D">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -74,10 +74,10 @@
             </objects>
             <point key="canvasLocation" x="1337.68115942029" y="116.51785714285714"/>
         </scene>
-        <!--Onboarding View Controller-->
+        <!--Onboarding Controller-->
         <scene sceneID="1oR-tO-Bar">
             <objects>
-                <pageViewController storyboardIdentifier="OnboardingViewController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="XZP-6T-84b" customClass="OnboardingViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <pageViewController storyboardIdentifier="OnboardingController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="XZP-6T-84b" customClass="OnboardingController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <nil key="simulatedTopBarMetrics"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cm5-5J-FeC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

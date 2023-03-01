@@ -16,14 +16,14 @@ class LocationInfoView: UIView {
     super.init(frame: frame)
     
     setupView()
-    updateColors()
+    setupAppearance()
   }
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     
     setupView()
-    updateColors()
+    setupAppearance()
   }
   
   private func setupView() {
@@ -59,7 +59,7 @@ class LocationInfoView: UIView {
 
 extension LocationInfoView: Themeble {
   
-  func updateColors() {
+  func setupAppearance() {
     titleTextLabel.textColor = theme.subTitleTextColor
     infoTextLabel.textColor = theme.titleTextColor
   }

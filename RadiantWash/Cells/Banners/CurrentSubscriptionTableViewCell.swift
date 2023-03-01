@@ -28,7 +28,7 @@ class CurrentSubscriptionTableViewCell: UITableViewCell {
     
     setupUI()
     setupTitle()
-    updateColors()
+    setupAppearance()
   }
   
   @IBAction func didTapActionButton(_ sender: Any) {
@@ -62,16 +62,7 @@ extension CurrentSubscriptionTableViewCell: Themeble {
     } else {
       setupExpireDateSubtitle(with: SettingsManager.subscripton.currentExprireSubscriptionDate, islifeTimeSubscription: false)
     }
-    
-    
-    //    thumbnailView.layoutIfNeeded()
     thumbnailImageView.image = Images.subsctiption.crown!
-    //    thumbnailView.setImageWithCustomBackground(image: Images.subsctiption.crown!,
-    //                           tintColor: .white,
-    //                           size: CGSize(width: thumbnailView.frame.height / 2,
-    //                                height: thumbnailView.frame.height / 2),
-    //                           colors: theme.premiumCrownGradientColor,
-    //                           imageViewSize: CGSize(width: 13, height: 10))
     
     actionButton.buttonTitle = LocalizationService.Buttons.getButtonTitle(of: .changePlan)
     actionButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
@@ -126,7 +117,7 @@ extension CurrentSubscriptionTableViewCell: Themeble {
     subtitleTextLabel.attributedText = attributedString
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     backgroundColor = Theme.light.cellBackGroundColor
     thumbnailImageView.tintColor = theme.cellShadowBackgroundColor

@@ -53,7 +53,7 @@ extension PHAssetLocationGridDataSource {
     
     cell.loadCellThumbnail(phasset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
     cell.setupUI()
-    cell.updateColors()
+    cell.setupAppearance()
     
     if let path = self.collectionView.indexPathsForSelectedItems, path.contains([indexPath]) {
       cell.isSelected = true
@@ -160,7 +160,7 @@ extension PHAssetLocationGridDataSource  {
     let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
     
     return UIContextMenuConfiguration(identifier: identifier) {
-      return AssetContextPreviewViewController(asset: asset)
+      return AssetContextPreviewController(asset: asset)
     } actionProvider: { _ in
       return self.createCellContextMenu(for: asset, at: indexPath)
     }

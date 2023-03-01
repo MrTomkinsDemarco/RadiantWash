@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LoB-wl-wPB">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -26,20 +27,20 @@
             </objects>
             <point key="canvasLocation" x="53.623188405797109" y="116.51785714285714"/>
         </scene>
-        <!--LifeTimeSubscriptionViewController-->
+        <!--LifeTimeSubscriptionController-->
         <scene sceneID="9dO-Wi-RZU">
             <objects>
-                <viewControllerPlaceholder storyboardName="Subscription" referencedIdentifier="LifeTimeSubscriptionViewController" id="YFH-W2-k30" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Subscription" referencedIdentifier="LifeTimeSubscriptionController" id="YFH-W2-k30" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="u6d-lp-bfY"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D2e-Rm-9fk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2199" y="225"/>
         </scene>
-        <!--Settings View Controller-->
+        <!--Settings Controller-->
         <scene sceneID="G3t-4F-iXD">
             <objects>
-                <viewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="vbp-ge-Bwq" customClass="SettingsViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="vbp-ge-Bwq" customClass="SettingsController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="agD-Nu-3cA">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -87,8 +88,8 @@
                     <connections>
                         <outlet property="navigationBar" destination="dSz-K4-oSz" id="I1w-v5-U1A"/>
                         <outlet property="tableView" destination="QnO-ed-s1p" id="qbf-wP-ze0"/>
-                        <segue destination="4cb-ab-8da" kind="show" identifier="ShowVideoSizeSelectorSegue" customClass="ShowVideoSizeSelectorViewControllerSegue" customModule="ECleaner" id="JtZ-WK-HYM"/>
-                        <segue destination="YFH-W2-k30" kind="show" identifier="ShowLifeTimeViewControllerSegue" customClass="ShowLifeTimeViewControllerSegue" customModule="ECleaner" id="ebR-Ca-lwa"/>
+                        <segue destination="4cb-ab-8da" kind="show" identifier="ShowVideoSizeSelectorSegue" customClass="ShowVideoSizeSelectorControllerSegue" customModule="RadiantWash" customModuleProvider="target" id="JtZ-WK-HYM"/>
+                        <segue destination="YFH-W2-k30" kind="show" identifier="ShowLifeTimeControllerSegue" customClass="ShowLifeTimeControllerSegue" customModule="RadiantWash" customModuleProvider="target" id="ebR-Ca-lwa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="noW-Cl-SZv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

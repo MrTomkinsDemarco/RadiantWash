@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8qU-Ve-wTL">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -18,10 +19,10 @@
             </objects>
             <point key="canvasLocation" x="1896" y="349"/>
         </scene>
-        <!--Contacts Info View Controller-->
+        <!--Contacts Info Controller-->
         <scene sceneID="Kvx-ag-12y">
             <objects>
-                <viewController storyboardIdentifier="ContactsInfoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ed3-Xh-zUc" customClass="ContactsInfoViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContactsInfoController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ed3-Xh-zUc" customClass="ContactsInfoController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8mO-9j-Pnq">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -75,10 +76,10 @@
             </objects>
             <point key="canvasLocation" x="2456.521739130435" y="110.49107142857143"/>
         </scene>
-        <!--Contacts View Controller-->
+        <!--Contacts Controller-->
         <scene sceneID="mCe-y3-fbb">
             <objects>
-                <viewController storyboardIdentifier="ContactsViewController" id="hWl-eu-t0I" customClass="ContactsViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContactsController" id="hWl-eu-t0I" customClass="ContactsController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cg7-Xg-NOM">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -150,7 +151,7 @@
                         <outlet property="searchBarTopConstraint" destination="h0Y-6t-pEu" id="edr-iN-g9v"/>
                         <outlet property="searchBarView" destination="F0t-0l-ybj" id="BhU-b5-eOy"/>
                         <outlet property="tableView" destination="Ebm-TQ-Gp1" id="SK7-VP-KPv"/>
-                        <segue destination="0DK-ZG-6bm" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowExportContactsViewControllerSegue" customModule="ECleaner" id="Xsu-1Q-nl9"/>
+                        <segue destination="0DK-ZG-6bm" kind="show" identifier="ShowExportContactsControllerSegue" customClass="ExportContactsController" customModule="RadiantWash" customModuleProvider="target" id="Xsu-1Q-nl9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3SF-f6-eeO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

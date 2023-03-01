@@ -46,7 +46,7 @@ class VideoPreviewTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
     setupSlider()
     setupDelegate()
     setupObservers()
@@ -271,7 +271,6 @@ extension VideoPreviewTableViewCell {
   }
 }
 
-//    MARK: - ui setup -
 extension VideoPreviewTableViewCell: Themeble {
   
   private func setupUI() {
@@ -305,7 +304,7 @@ extension VideoPreviewTableViewCell: Themeble {
     sliderView.mobWidth = 0
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     baseView.backgroundColor = theme.backgroundColor
     videoPreview.backgroundColor = .black

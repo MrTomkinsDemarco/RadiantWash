@@ -31,28 +31,6 @@ extension Array {
   }
 }
 
-extension Array where Element: Equatable {
-  mutating func moveToIndex(_ element: Element, to newIndex: Index) {
-    if let oldIndex: Int = self.firstIndex(of: element) {
-      self.moveOldToNew(from: oldIndex, to: newIndex) }
-  }
-}
-
-extension Array {
-  
-  mutating func moveOldToNew(from oldIndex: Index, to newIndex: Index) {
-    if oldIndex == newIndex { return }
-    if abs(newIndex - oldIndex) == 1 { return self.swapAt(oldIndex, newIndex) }
-    self.insert(self.remove(at: oldIndex), at: newIndex)
-  }
-}
-
-public extension Sequence where Element : Hashable {
-  func containsElements(_ elements: [Element]) -> Bool {
-    return Set(elements).isSubset(of:Set(self))
-  }
-}
-
 extension Sequence where Iterator.Element : Hashable {
   
   func intersects<S : Sequence>(with sequence: S) -> Bool
@@ -200,83 +178,10 @@ extension Array where Element: Equatable {
   }
 }
 
-public extension Array {
-  
-  /// Random item from array.
-  var randomItem: Element? {
-    if self.isEmpty { return nil }
-    let index = Int(arc4random_uniform(UInt32(count)))
-    return self[index]
-  }
-  
-  /// Shuffled version of array.
-  var shuffled: [Element] {
-    var arr = self
-    for _ in 0..<10 {
-      arr.sort { (_,_) in arc4random() < arc4random() }
-    }
-    return arr
-  }
-  
-  /// Shuffle array.
-  mutating func shuffle() {
-    // https://gist.github.com/ijoshsmith/5e3c7d8c2099a3fe8dc3
-    for _ in 0..<10 {
-      sort { (_,_) in arc4random() < arc4random() }
-    }
-  }
-  
-  /// Element at the given index if it exists.
-  ///
-  /// - Parameter index: index of element.
-  /// - Returns: optional element (if exists).
-  func item(at index: Int) -> Element? {
-    guard index >= 0 && index < count else { return nil }
-    return self[index]
-  }
-}
-
 extension Array {
   
   subscript(safe index: Int) -> Element? {
     return indices ~= index ? self[index] : nil
-  }
-}
-
-extension Array {
-  
-  mutating func remove(elementsAtIndices indicesToRemove: [Int]) -> [Element?] {
-    
-    guard !indicesToRemove.isEmpty else {
-      return []
-    }
-    
-    // Copy the removed elements in the specified order. UPD // alexey sorochan /// use safe for index erropr
-    let removedElements = indicesToRemove.map({ self[safe: $0]})
-    
-    // Sort the indices to remove.
-    let indicesToRemove = indicesToRemove.sorted()
-    
-    // Shift the elements we want to keep to the left.
-    var destIndex = indicesToRemove.first!
-    var srcIndex = destIndex + 1
-    func shiftLeft(untilIndex index: Int) {
-      while srcIndex < index {
-        self[destIndex] = self[srcIndex]
-        destIndex += 1
-        srcIndex += 1
-      }
-      srcIndex += 1
-    }
-    for removeIndex in indicesToRemove[1...] {
-      shiftLeft(untilIndex: removeIndex)
-    }
-    shiftLeft(untilIndex: self.endIndex)
-    
-    // Remove the extra elements from the end of the array.
-    self.removeLast(indicesToRemove.count)
-    
-    return removedElements
   }
 }
 
@@ -321,6 +226,7 @@ extension Array {
 }
 
 extension MutableCollection where Self: RangeReplaceableCollection {
+  
   private mutating func removeSopted<C>(elementsAtSortedIndices indicesToRemove: C) where C: Collection, C.Element == Index {
     // Shift the elements we want to keep to the left.
     var destIndex = indicesToRemove.first!

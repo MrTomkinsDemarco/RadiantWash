@@ -58,7 +58,7 @@ extension CLLocationCoordinate2D {
     
     return CLLocationCoordinate2D(latitude: lat2 * 180 / .pi, longitude: lon2 * 180 / .pi)
   }
-
+  
   func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
     return location.distance(from: coordinate.location)
   }

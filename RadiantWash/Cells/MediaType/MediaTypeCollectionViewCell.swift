@@ -44,7 +44,7 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
     handleContentSize()
     setupProgressBar()
   }
@@ -276,7 +276,7 @@ extension MediaTypeCollectionViewCell: Themeble {
     }
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     mainView.backgroundColor = Theme.light.cellBackGroundColor
     mediaContentTitleTextLabel.textColor = theme.titleTextColor

@@ -2,16 +2,17 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="KOq-Xw-tyU">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Main View Controller-->
+        <!--Main Controller-->
         <scene sceneID="yV0-WJ-TN6">
             <objects>
-                <viewController storyboardIdentifier="MainViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SnU-FE-aHs" customClass="MainViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SnU-FE-aHs" customClass="MainController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SaH-G9-c11">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -189,10 +190,10 @@
             </objects>
             <point key="canvasLocation" x="2040.5797101449277" y="-58.258928571428569"/>
         </scene>
-        <!--Advertisement View Controller-->
+        <!--Advertisement Controller-->
         <scene sceneID="UlU-jZ-XdW">
             <objects>
-                <viewController storyboardIdentifier="AdvertisementViewController" extendedLayoutIncludesOpaqueBars="YES" id="KOq-Xw-tyU" customClass="AdvertisementViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AdvertisementController" extendedLayoutIncludesOpaqueBars="YES" id="KOq-Xw-tyU" customClass="AdvertisementController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hOn-Nx-ywd">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -40,7 +40,7 @@ extension ApplicationCoordinator {
   
   public func showWebLink(of webLink: WebLink, from viewController: UIViewController?, navigationController: UINavigationController?, presentedtype: PresentedType) {
     
-    let webController = WebViewController.instantiate(type: .web)
+    let webController = WebController.instantiate(type: .web)
     webController.coordinator = self
     webController.presentationType = presentedtype
     webController.url = webLink.url
@@ -52,18 +52,14 @@ extension ApplicationCoordinator {
       case .present:
         webController.modalPresentationStyle = .fullScreen
         viewController?.present(webController, animated: true)
-      case .window:
-        UIPresenter.showWebController(of: .web, web: webLink)
     }
   }
   
-  public func closeWeb(controller: WebViewController, navigation: UINavigationController?) {
+  public func closeWeb(controller: WebController, navigation: UINavigationController?) {
     
     switch controller.presentationType {
       case .present:
         controller.dismiss(animated: true)
-      case .window:
-        UIPresenter.closePresentedWindow()
       case .push:
         navigation?.popViewController(animated: true)
     }

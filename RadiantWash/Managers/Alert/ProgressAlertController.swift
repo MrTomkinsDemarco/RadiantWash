@@ -45,13 +45,13 @@ class ProgressAlertController: Themeble {
     }
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     alertController.view.tintColor = theme.titleTextColor
-    self.progressBar.borderColor = progressBarTintColor//theme.bordersColor//theme.separatorMainColor//theme.alertProgressBorderColor
-    self.progressBar.mainBackgroundColor = theme.cellBackGroundColor//theme.alertProgressBackgroundColor
+    self.progressBar.borderColor = progressBarTintColor
+    self.progressBar.mainBackgroundColor = theme.cellBackGroundColor
     self.progressBar.progressColor = progressBarTintColor
-    self.progressBar.updateColors()
+    self.progressBar.setupAppearance()
   }
   
   private func setProgress(controllerType: MediaContentType, title: String) {
@@ -72,7 +72,7 @@ class ProgressAlertController: Themeble {
     let bottomMargin: CGFloat = 48.0
     let rect = CGRect(x: margin, y: bottomMargin, width: self.alertController.view.frame.width -  margin * 2.0, height: 10.0)
     self.progressBar.frame = rect
-    self.updateColors()
+    self.setupAppearance()
     self.alertController.view.addSubview(progressBar)
     
     progressBar.translatesAutoresizingMaskIntoConstraints = false

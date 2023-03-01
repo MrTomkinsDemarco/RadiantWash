@@ -29,9 +29,6 @@ final class ZoomAnimator: UIPercentDrivenInteractiveTransition {
       return
     }
     
-    //        self.fromDelegate?.transitionWillStartWith(zoomAnimator: self)
-    //        self.toDelegate?.transitionWillStartWith(zoomAnimator: self)
-    
     toVC.view.alpha = 0
     toReferenceImageView.isHidden = true
     containerView.addSubview(toVC.view)
@@ -74,8 +71,6 @@ final class ZoomAnimator: UIPercentDrivenInteractiveTransition {
       self.transitionImageView = nil
       
       transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-      //                        self.toDelegate?.transitionDidEndWith(zoomAnimator: self)
-      //                        self.fromDelegate?.transitionDidEndWith(zoomAnimator: self)
     })
   }
   
@@ -91,8 +86,6 @@ final class ZoomAnimator: UIPercentDrivenInteractiveTransition {
     else {
       return
     }
-    //        self.fromDelegate?.transitionWillStartWith(zoomAnimator: self)
-    //        self.toDelegate?.transitionWillStartWith(zoomAnimator: self)
     toReferenceImageView.isHidden = true
     
     let referenceImage = fromReferenceImageView.image
@@ -125,8 +118,6 @@ final class ZoomAnimator: UIPercentDrivenInteractiveTransition {
       fromReferenceImageView.isHidden = false
       
       transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-      //            self.toDelegate?.transitionDidEndWith(zoomAnimator: self)
-      //            self.fromDelegate?.transitionDidEndWith(zoomAnimator: self)
     })
   }
   

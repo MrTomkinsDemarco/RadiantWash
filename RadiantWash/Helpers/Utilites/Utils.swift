@@ -79,27 +79,8 @@ class Utils {
   
   static let isSimulator = UIDevice.isSimulator
   
-  //    MARK: - DATE and TIME
-  
   static let currentDate = Date.getCurrentDate()
 }
-
-//  MARK: - User Defaults -
-extension Utils {
-  
-  static func contains(_ key: String) -> Bool {
-    return U.userDefaults.object(forKey: key) != nil
-  }
-  
-  static func resetAllUserDefaults() {
-    let dictionary = userDefaults.dictionaryRepresentation()
-    dictionary.keys.forEach { (key) in
-      userDefaults.removeObject(forKey: key)
-    }
-  }
-}
-
-//      MARK: - Native Settings -
 
 extension Utils {
   
@@ -110,7 +91,6 @@ extension Utils {
   }
 }
 
-//    MARK: - Grand Central Dispatch -
 extension Utils {
   
   static func delay(_ seconds: Double, completion: @escaping () -> ()) {
@@ -157,7 +137,6 @@ extension Utils {
   }
 }
 
-//      MARK: - get the most top view controller -
 func topController() -> UIViewController? {
   if var controller = UIApplication.shared.windows.first?.rootViewController {
     while let presentedViewController = controller.presentedViewController {
@@ -211,16 +190,10 @@ extension Utils {
   }
 }
 
-//      MARK: - Date time manager
-
 extension Utils {
   
   static func getString(from date: Date, format: String) -> String {
     return Date().convertDateFormatterFromDate(date: date, format: format)
-  }
-  
-  static func convertStringDateFormated(date: String) -> String {
-    return Date().convertDateFormatterFromSrting(stringDate: date)
   }
   
   static func displayDate(from stringDate: String) -> String {

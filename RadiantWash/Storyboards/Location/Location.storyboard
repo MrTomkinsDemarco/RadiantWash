@@ -2,16 +2,17 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="lu0-FZ-kFB">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Location View Controller-->
+        <!--Location Controller-->
         <scene sceneID="keV-S7-vkd">
             <objects>
-                <viewController storyboardIdentifier="LocationViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6mh-8L-8K6" customClass="LocationViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LocationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6mh-8L-8K6" customClass="LocationController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5k7-K5-m0C">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -51,17 +52,17 @@
                         <outlet property="containerView" destination="1Qc-As-iZ9" id="Hcg-YW-xdM"/>
                         <outlet property="mapView" destination="9aI-bP-vEb" id="7yb-Gq-G0l"/>
                         <outlet property="navigationBar" destination="VpW-6m-pSZ" id="oyx-xG-R02"/>
-                        <segue destination="URT-1x-64N" kind="show" identifier="ShowLocationInfoViewControllerSegue" customClass="ShowLocationInfoViewControllerSegue" customModule="ECleaner" id="5he-bu-CcV"/>
+                        <segue destination="URT-1x-64N" kind="show" identifier="ShowLocationInfoControllerSegue" customClass="ShowLocationInfoControllerSegue" customModule="RadiantWash" customModuleProvider="target" id="5he-bu-CcV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s7S-dU-QY9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1092.753623188406" y="87.723214285714278"/>
         </scene>
-        <!--Location Info View Controller-->
+        <!--Location Info Controller-->
         <scene sceneID="wfZ-y0-k0S">
             <objects>
-                <viewController storyboardIdentifier="LocationInfoViewController" id="URT-1x-64N" customClass="LocationInfoViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LocationInfoController" id="URT-1x-64N" customClass="LocationInfoController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ueM-46-lGd">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

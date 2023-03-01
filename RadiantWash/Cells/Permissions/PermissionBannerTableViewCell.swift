@@ -16,7 +16,7 @@ class PermissionBannerTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
 }
 
@@ -35,7 +35,7 @@ extension PermissionBannerTableViewCell: Themeble {
     subtitleTextLabel.textAlignment = .natural
   }
   
-  func updateColors() {
+  func setupAppearance() {
     titleTextLabel.textColor = theme.titleTextColor
     subtitleTextLabel.textColor = theme.subTitleTextColor
   }

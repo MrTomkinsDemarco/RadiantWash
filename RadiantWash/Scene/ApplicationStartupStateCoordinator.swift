@@ -11,7 +11,6 @@ enum PresentedType {
   
   case push
   case present
-  case window
 }
 
 protocol Coordinator {
@@ -113,32 +112,31 @@ class ApplicationCoordinator: Coordinator {
         topController.present(pc, animated: true) {
         }
       }
-//        UIPresenter.showViewController(of: .subscription)
       case .application:
         return
     }
   }
   
   public func showPermissionViewController() {
-    let viewcontroller = PermissionsViewController.instantiate(type: .permission)
+    let viewcontroller = PermissionsController.instantiate(type: .permission)
     viewcontroller.coordinator = self
     self.navigationController.pushViewController(viewcontroller, animated: true)
   }
   
   public func showPermissionViewController(from navigationController: UINavigationController?) {
-    let viewController = PermissionsViewController.instantiate(type: .permission)
+    let viewController = PermissionsController.instantiate(type: .permission)
     viewController.fromRootViewController = false
     navigationController?.pushViewController(viewController, animated: true)
   }
   
-  public func showSubscriptionViewController() {
-    let viewController = SubscriptionViewController.instantiate(type: .subscription)
+  public func showSubscriptionController() {
+    let viewController = SubscriptionController.instantiate(type: .subscription)
     viewController.coordinator = self
     self.navigationController.pushViewController(viewController, animated: true)
   }
   
-  public func showSettingsViewController(from navigationController: UINavigationController?) {
-    let viewController = SettingsViewController.instantiate(type: .settings)
+  public func showSettingsController(from navigationController: UINavigationController?) {
+    let viewController = SettingsController.instantiate(type: .settings)
     viewController.coordinator = self
     navigationController?.pushViewController(viewController, animated: true)
   }

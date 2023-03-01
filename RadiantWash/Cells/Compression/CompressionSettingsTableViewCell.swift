@@ -20,20 +20,20 @@ class CompressionSettingsTableViewCell: UITableViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
     
-    self.setPrepareForReuse()
+    setPrepareForReuse()
   }
   
   override func awakeFromNib() {
     super.awakeFromNib()
     
-    self.setupUI()
-    self.updateColors()
+    setupUI()
+    setupAppearance()
   }
   
   override func setSelected(_ selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
     
-    self.checkSelectedCell()
+    checkSelectedCell()
   }
 }
 
@@ -92,11 +92,10 @@ extension CompressionSettingsTableViewCell: Themeble {
     self.subtitleTetLabel.text = nil
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     self.backgroundColor = Theme.light.cellBackGroundColor
     self.tintColor = Theme.light.bottomShadowColor
-    //    baseView.backgroundColor = .clear
     titleTextLabel.textColor = theme.titleTextColor
     subtitleTetLabel.textColor = theme.subTitleTextColor
   }

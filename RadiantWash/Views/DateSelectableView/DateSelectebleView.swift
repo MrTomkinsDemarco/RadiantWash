@@ -49,7 +49,7 @@ class DateSelectebleView: UIView {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
   
   override init(frame: CGRect) {
@@ -124,7 +124,7 @@ class DateSelectebleView: UIView {
     }
   }
   
-  private func updateColors() {
+  private func setupAppearance() {
     
     startingDateTextLabel.textColor = theme.titleTextColor.withAlphaComponent(0.7)
     endingDateTextLabel.textColor = theme.titleTextColor.withAlphaComponent(0.7)

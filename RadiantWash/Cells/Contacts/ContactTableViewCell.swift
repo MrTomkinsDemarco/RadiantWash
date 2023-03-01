@@ -31,14 +31,14 @@ class ContactTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
   
   override func setSelected(_ selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
     
     if contactEditingMode {
-      self.handleSelectedContact()
+      handleSelectedContact()
     }
   }
 }
@@ -60,16 +60,6 @@ extension ContactTableViewCell {
   }
   
   public func checkForContactsImageDataAndSelectableMode(for contact: CNContact) {
-    
-    let defaultImageSize = AppDimensions.ContactsController.Collection.helperImageViewWidth
-    let editingImageSize = AppDimensions.ContactsController.Collection.selectHelperImageViewWidth
-    let dif = defaultImageSize - editingImageSize
-    let const: CGFloat = AppDimensions.ContactsController.Collection.helperImageTrailingOffset
-    //    shadowRoundedViewSpaceInsetTrailingConstraint.constant = contactEditingMode ? const + dif : const
-    //
-    //    self.shadowRoundedViewHeightConstraint.constant = contactEditingMode ? editingImageSize : defaultImageSize
-    //    self.shadowRoundedReuseView.layoutIfNeeded()
-    //    self.shadowRoundedReuseView.updateImagesLayout()
     
     contactEditingMode ? self.handleSelectedContact() : self.handleContactImageData(contact)
   }
@@ -198,7 +188,7 @@ extension ContactTableViewCell: Themeble {
     selectedBackgroundView = backgroundView
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     baseView.backgroundColor = .clear
   }

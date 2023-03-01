@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "566AAFDE-741F-4B10-8E5D-1041CE0FDE58"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B7978771-DCF4-41D3-822C-BF68C398F26D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RadiantWash/Controllers/Settings/SettingsController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "setAction(at:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B7978771-DCF4-41D3-822C-BF68C398F26D - 5ebc715c2a72598b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RadiantWash.SettingsController.setAction(at: RadiantWash.SettingsModel) -&gt; ()"
+                  moduleName = "RadiantWash"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/macmini/Desktop/RadiantWash_17.02/RadiantWash/RadiantWash/Controllers/Settings/SettingsController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "196"
+                  endingLineNumber = "196"
+                  offsetFromSymbolStart = "92">
+               </Location>
+               <Location
+                  uuid = "B7978771-DCF4-41D3-822C-BF68C398F26D - cabf04be73f6046"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (RadiantWash.StatusSubscription) -&gt; () in RadiantWash.SettingsController.setAction(at: RadiantWash.SettingsModel) -&gt; ()"
+                  moduleName = "RadiantWash"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/macmini/Desktop/RadiantWash_17.02/RadiantWash/RadiantWash/Controllers/Settings/SettingsController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "198"
+                  endingLineNumber = "198"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

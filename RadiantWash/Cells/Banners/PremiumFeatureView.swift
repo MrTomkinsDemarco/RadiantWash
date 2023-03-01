@@ -46,22 +46,8 @@ class PremiumFeatureView: UIView {
   
   public func configureView(from feature: PremiumFeature, isSettingsSize: Bool = false) {
     
-    var aproxThumbSize: CGFloat {
-      if isSettingsSize {
-        return AppDimensions.Subscription.Features.settingsThumbnailSize - 13
-      } else {
-        return AppDimensions.Subscription.Features.thumbnailSize - 13
-      }
-    }
-    
-    let imageSize = CGSize(width: aproxThumbSize, height: aproxThumbSize)
-    
     contentImageView.image = feature.thumbnail
     contentImageView.tintColor = theme.cellShadowBackgroundColor
-    //    thumbnailView.setImageWithCustomBackground(image: feature.thumbnail,
-    //                           tintColor: theme.activeTitleTextColor,
-    //                           size: imageSize,
-    //                           colors: feature.thumbnailColors)
     
     var titleText: String {
       let chararacterSet = CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters)
@@ -96,16 +82,7 @@ class PremiumFeatureView: UIView {
   
   public func configureLifeTimeFeatures(from feature: PremiumFeature) {
     
-    
-    let  aproxThumbSize = AppDimensions.Subscription.Features.thumbnailSize - 10
-    
-    let imageSize = CGSize(width: aproxThumbSize, height: aproxThumbSize)
-    
     contentImageView.image = feature.thumbnail
-    //    thumbnailView.setImageWithCustomBackground(image: feature.thumbnail,
-    //                           tintColor: theme.activeTitleTextColor,
-    //                           size: imageSize,
-    //                           colors: feature.thumbnailColors)
     
     titleTextLabel.text = feature.title
     titleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fRI-o1-yDq">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -26,10 +27,10 @@
             </objects>
             <point key="canvasLocation" x="137.68115942028987" y="69.642857142857139"/>
         </scene>
-        <!--Video Compressing View Controller-->
+        <!--Video Compressing Controller-->
         <scene sceneID="oLa-oh-Ocn">
             <objects>
-                <viewController storyboardIdentifier="VideoCompressingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="D9B-j7-5fW" customClass="VideoCompressingViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VideoCompressingController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="D9B-j7-5fW" customClass="VideoCompressingController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cMy-Hh-BV5">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -76,23 +77,23 @@
                         <outlet property="navigationBarHeightConstraint" destination="K0q-6k-gT5" id="Wjz-xD-0P8"/>
                         <outlet property="navigationBarView" destination="gjs-hI-hLO" id="L65-ws-yiN"/>
                         <outlet property="tableView" destination="MaW-3D-7fn" id="rze-9u-EBg"/>
-                        <segue destination="7Wl-XB-KXe" kind="custom" identifier="ShowCustomCompressionSegue" customClass="ShowVideoCompressionCustomSettingsSelectorViewControllerSegue" customModule="ECleaner" id="UmO-n8-8MF"/>
+                        <segue destination="7Wl-XB-KXe" kind="custom" identifier="ShowCustomCompressionSegue" customClass="ShowVideoCompressionCustomSettingsSelectorControllerSegue" customModule="RadiantWash" customModuleProvider="target" id="UmO-n8-8MF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jOZ-Dr-Gz4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1047.8260869565217" y="69.642857142857139"/>
         </scene>
-        <!--Video Compression Custom Settings View Controller-->
+        <!--Video Compression Controller-->
         <scene sceneID="FYD-7y-5BH">
             <objects>
-                <viewController id="7Wl-XB-KXe" customClass="VideoCompressionCustomSettingsViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" ambiguous="YES" id="fDW-wf-VuI">
+                <viewController id="7Wl-XB-KXe" customClass="VideoCompressionController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fDW-wf-VuI">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2rc-8z-c93">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="600"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2rc-8z-c93">
+                                <rect key="frame" x="0.0" y="-34" width="414" height="600"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KNZ-gn-DWJ">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="68"/>

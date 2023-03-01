@@ -99,7 +99,7 @@ class ShadowButtonWithImage: UIButton {
   }
   
   
-  public func updateColors(for enabled: Bool) {
+  public func setupAppearance(for enabled: Bool) {
     let colors = contentType.screeAcentGradientColorSet
     let disableColors = [UIColor().colorFromHexString("DDDDDD").cgColor, UIColor().colorFromHexString("989898").cgColor]
     

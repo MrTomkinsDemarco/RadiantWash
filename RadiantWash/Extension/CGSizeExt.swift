@@ -14,3 +14,24 @@ public extension CGSize {
     return CGSize(width: self.width * scale, height: self.height * scale)
   }
 }
+
+extension CGSize {
+  
+  func videoResolutionSize() -> VideoCGSize {
+    
+    let originSize = CGSize(width: -1, height: -1)
+    let widthSize = CGSize(width: self.width, height: -1)
+    let heightSize = CGSize(width: -1, height: self.height)
+    
+    switch self {
+    case originSize:
+      return .origin
+    case widthSize:
+      return .width
+    case heightSize:
+      return .height
+    default:
+      return .origin
+    }
+  }
+}

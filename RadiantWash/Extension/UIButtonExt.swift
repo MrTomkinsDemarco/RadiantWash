@@ -19,16 +19,6 @@ extension UIButton {
     self.setAttributedTitle(attributedString, for: .normal)
   }
   
-  func setSpacing(spacing: CGFloat) {
-    let inset = spacing / 2
-    let direction = U.application.userInterfaceLayoutDirection
-    let factor: CGFloat = direction == .leftToRight ? 1 : -1
-    
-    self.imageEdgeInsets = UIEdgeInsets(top: 0, left: -inset * factor, bottom: 0, right: inset * factor)
-    self.titleEdgeInsets = UIEdgeInsets(top: 0, left: inset * factor, bottom: 0, right: -inset * factor)
-    self.contentEdgeInsets = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-  }
-  
   func addLeftImageWithFixLeft(spacing: CGFloat, size: CGSize, image: UIImage, tintColor: UIColor? = nil) {
     self.setImage(nil, for: .normal)
     removePreviousImage()

@@ -2,16 +2,17 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NWP-U3-Rvg">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Video Collection Compressing View Controller-->
+        <!--Video Collection Compressing Controller-->
         <scene sceneID="4qR-Ji-vRP">
             <objects>
-                <viewController storyboardIdentifier="VideoCollectionCompressingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Qtd-Ay-I1X" customClass="VideoCollectionCompressingViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VideoCollectionCompressingController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Qtd-Ay-I1X" customClass="VideoCollectionCompressingController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="beL-0S-wXe">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -80,10 +81,10 @@
             </objects>
             <point key="canvasLocation" x="817" y="562"/>
         </scene>
-        <!--Media Content View Controller-->
+        <!--Media Content Controller-->
         <scene sceneID="Tue-rx-FP2">
             <objects>
-                <viewController storyboardIdentifier="MediaContentViewController" id="zgR-AI-YyN" customClass="MediaContentViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MediaContentController" id="zgR-AI-YyN" customClass="MediaContentController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="b3M-kQ-YgB">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -141,19 +142,19 @@
                         <outlet property="dateSelectPickerView" destination="BNk-Qm-Ttv" id="Pw1-IX-6jL"/>
                         <outlet property="navigationBar" destination="p4e-eY-Fs0" id="jEz-aR-szR"/>
                         <outlet property="tableView" destination="lUz-SB-WwP" id="CPY-zd-l7W"/>
-                        <segue destination="peE-Jx-lIm" kind="custom" identifier="ShowDatePickerLowerDateSelectorViewController" customClass="ShowDatePickerLowerDateSelectorViewController" customModule="ECleaner" id="ECY-8H-d0P"/>
-                        <segue destination="peE-Jx-lIm" kind="custom" identifier="ShowDatePickerUpperDateSelectorViewController" customClass="ShowDatePickerUpperDateSelectorViewController" customModule="ECleaner" id="I6S-2x-whP"/>
-                        <segue destination="b9X-Cg-PDU" kind="show" identifier="ShowContactsBackupViewControllerSegue" customClass="ShowContactsBackupViewControllerSegue" customModule="ECleaner" id="E1p-2N-be5"/>
+                        <segue destination="peE-Jx-lIm" kind="custom" identifier="ShowDatePickerLowerDateSelectorController" customClass="ShowDatePickerLowerDateSelectorController" customModule="RadiantWash" customModuleProvider="target" id="ECY-8H-d0P"/>
+                        <segue destination="peE-Jx-lIm" kind="custom" identifier="ShowDatePickerUpperDateSelectorController" customClass="ShowDatePickerUpperDateSelectorController" customModule="RadiantWash" customModuleProvider="target" id="I6S-2x-whP"/>
+                        <segue destination="b9X-Cg-PDU" kind="show" identifier="ShowContactsBackupControllerSegue" customClass="ShowContactsBackupControllerSegue" customModule="RadiantWash" customModuleProvider="target" id="E1p-2N-be5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jwu-eS-tcs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1047.8260869565217" y="45.535714285714285"/>
         </scene>
-        <!--BackupContactsViewController-->
+        <!--BackupContactsController-->
         <scene sceneID="wpH-HP-7aO">
             <objects>
-                <viewControllerPlaceholder storyboardName="ExportContact" referencedIdentifier="BackupContactsViewController" id="b9X-Cg-PDU" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="ExportContact" referencedIdentifier="BackupContactsController" id="b9X-Cg-PDU" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="u3C-Z5-hNz"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1ky-4D-AHE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -178,10 +179,10 @@
             </objects>
             <point key="canvasLocation" x="137.68115942028987" y="45.535714285714285"/>
         </scene>
-        <!--Grouped Asset List View Controller-->
+        <!--Grouped Asset List Controller-->
         <scene sceneID="ScP-D7-TSR">
             <objects>
-                <viewController storyboardIdentifier="GroupedAssetListViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fcq-cr-QFZ" customClass="GroupedAssetListViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GroupedAssetListController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fcq-cr-QFZ" customClass="GroupedAssetListController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oSx-wp-SCu">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -252,10 +253,10 @@
             </objects>
             <point key="canvasLocation" x="2067" y="46"/>
         </scene>
-        <!--Simple Assets List View Controller-->
+        <!--Assets List Controller-->
         <scene sceneID="uQb-8X-mEP">
             <objects>
-                <viewController storyboardIdentifier="SimpleAssetsListViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pGA-7p-ncq" customClass="SimpleAssetsListViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AssetsListController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pGA-7p-ncq" customClass="AssetsListController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rVp-L0-IDw">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

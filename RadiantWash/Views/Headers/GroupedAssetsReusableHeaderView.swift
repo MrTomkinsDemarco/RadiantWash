@@ -65,7 +65,7 @@ extension GroupedAssetsReusableHeaderView: Themeble {
   
   public func handleDeleteAssets(to select: Bool) {
     
-    deleteSelectedButton.updateColors(for: select)
+    deleteSelectedButton.setupAppearance(for: select)
     deleteSelectedButton.isEnabled = select
   }
   
@@ -79,5 +79,5 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     }
   }
   
-  public func updateColors() {}
+  public func setupAppearance() {}
 }

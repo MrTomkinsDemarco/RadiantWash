@@ -19,7 +19,7 @@ class ContactInfoTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
 }
 
@@ -68,7 +68,7 @@ extension ContactInfoTableViewCell: Themeble {
     fieldTitleTextLabel.font = FontManager.contentTypeFont(of: .subtitle)
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     fieldValueTextLabel.textColor = theme.titleTextColor
     fieldTitleTextLabel.textColor = theme.subTitleTextColor

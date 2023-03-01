@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="mDF-vv-vZ0">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -36,10 +37,10 @@
             </objects>
             <point key="canvasLocation" x="1971.0144927536232" y="116.51785714285714"/>
         </scene>
-        <!--Contacts Group View Controller-->
+        <!--Contacts Group Controller-->
         <scene sceneID="b9A-Et-zH1">
             <objects>
-                <viewController storyboardIdentifier="ContactsGroupViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cky-cA-hcY" customClass="ContactsGroupViewController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContactsGroupController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cky-cA-hcY" customClass="ContactsGroupController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="K4p-WB-mpg">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -84,7 +85,7 @@
                         <outlet property="bottomButtonHeightConstraint" destination="eB9-bv-YGy" id="pkp-2l-VUu"/>
                         <outlet property="navigationBar" destination="k9F-fp-rer" id="S6L-qC-xR6"/>
                         <outlet property="tableView" destination="oYS-CW-J3j" id="7Xa-OL-Dem"/>
-                        <segue destination="LnH-xQ-grY" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowExportContactsViewControllerSegue" customModule="ECleaner" id="JEf-iZ-0t1"/>
+                        <segue destination="LnH-xQ-grY" kind="show" identifier="ShowExportContactsControllerSegue" customClass="ExportContactsController" customModule="RadiantWash" customModuleProvider="target" id="JEf-iZ-0t1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d4B-fv-s9w" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

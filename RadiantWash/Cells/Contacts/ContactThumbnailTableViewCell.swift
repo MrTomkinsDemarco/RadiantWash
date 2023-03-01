@@ -35,5 +35,5 @@ extension ContactThumbnailTableViewCell: Themeble {
     self.selectionStyle = .none
   }
   
-  func updateColors() {}
+  func setupAppearance() {}
 }

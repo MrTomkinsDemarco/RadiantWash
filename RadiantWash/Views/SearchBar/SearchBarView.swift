@@ -30,7 +30,7 @@ class SearchBarView: UIView {
     
     self.configure()
     self.setupSearchBar()
-    self.updateColors()
+    self.setupAppearance()
     self.setupCancelButton()
   }
   
@@ -147,7 +147,7 @@ class SearchBarView: UIView {
     }
   }
   
-  private func updateColors() {
+  private func setupAppearance() {
     
     self.backgroundColor = theme.navigationBarBackgroundColor
     helperExtraView.backgroundColor = theme.navigationBarBackgroundColor

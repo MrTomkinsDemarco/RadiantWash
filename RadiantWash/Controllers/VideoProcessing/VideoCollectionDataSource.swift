@@ -56,7 +56,7 @@ extension VideoCollectionDataSource {
     
     cell.loadCellThumbnail(videoPHAsset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
     cell.setupUI()
-    cell.updateColors()
+    cell.setupAppearance()
     
     if let path = self.collectionView.indexPathsForSelectedItems, path.contains([indexPath]) {
       cell.isSelected = true

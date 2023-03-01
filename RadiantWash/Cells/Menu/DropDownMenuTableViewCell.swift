@@ -21,7 +21,7 @@ class DropDownMenuTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
 }
 
@@ -74,7 +74,7 @@ extension DropDownMenuTableViewCell: Themeble {
     checkmarkImageView.image = UIImage(systemName: "checkmark")!
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     menuTitileTextLabel.textColor = theme.titleTextColor
     thumbnailImageView.tintColor = theme.titleTextColor

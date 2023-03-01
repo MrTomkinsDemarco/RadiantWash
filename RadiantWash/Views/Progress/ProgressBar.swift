@@ -51,7 +51,7 @@ class ProgressAlertBar: UIView {
     super.init(frame: frame)
     
     setupView()
-    updateColors()
+    setupAppearance()
   }
   
   required init?(coder: NSCoder) {
@@ -65,7 +65,7 @@ class ProgressAlertBar: UIView {
     self.addSubview(progressView)
   }
   
-  public func updateColors() {
+  public func setupAppearance() {
     self.backgroundColor = mainBackgroundColor
     self.setCorner(progressCorner)
     self.layer.borderWidth = borderWidth

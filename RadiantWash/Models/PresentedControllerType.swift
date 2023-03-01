@@ -57,22 +57,22 @@ enum PresentedControllerType {
       
     switch self {
       case .permission:
-        let viewController = PermissionsViewController.instantiate(type: type)
+        let viewController = PermissionsController.instantiate(type: type)
         viewController.coordinator = coordinator
         return viewController
       case .onboarding:
-        let viewController = OnboardingViewController.instantiate(type: type)
+        let viewController = OnboardingController.instantiate(type: type)
         viewController.coordinator = coordinator
         return viewController
       case .subscription:
-        let viewController = SubscriptionViewController.instantiate(type: type)
+        let viewController = SubscriptionController.instantiate(type: type)
         viewController.coordinator = coordinator
         return viewController
       case .settings:
-        let viewController = SettingsViewController.instantiate(type: type)
+        let viewController = SettingsController.instantiate(type: type)
         return viewController
       case .web:
-        let viewController = WebViewController.instantiate(type: type)
+        let viewController = WebController.instantiate(type: type)
         viewController.coordinator = coordinator
         return viewController
     }

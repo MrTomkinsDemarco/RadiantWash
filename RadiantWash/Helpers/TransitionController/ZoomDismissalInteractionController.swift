@@ -76,14 +76,11 @@ final class ZoomDismissalInteractionController: NSObject {
             animator.transitionImageView = nil
             transitionContext.cancelInteractiveTransition()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            //                        animator.toDelegate?.transitionDidEndWith(zoomAnimator: animator)
-            //                        animator.fromDelegate?.transitionDidEndWith(zoomAnimator: animator)
             self.transitionContext = nil
           })
         return
       }
       
-      //start animation
       let finalTransitionSize = toReferenceImageViewFrame
       
       UIView.animate(withDuration: 0.25,
@@ -102,8 +99,6 @@ final class ZoomDismissalInteractionController: NSObject {
         
         self.transitionContext?.finishInteractiveTransition()
         transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-        //                animator.toDelegate?.transitionDidEndWith(zoomAnimator: animator)
-        //                animator.fromDelegate?.transitionDidEndWith(zoomAnimator: animator)
         self.transitionContext = nil
       })
     }
@@ -147,8 +142,6 @@ extension ZoomDismissalInteractionController: UIViewControllerInteractiveTransit
     else {
       return
     }
-    //        animator.fromDelegate?.transitionWillStartWith(zoomAnimator: animator)
-    //        animator.toDelegate?.transitionWillStartWith(zoomAnimator: animator)
     self.fromReferenceImageViewFrame = fromReferenceImageViewFrame
     self.toReferenceImageViewFrame = toReferenceImageViewFrame
     

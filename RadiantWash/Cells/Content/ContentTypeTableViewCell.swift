@@ -39,8 +39,8 @@ class ContentTypeTableViewCell: UITableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     
-    setupCellUI()
-    updateColors()
+    setupUI()
+    setupAppearance()
   }
   
   override func setSelected(_ selected: Bool, animated: Bool) {
@@ -48,12 +48,6 @@ class ContentTypeTableViewCell: UITableViewCell {
     
   }
   
-//  override func layoutSubviews() {
-//    super.layoutSubviews()
-//
-//    let margins = AppDimensions.ContenTypeCells.mediaContentTypeCellIEdgeInset
-//    contentView.frame = contentView.frame.inset(by: margins)
-//  }
   @IBAction func stopOperationActionButton(_ sender: Any) {
     delegate?.setCancelProcessOperaion(for: self)
   }
@@ -198,7 +192,6 @@ extension ContentTypeTableViewCell {
   }
 }
 
-  ///  `handle progress`
 extension ContentTypeTableViewCell {
   
   public func resetProgress() {
@@ -252,18 +245,16 @@ extension ContentTypeTableViewCell {
 
 extension ContentTypeTableViewCell: Themeble {
   
-  func setupCellUI() {
+  func setupUI() {
     selectionStyle = .none
     separatorInset.left = 20 + 30 + 20
     rightArrowImageView.isHidden = true
     self.operationActionButton.isEnabled = false
-//    self.horizontalProgressView.setCorner(14)
-//    reuseShadowRoundedView.updateImagesLayout()
     contentTypeTextLabel.font = FontManager.contentTypeFont(of: .title)
     contentSubtitleTextLabel.font = FontManager.contentTypeFont(of: .subtitle)
   }
   
-  func updateColors() {
+  func setupAppearance() {
     self.backgroundColor = Theme.light.cellBackGroundColor
     self.tintColor = Theme.light.bottomShadowColor
     contentTypeTextLabel.textColor = theme.titleTextColor
@@ -287,13 +278,6 @@ extension ContentTypeTableViewCell {
     
     self.contentTypeTextLabel.text = settings.settingsTitle
     self.contentImageView.image = settings.settingsImages
-//    let imageSizeWidth = reuseShadowRoundedView.frame.size.width / 1.8
-//    let roundedShadowImageSize = CGSize(width: imageSizeWidth, height: imageSizeWidth)
-//    reuseShadowRoundedView.setImageWithCustomBackground(image: settings.settingsImages,
-//                              tineColor: .white,
-//                              size: roundedShadowImageSize,
-//                              colors: settings.gradientColorsForSettings)
-//    reuseShadowRoundedView.updateImagesLayout()
     self.contentSubtitleTextLabel.isHidden = true
   }
 }

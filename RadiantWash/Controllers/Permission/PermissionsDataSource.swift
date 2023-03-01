@@ -51,7 +51,7 @@ extension PermissionsDataSource {
   
   private func permissionContinueConfigure(cell: PermissionContinueTableViewCell, at indexPath: IndexPath) {
     cell.setupUI()
-    cell.updateColors()
+    cell.setupAppearance()
     cell.delegate = self
   }
 }

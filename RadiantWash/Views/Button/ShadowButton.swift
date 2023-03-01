@@ -89,7 +89,7 @@ class ShadowButton: UIButton {
     
   }
   
-  public func updateColors() {
+  public func setupAppearance() {
   
   }
 }

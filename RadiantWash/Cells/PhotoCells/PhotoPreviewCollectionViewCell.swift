@@ -54,7 +54,7 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
     
     setupUI()
     gestureReconizerSetup()
-    updateColors()
+    setupAppearance()
   }
   
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -260,7 +260,6 @@ extension PhotoPreviewCollectionViewCell {
   }
 }
 
-//    MARK: - remove observers, unload -
 extension PhotoPreviewCollectionViewCell {
   
   private func unloadImagePreview(with contentType: MediaContentType) {
@@ -316,7 +315,6 @@ extension PhotoPreviewCollectionViewCell {
   }
 }
 
-//    MARK: - player state observers -
 extension PhotoPreviewCollectionViewCell {
   
   private func setPHAssetPlayerObserver(for playerItem: AVPlayerItem?) {
@@ -381,7 +379,6 @@ extension PhotoPreviewCollectionViewCell {
   }
 }
 
-//    MARK: - handle duration values -
 extension PhotoPreviewCollectionViewCell {
   
   private func getOriginDurationValue() -> CMTime {
@@ -454,7 +451,6 @@ extension PhotoPreviewCollectionViewCell {
   }
 }
 
-//    MARK: - SETUP - UI -
 extension PhotoPreviewCollectionViewCell: Themeble {
   
   public func setupUI() {
@@ -488,7 +484,7 @@ extension PhotoPreviewCollectionViewCell: Themeble {
     self.videoPreviewView.addGestureRecognizer(playPauseTapGestureRecognizer)
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     baseView.backgroundColor = theme.backgroundColor
     videoPreviewView.backgroundColor = .black

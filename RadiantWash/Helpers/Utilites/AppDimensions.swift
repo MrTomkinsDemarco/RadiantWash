@@ -12,7 +12,6 @@ struct AppDimensions {
   private static let screenSize = Screen.size
 }
 
-/// `permission cells`
 extension AppDimensions {
   
   struct PermissionsCell {
@@ -67,7 +66,6 @@ extension AppDimensions {
   }
 }
 
-/// `content cells`
 extension AppDimensions {
   
   struct ContenTypeCells {
@@ -82,19 +80,7 @@ extension AppDimensions {
         return 100
       }
     }
-    
-    static var heightOfRowOfCuttedMediaContentType: CGFloat {
-      switch screenSize {
-      case .small:
-        return 85
-      case .medium, .plus, .large:
-        return 90
-      case .modern, .pro, .max, .madMax, .proMax:
-        return 100
-      }
-    }
-    
-    /// deep clean progress bar
+
     static var heightOfTopHelperCellBanner: CGFloat {
       switch screenSize {
       case .small:
@@ -141,40 +127,6 @@ extension AppDimensions {
       }
     }
     
-    static var mediaContentCutTypeInset: CGFloat {
-      switch screenSize {
-      case .small, .medium, .plus:
-        return 20
-      case .large:
-        return 20
-      case .modern:
-        return 20
-      case .pro:
-        return 20
-      case .max:
-        return 20
-      case .madMax:
-        return 20
-      case .proMax:
-        return 20
-      }
-    }
-    
-    static var mediaContentBottomInset: CGFloat {
-      return Device.isSafeAreaiPhone ? 40 : 20
-    }
-    
-    static var radioButtonSize: CGFloat {
-      switch screenSize {
-      case .small:
-        return 20
-      case .medium, .plus:
-        return 25
-      case .large, .pro, .modern, .max, .madMax, .proMax:
-        return 33
-      }
-    }
-    
     static var helperImageViewWidth: CGFloat {
       switch screenSize {
       case .small:
@@ -183,15 +135,6 @@ extension AppDimensions {
         return 30
       case .modern, .pro, .max, .madMax, .proMax:
         return 33
-      }
-    }
-    
-    static var mediaContentTypeCellIEdgeInset: UIEdgeInsets {
-      switch screenSize {
-      case .small:
-        return UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
-      default:
-        return UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
       }
     }
   }
@@ -250,15 +193,6 @@ extension AppDimensions {
         return CGSize(width: 90, height: 90)
       default:
         return CGSize(width: 100, height: 100)
-      }
-    }
-    
-    static var carouselCollectionViewLineInset: CGFloat {
-      switch screenSize {
-      case .small:
-        return 20
-      default:
-        return 10
       }
     }
     
@@ -608,7 +542,6 @@ extension AppDimensions {
   
   struct NavigationBar {
     
-    ///`CUSTOM NAVIGATION BAR`
     static var navigationBarHeight: CGFloat {
       switch screenSize {
       case .small:
@@ -669,29 +602,6 @@ extension AppDimensions {
         return 75
       default:
         return 80
-      }
-    }
-    
-    static var roundedImageViewSize: CGFloat {
-      switch screenSize {
-      case .small:
-        return 40
-      case .medium:
-        return 45
-      case .plus:
-        return 45
-      case .large:
-        return 45
-      case .modern:
-        return 50
-      case .pro:
-        return 50
-      case .max:
-        return 50
-      case .madMax:
-        return 50
-      case .proMax:
-        return 50
       }
     }
   }
@@ -759,7 +669,6 @@ extension AppDimensions {
   }
 }
 
-/// `bottom button`
 extension AppDimensions {
   
   struct BottomButton {
@@ -878,15 +787,6 @@ extension AppDimensions {
           return 40
         case .proMax:
           return 40
-        }
-      }
-      
-      static var leadingInset: CGFloat {
-        switch screenSize {
-        case .large:
-          return 70
-        default:
-          return 70
         }
       }
       

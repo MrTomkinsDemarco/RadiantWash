@@ -130,7 +130,7 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
     let image = self.handleContactImageData(contact)
     
     return UIContextMenuConfiguration(identifier: identifier) {
-      return ImagePreviewViewController(item: image)
+      return ImagePreviewController(item: image)
     } actionProvider: { _ in
       return self.createCellContextMenu(for: contact, at: indexPath)
     }

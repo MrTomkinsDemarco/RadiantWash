@@ -28,7 +28,7 @@ class ContentBannerTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     setupUI()
-    updateColors()
+    setupAppearance()
   }
 }
 
@@ -95,12 +95,6 @@ extension ContentBannerTableViewCell {
     }
     
     reuseImageView.image = info.infoImage
-    //    reuseShadeoRoundedView.setImageWithCustomBackground(image: info.infoImage,
-    //                              tineColor: theme.activeTitleTextColor,
-    //                              size: imageSize,
-    //                              colors: info.gradientColors,
-    //                              startPoint: .topCenter,
-    //                              endPoint: .bottomCenter)
     helperImageView.image = info.helperImage
     helperImageView.contentMode = .scaleToFill
     
@@ -144,9 +138,9 @@ extension ContentBannerTableViewCell: Themeble {
     descriptionTitleTextLabel.font = FontManager.bannerFont(of: .descriptionTitle)
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
-    baseView.backgroundColor = Theme.light.cellBackGroundColor//theme.backgroundColor
+    baseView.backgroundColor = Theme.light.cellBackGroundColor
     reuseImageView.tintColor = theme.cellShadowBackgroundColor
     titleTextLabel.textColor = theme.titleTextColor
     subtitleTextLabel.textColor = theme.subTitleTextColor

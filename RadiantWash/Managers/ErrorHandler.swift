@@ -248,19 +248,19 @@ extension ErrorHandler {
 
 extension ErrorHandler {
   
-    public func showDeleteAlertError(_ errorType: DeleteError) {
+  public func showDeleteAlertError(_ errorType: DeleteError) {
     AlertManager.presentErrorAlert(with: errorType.errorDescription)
-    }
-    
-    public func showLoadAlertError(_ errorType: LoadError) {
+  }
+  
+  public func showLoadAlertError(_ errorType: LoadError) {
     AlertManager.presentErrorAlert(with: errorType.errorDescription)
-    }
-    
+  }
+  
   public func showMergeAlertError(_ errorType: MeergeError, compltionHandler: (() -> Void)? = nil) {
     AlertManager.presentErrorAlert(with: errorType.errorDescription) {
       compltionHandler?()
     }
-    }
+  }
   
   public func showFatalErrorAlert(_ errorType: FatalError) {
     AlertManager.presentErrorAlert(with: errorType.errorDescription)

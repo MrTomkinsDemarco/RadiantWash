@@ -9,9 +9,9 @@ import Contacts
 
 extension CNContact {
   
-    func fieldStatus() -> Int {
-        return self.emailAddresses.count + self.phoneNumbers.count + (self.givenName.isEmpty ? 0 : 1) + (self.familyName.isEmpty ? 0 : 1) + (self.middleName.isEmpty ? 0 : 1)
-    }
+  func fieldStatus() -> Int {
+    return self.emailAddresses.count + self.phoneNumbers.count + (self.givenName.isEmpty ? 0 : 1) + (self.familyName.isEmpty ? 0 : 1) + (self.middleName.isEmpty ? 0 : 1)
+  }
 }
 
 extension CNContactVCardSerialization {

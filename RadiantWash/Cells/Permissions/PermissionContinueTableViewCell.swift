@@ -48,7 +48,7 @@ extension PermissionContinueTableViewCell: Themeble {
     }
   }
   
-  func updateColors() {
+  func setupAppearance() {
     
     titleTextLabel.textColor = theme.subTitleTextColor
     

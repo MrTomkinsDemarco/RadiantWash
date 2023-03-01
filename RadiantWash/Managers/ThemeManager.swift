@@ -50,7 +50,7 @@ extension UIViewController {
 extension UINavigationController {
   
   func updateNavigationColors() {
-    navigationBar.updateColors()
+    navigationBar.setupAppearance()
   }
 }
 
@@ -65,9 +65,9 @@ extension UIView {
   }
 }
 
-extension UINavigationBar: UpdateColorsDelegate {
+extension UINavigationBar: AppearanceDelegate {
   
-  func updateColors() {
+  func setupAppearance() {
     
     tintColor = theme.navigationBarTextColor
     barTintColor = .red

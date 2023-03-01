@@ -8,7 +8,7 @@
 import UIKit
 import SwiftMessages
 
-class ShowDatePickerLowerDateSelectorViewController: SwiftMessagesSegue {
+class ShowDatePickerLowerDateSelectorController: SwiftMessagesSegue {
     
     override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
         super.init(identifier: identifier, source: source, destination: destination)
@@ -18,7 +18,7 @@ class ShowDatePickerLowerDateSelectorViewController: SwiftMessagesSegue {
     }
 }
 
-class ShowDatePickerUpperDateSelectorViewController: SwiftMessagesSegue {
+class ShowDatePickerUpperDateSelectorController: SwiftMessagesSegue {
   
   override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
     super.init(identifier: identifier, source: source, destination: destination)
@@ -28,7 +28,7 @@ class ShowDatePickerUpperDateSelectorViewController: SwiftMessagesSegue {
   }
 }
 
-class ShowExportContactsViewControllerSegue: SwiftMessagesSegue {
+class ShowExportContactsControllerSegue: SwiftMessagesSegue {
     
     override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
         super.init(identifier: identifier, source: source, destination: destination)
@@ -38,7 +38,7 @@ class ShowExportContactsViewControllerSegue: SwiftMessagesSegue {
     }
 }
 
-class ShowVideoSizeSelectorViewControllerSegue: SwiftMessagesSegue {
+class ShowVideoSizeSelectorControllerSegue: SwiftMessagesSegue {
   
   override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
     super.init(identifier: identifier, source: source, destination: destination)
@@ -48,7 +48,7 @@ class ShowVideoSizeSelectorViewControllerSegue: SwiftMessagesSegue {
   }
 }
 
-class ShowVideoCompressionCustomSettingsSelectorViewControllerSegue: SwiftMessagesSegue {
+class ShowVideoCompressionCustomSettingsSelectorControllerSegue: SwiftMessagesSegue {
   
   override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
     super.init(identifier: identifier, source: source, destination: destination)
@@ -59,7 +59,7 @@ class ShowVideoCompressionCustomSettingsSelectorViewControllerSegue: SwiftMessag
 }
 
 
-class ShowLifeTimeViewControllerSegue: SwiftMessagesSegue {
+class ShowLifeTimeControllerSegue: SwiftMessagesSegue {
   
   override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
     super.init(identifier: identifier, source: source, destination: destination)
@@ -69,7 +69,7 @@ class ShowLifeTimeViewControllerSegue: SwiftMessagesSegue {
   }
 }
 
-class ShowContactsBackupViewControllerSegue: SwiftMessagesSegue {
+class ShowContactsBackupControllerSegue: SwiftMessagesSegue {
   
   override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
     super.init(identifier: identifier, source: source, destination: destination)
@@ -79,7 +79,7 @@ class ShowContactsBackupViewControllerSegue: SwiftMessagesSegue {
   }
 }
 
-class ShowLocationInfoViewControllerSegue: SwiftMessagesSegue {
+class ShowLocationInfoControllerSegue: SwiftMessagesSegue {
   
   override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
     super.init(identifier: identifier, source: source, destination: destination)

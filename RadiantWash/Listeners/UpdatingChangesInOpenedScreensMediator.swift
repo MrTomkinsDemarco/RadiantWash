@@ -26,8 +26,4 @@ class UpdatingChangesInOpenedScreensMediator {
   func updatingChangedScreenShots() {
     listener?.getUpdatingScreenShots()
   }
-  
-  func updatingChangedSelfies() {
-    listener?.getUpdatingSelfies()
-  }
 }
