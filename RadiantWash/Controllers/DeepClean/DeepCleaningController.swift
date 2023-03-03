@@ -201,7 +201,7 @@ extension DeepCleaningController {
     updatableIndexPath.append(contentsOf: thirdSectionPath)
     
     updatableIndexPath.forEach { indexPath in
-      if let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell {
+      if let cell = tableView.cellForRow(at: indexPath) as? ContentTypeCell {
         cell.resetProgress()
       }
     }
@@ -367,9 +367,9 @@ extension DeepCleaningController {
   
   private func updateAssetsFieldCount(at indexPath: IndexPath) {
     
-    guard !indexPath.isEmpty, let cell = self.tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
+    guard !indexPath.isEmpty, let cell = self.tableView.cellForRow(at: indexPath) as? ContentTypeCell else { return }
     U.UI {
-      self.configure(cell, at: indexPath)
+      self.setup(cell, at: indexPath)
     }
   }
   
@@ -542,9 +542,9 @@ extension DeepCleaningController {
     self.mediaStoreModel.objects[type.contentTypeRawValue]?.sizeProcessingCount += processingValue
     
     U.UI {
-      if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-        cell.setProgress(files: self.mediaStoreModel.totalFilesProcesingCount)
-        cell.setMemmoryChecker(bytes: self.mediaStoreModel.totalPhotoLibrarySizeCount)
+      if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoCell {
+        cell.setupProgress(files: self.mediaStoreModel.totalFilesProcesingCount)
+        cell.setupMemmoryChecker(bytes: self.mediaStoreModel.totalPhotoLibrarySizeCount)
       }
     }
   }
@@ -553,8 +553,8 @@ extension DeepCleaningController {
     
     totalFilesChecked = (totalFilesOnDevice / 100) * Int(self.totalDeepCleanProgress.totalProgress)
     
-    if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-      cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress.rounded())
+    if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoCell {
+      cell.setupRoundedProgress(value: self.totalDeepCleanProgress.totalProgress.rounded())
     }
   }
   
@@ -575,15 +575,15 @@ extension DeepCleaningController {
     if status == .result {
       U.delay(1) {
         self.deepCleanModel.objects[mediaType]?.checkForCleanState()
-        if let cell = self.tableView.cellForRow(at: objectIndexPath) as? ContentTypeTableViewCell {
-          self.configure(cell, at: objectIndexPath, currentProgress: currentProgress)
+        if let cell = self.tableView.cellForRow(at: objectIndexPath) as? ContentTypeCell {
+          self.setup(cell, at: objectIndexPath, currentProgress: currentProgress)
         }
       }
     }
     
     guard !objectIndexPath.isEmpty else { return }
-    guard let cell = tableView.cellForRow(at: objectIndexPath) as? ContentTypeTableViewCell else { return }
-    self.configure(cell, at: objectIndexPath, currentProgress: currentProgress)
+    guard let cell = tableView.cellForRow(at: objectIndexPath) as? ContentTypeCell else { return }
+    self.setup(cell, at: objectIndexPath, currentProgress: currentProgress)
     self.updateTotalFilesTitleChecked()
   }
   
@@ -712,7 +712,7 @@ extension DeepCleaningController: UITableViewDelegate, UITableViewDataSource {
     }
   }
   
-  private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
+  private func setup(_ cell: ContentTypeCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
     
     let photoMediaType: PhotoMediaType = .getDeepCleanMediaContentType(from: indexPath)
     let deepModel = self.deepCleanModel.objects[photoMediaType]!
@@ -729,16 +729,16 @@ extension DeepCleaningController: UITableViewDelegate, UITableViewDataSource {
       return deepModel.selectedAssetsCollectionID.count != 0
     }
     
-    cell.deepCleanCellConfigure(with: deepModel, mediaType: photoMediaType, indexPath: indexPath)
+    cell.setupDataDeepClean(with: deepModel, mediaType: photoMediaType, indexPath: indexPath)
   }
   
-  private func configureInfoCell(_ cell: DeepCleanInfoTableViewCell, at indexPath: IndexPath) {
+  private func configureInfoCell(_ cell: DeepCleanInfoCell, at indexPath: IndexPath) {
     
     cell.selectionStyle = .none
     cell.isUserInteractionEnabled = false
-    cell.setProgress(files: self.mediaStoreModel.totalFilesProcesingCount)
-    cell.setMemmoryChecker(bytes: self.mediaStoreModel.totalPhotoLibrarySizeCount)
-    cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress)
+    cell.setupProgress(files: self.mediaStoreModel.totalFilesProcesingCount)
+    cell.setupMemmoryChecker(bytes: self.mediaStoreModel.totalPhotoLibrarySizeCount)
+    cell.setupRoundedProgress(value: self.totalDeepCleanProgress.totalProgress)
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
@@ -762,12 +762,12 @@ extension DeepCleaningController: UITableViewDelegate, UITableViewDataSource {
     
     switch indexPath.section {
     case 0:
-      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.cleanInfoCell, for: indexPath) as! DeepCleanInfoTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.cleanInfoCell, for: indexPath) as! DeepCleanInfoCell
       configureInfoCell(cell, at: indexPath)
       return cell
     default:
-      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-      configure(cell, at: indexPath)
+      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeCell
+      setup(cell, at: indexPath)
       return cell
     }
   }

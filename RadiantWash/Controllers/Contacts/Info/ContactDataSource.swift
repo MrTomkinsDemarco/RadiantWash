@@ -20,16 +20,16 @@ class ContactDataSource: NSObject {
 
 extension ContactDataSource {
   
-  private func configureThumbnail(_ cell: ContactThumbnailTableViewCell, at indexPath: IndexPath) {
+  private func configureThumbnail(_ cell: ContactThumbnailCell, at indexPath: IndexPath) {
     
     let field = self.contactViewModel.getContactModel(at: indexPath)
-    cell.configureCell(with: field)
+    cell.setup(model: field)
   }
   
-  private func configure(_ cell: ContactInfoTableViewCell, at indexPath: IndexPath) {
+  private func setup(_ cell: ContactInfoCell, at indexPath: IndexPath) {
     
     let field = self.contactViewModel.getContactModel(at: indexPath)
-    cell.configure(model: field)
+    cell.setup(model: field)
   }
 }
 
@@ -47,17 +47,17 @@ extension ContactDataSource: UITableViewDelegate, UITableViewDataSource {
     
     switch indexPath.section {
     case 0:
-      let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.contactThumbnail, for: indexPath) as! ContactThumbnailTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.contactThumbnail, for: indexPath) as! ContactThumbnailCell
       self.configureThumbnail(cell, at: indexPath)
       return cell
     case self.contactViewModel.numberOfSections() - 1:
-      let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.actionCell, for: indexPath) as! ActionTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.actionCell, for: indexPath) as! ActionCell
       cell.delegate = self
-      cell.configureButton(with: .deleteContact)
+      cell.setupButton(with: .deleteContact)
       return cell
     default:
-      let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.contactInfo, for: indexPath) as! ContactInfoTableViewCell
-      self.configure(cell, at: indexPath)
+      let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.contactInfo, for: indexPath) as! ContactInfoCell
+      self.setup(cell, at: indexPath)
       return cell
     }
   }
@@ -81,7 +81,7 @@ extension ContactDataSource: UITableViewDelegate, UITableViewDataSource {
 
 extension ContactDataSource: ActionTableCellDelegate {
   
-  func didTapActionButton(at cell: ActionTableViewCell) {
+  func didTapActionButton(at cell: ActionCell) {
     self.didTapSelectDeleteContact()
   }
 }

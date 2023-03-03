@@ -34,14 +34,14 @@ class ContactsGroupDataSource: NSObject {
 
 extension ContactsGroupDataSource {
   
-  private func cellConfigure(cell: GroupContactTableViewCell, at indexPath: IndexPath, with position: RowPosition) {
+  private func setupData(cell: GroupContactCell, at indexPath: IndexPath, with position: RowPosition) {
     
     guard let contact = contactGroupListViewModel.getContact(at: indexPath) else { return }
     
     let isSelected = checkIfSelectedSecetion(at: indexPath.section)
     
     cell.delegate = self
-    cell.updateContactCell(contact, rowPosition: position, sectionIndex: indexPath.section, isSelected: isSelected)
+    cell.updateCell(contact, rowPosition: position, sectionIndex: indexPath.section, isSelected: isSelected)
   }
   
   private func configureHeader(view: GroupedContactsHeaderView, at section: Int) {
@@ -78,11 +78,11 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
-    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.groupContactCell, for: indexPath) as! GroupContactTableViewCell
+    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.groupContactCell, for: indexPath) as! GroupContactCell
     
     let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
     
-    self.cellConfigure(cell: cell, at: indexPath, with: rowPosition)
+    self.setupData(cell: cell, at: indexPath, with: rowPosition)
     
     return cell
   }

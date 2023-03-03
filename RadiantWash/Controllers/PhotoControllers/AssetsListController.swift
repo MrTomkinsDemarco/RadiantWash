@@ -241,7 +241,7 @@ extension AssetsListController {
       self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
       self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
       
-      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
         cell.checkIsSelected()
       }
     }
@@ -260,7 +260,7 @@ extension AssetsListController {
     
     for indexPath in (0..<numbersOfItemsInSection).map({IndexPath(item: $0, section: 0)}) {
       
-      if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+      if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell {
         cell.isSelected = selected
         cell.checkIsSelected()
       }
@@ -335,14 +335,14 @@ extension AssetsListController {
   }
 }
 
-extension AssetsListController: PhotoCollectionViewCellDelegate {
+extension AssetsListController: PhotoCellDelegate {
   
-  func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {
+  func didShowFullScreenPHasset(at cell: PhotoCell) {
     guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
     self.showFullScreenAssetPreviewAndFocus(at: indexPath)
   }
   
-  func didSelect(cell: PhotoCollectionViewCell) {
+  func didSelect(cell: PhotoCell) {
     
     guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
     
@@ -497,7 +497,7 @@ extension AssetsListController: UICollectionViewDelegate, UICollectionViewDataSo
     self.collectionView.alwaysBounceVertical = true
   }
   
-  private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+  private func setup(_ cell: PhotoCell, at indexPath: IndexPath) {
     
     cell.collectionType = self.collectionType
     cell.delegate = self
@@ -505,15 +505,15 @@ extension AssetsListController: UICollectionViewDelegate, UICollectionViewDataSo
     cell.tag = indexPath.section * 1000 + indexPath.row
     cell.cellMediaType = self.mediaType
     cell.cellContentType = self.contentType
-    cell.selectButtonSetup(by: self.mediaType)
+    cell.setupSelectButton(by: self.mediaType)
     let asset = assetCollection[indexPath.row]
     
     if self.thumbnailSize.equalTo(CGSize.zero) {
       self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
     }
     
-    cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
-    cell.setBestView(availible: false)
+    cell.loadThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
+    cell.setupBestView(availible: false)
     cell.setupUI()
     cell.setupAppearance()
     
@@ -536,9 +536,9 @@ extension AssetsListController: UICollectionViewDelegate, UICollectionViewDataSo
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
     cell.photoThumbnailImageView.image = nil
-    configure(cell, at: indexPath)
+    setup(cell, at: indexPath)
     return cell
   }
   
@@ -572,7 +572,7 @@ extension AssetsListController: UICollectionViewDelegate, UICollectionViewDataSo
   
   func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
     
-    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear
@@ -581,7 +581,7 @@ extension AssetsListController: UICollectionViewDelegate, UICollectionViewDataSo
   }
   
   func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear

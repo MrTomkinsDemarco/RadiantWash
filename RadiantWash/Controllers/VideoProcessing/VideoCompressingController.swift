@@ -356,9 +356,9 @@ extension VideoCompressingController {
         self.compressionConfiguration = config
         self.currentCompressionModel = .custom(fps: 0, bitrate: 0, scale: .zero)
         let indexPath = IndexPath(row: 3, section: 1)
-        if let cell = self.tableView.cellForRow(at: indexPath) as? CompressionSettingsTableViewCell {
+        if let cell = self.tableView.cellForRow(at: indexPath) as? CompressionSettingsCell {
           if let model = self.currentCompressionModel {
-            cell.compressionConfigureCell(with: model, phasset: self.processingPHAsset)
+            cell.setup(model: model, phasset: self.processingPHAsset)
           }
         }
       }

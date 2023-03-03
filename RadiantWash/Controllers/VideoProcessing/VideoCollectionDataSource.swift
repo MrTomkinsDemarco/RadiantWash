@@ -40,10 +40,10 @@ class VideoCollectionDataSource: NSObject {
 
 extension VideoCollectionDataSource {
   
-  private func configure(cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+  private func setup(cell: PhotoCell, at indexPath: IndexPath) {
     
     let videoPHAsset = self.videoCollectionViewModel.getPhasset(at: indexPath)
-    cell.selectButtonSetup(by: self.mediaType, isNewConpress: videoPHAsset.localIdentifier == S.lastSavedLocalIdenifier)
+    cell.setupSelectButton(by: self.mediaType, isNewConpress: videoPHAsset.localIdentifier == S.lastSavedLocalIdenifier)
     cell.indexPath = indexPath
     cell.tag = indexPath.section * 1000 + indexPath.row
     cell.cellMediaType = self.mediaType
@@ -54,7 +54,7 @@ extension VideoCollectionDataSource {
       self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
     }
     
-    cell.loadCellThumbnail(videoPHAsset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
+    cell.loadThumbnail(videoPHAsset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
     cell.setupUI()
     cell.setupAppearance()
     
@@ -78,8 +78,8 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-    self.configure(cell: cell, at: indexPath)
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
+    self.setup(cell: cell, at: indexPath)
     return cell
   }
   
@@ -122,7 +122,7 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
   
   func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
     
-    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear
@@ -131,7 +131,7 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
   }
   
   func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear

@@ -37,7 +37,7 @@ class SubscriptionManager: NSObject {
   
   private var purchasedPremium: Bool {
     get {
-      return true//U.userDefaults.bool(forKey: C.key.subscription.purchasePremium)
+      return U.userDefaults.bool(forKey: C.key.subscription.purchasePremium)
     } set {
       if purchasedPremium != newValue {
         debugPrint("****")

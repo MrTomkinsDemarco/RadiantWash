@@ -108,8 +108,8 @@ extension MediaContentController {
     self.singleCleanModel.objects[type]?.cleanProgress = 100.0
     self.singleCleanModel.objects[type]?.checkForCleanState()
     U.UI {
-      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
-        self.configure(cell, at: type.singleSearchIndexPath)
+      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeCell {
+        self.setup(cell, at: type.singleSearchIndexPath)
         completionHandler()
       }
     }
@@ -120,8 +120,8 @@ extension MediaContentController {
     self.singleCleanModel.objects[type]?.cleanProgress = 100.0
     self.singleCleanModel.objects[type]?.checkForCleanState()
     U.UI {
-      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
-        self.configure(cell, at: type.singleSearchIndexPath)
+      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeCell {
+        self.setup(cell, at: type.singleSearchIndexPath)
         completionHandler()
       }
     }
@@ -133,8 +133,8 @@ extension MediaContentController {
     self.singleCleanModel.objects[type]?.cleanProgress = 100.0
     self.singleCleanModel.objects[type]?.checkForCleanState()
     U.UI {
-      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
-        self.configure(cell, at: type.singleSearchIndexPath)
+      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeCell {
+        self.setup(cell, at: type.singleSearchIndexPath)
         completionHandler()
       }
     }
@@ -146,8 +146,8 @@ extension MediaContentController {
     self.singleCleanModel.objects[type]?.cleanProgress = 100.0
     self.singleCleanModel.objects[type]?.checkForCleanState()
     U.UI {
-      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
-        self.configure(cell, at: type.singleSearchIndexPath)
+      if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeCell {
+        self.setup(cell, at: type.singleSearchIndexPath)
         completionHandler()
       }
     }
@@ -994,9 +994,9 @@ extension MediaContentController {
     self.singleCleanModel.objects[mediaType]?.cleanProgress = currentProgress
     
     guard !indexPath.isEmpty else { return }
-    guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
+    guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeCell else { return }
     
-    self.configure(cell, at: indexPath)
+    self.setup(cell, at: indexPath)
   }
   
   private func setCancelActiveOperation(completionHandler: @escaping () -> Void) {
@@ -1071,8 +1071,8 @@ extension MediaContentController {
       object.resetSingleMode()
       
       U.UI {
-        if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
-          self.configure(cell, at: type.singleSearchIndexPath)
+        if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeCell {
+          self.setup(cell, at: type.singleSearchIndexPath)
         }
       }
     }
@@ -1099,7 +1099,7 @@ extension MediaContentController {
     let allSectionIndexPath = (0..<numberOFOperationElemtnth).map {IndexPath(row: $0, section: 0)}
     
     allSectionIndexPath.forEach { indexPath in
-      if let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell {
+      if let cell = tableView.cellForRow(at: indexPath) as? ContentTypeCell {
         cell.resetProgress()
       }
     }
@@ -1250,7 +1250,7 @@ extension MediaContentController: NavigationBarDelegate {
 
 extension MediaContentController: ContentTypeCellDelegate {
   
-  func setCancelProcessOperaion(for cell: ContentTypeTableViewCell) {
+  func setCancelProcessOperaion(for cell: ContentTypeCell) {
     self.setCancelActiveOperation {
       debugPrint("cancel")
     }
@@ -1268,16 +1268,16 @@ extension MediaContentController: UITableViewDelegate, UITableViewDataSource {
     self.tableView.register(UINib(nibName: C.identifiers.xibs.contentBannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentBannerCell)
   }
   
-  func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
+  func setup(_ cell: ContentTypeCell, at indexPath: IndexPath) {
     let photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
     let singleModel = self.singleCleanModel.objects[photoMediaType]!
-    cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath, for: self.searchingProcessingType == .smartGroupSearchProcess)
+    cell.setupDataSingleClean(with: singleModel, mediaType: photoMediaType, indexPath: indexPath, for: self.searchingProcessingType == .smartGroupSearchProcess)
     cell.delegate = self
   }
   
-  func configureBannerContent(cell: ContentBannerTableViewCell, at indexPath: IndexPath) {
+  func configureBannerContent(cell: ContentBannerCell, at indexPath: IndexPath) {
     let mediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
-    cell.configure(by: mediaType)
+    cell.setup(content: mediaType)
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
@@ -1306,12 +1306,12 @@ extension MediaContentController {
   private func setupCellFor(rowAt indexPath: IndexPath) -> UITableViewCell {
     switch indexPath.section {
     case 1:
-      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentBannerCell, for: indexPath) as! ContentBannerTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentBannerCell, for: indexPath) as! ContentBannerCell
       self.configureBannerContent(cell: cell, at: indexPath)
       return cell
     default:
-      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-      self.configure(cell, at: indexPath)
+      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeCell
+      self.setup(cell, at: indexPath)
       return cell
     }
   }

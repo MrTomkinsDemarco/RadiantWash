@@ -53,7 +53,7 @@ class LifeTimeSubscriptionController: UIViewController {
     
     setupLostConnectionView()
     loadLifeTimeSubscription()
-    featuresConfigure(leadingFeatures: [.deepClean, .multiselect, .location, .compression], trailingFeautures: [])
+    setup(leadingFeatures: [.deepClean, .multiselect, .location, .compression], trailingFeautures: [])
     setupActionButton()
     setupActivityIndicator()
     setupUI()
@@ -159,17 +159,17 @@ extension LifeTimeSubscriptionController {
 
 extension LifeTimeSubscriptionController {
   
-  private func featuresConfigure(leadingFeatures: [PremiumFeature], trailingFeautures: [PremiumFeature]) {
+  private func setup(leadingFeatures: [PremiumFeature], trailingFeautures: [PremiumFeature]) {
     
     for feature in leadingFeatures {
       let featureView = PremiumFeatureView()
-      featureView.configureLifeTimeFeatures(from: feature)
+      featureView.setupLifeTimeFeatures(feature: feature)
       leadingStackView.addArrangedSubview(featureView)
     }
     
     for feature in trailingFeautures {
       let featureView = PremiumFeatureView()
-      featureView.configureLifeTimeFeatures(from: feature)
+      featureView.setupLifeTimeFeatures(feature: feature)
       trailingStackView.addArrangedSubview(featureView)
     }
   }

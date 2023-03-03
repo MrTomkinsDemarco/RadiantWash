@@ -44,7 +44,7 @@ class PremiumFeatureView: UIView {
     contentImageView.setNeedsLayout()
   }
   
-  public func configureView(from feature: PremiumFeature, isSettingsSize: Bool = false) {
+  public func configureView(feature: PremiumFeature, settingsSize: Bool = false) {
     
     contentImageView.image = feature.thumbnail
     contentImageView.tintColor = theme.cellShadowBackgroundColor
@@ -80,7 +80,7 @@ class PremiumFeatureView: UIView {
   }
   
   
-  public func configureLifeTimeFeatures(from feature: PremiumFeature) {
+  public func setupLifeTimeFeatures(feature: PremiumFeature) {
     
     contentImageView.image = feature.thumbnail
     

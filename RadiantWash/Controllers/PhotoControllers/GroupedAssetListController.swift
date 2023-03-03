@@ -262,7 +262,7 @@ extension GroupedAssetListController {
       let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
       self.selectedAssets.append(phasset)
       
-      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
         cell.isSelected = true
         cell.checkIsSelected()
         self.handleSelectAllButtonSection(IndexPath(item: 0, section: indexPath.section))
@@ -338,7 +338,7 @@ extension GroupedAssetListController {
     
     
     indexesOfSection.forEach { indexPath in
-      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
         cell.checkIsSelected()
       }
     }
@@ -359,7 +359,7 @@ extension GroupedAssetListController {
       }
       
       for item in 1..<self.collectionView.numberOfItems(inSection: section) {
-        if let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section)) as? PhotoCollectionViewCell{
+        if let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section)) as? PhotoCell {
           cell.isSelected = !isSelect
           cell.checkIsSelected()
         }
@@ -412,14 +412,14 @@ extension GroupedAssetListController {
   }
 }
 
-extension GroupedAssetListController: PhotoCollectionViewCellDelegate {
+extension GroupedAssetListController: PhotoCellDelegate {
   
-  func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {
+  func didShowFullScreenPHasset(at cell: PhotoCell) {
     guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
     self.showFullScreenAssetPreviewAndFocus(at: indexPath)
   }
   
-  func didSelect(cell: PhotoCollectionViewCell) {
+  func didSelect(cell: PhotoCell) {
     guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
     
     let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
@@ -540,7 +540,7 @@ extension GroupedAssetListController {
     var isCellsSelectedCount: Int = 0
     indexPaths.forEach { indexPath in
       
-      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+      if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
         if cell.isSelected {
           isCellsSelectedCount += 1
         }
@@ -602,11 +602,11 @@ extension GroupedAssetListController {
     return (1..<cellsCountInSection).map({IndexPath(item: $0, section: section)})
   }
   
-  private func getSectionsCells(at indexPaths: [IndexPath]) -> [PhotoCollectionViewCell] {
-    var cells: [PhotoCollectionViewCell] = []
+  private func getSectionsCells(at indexPaths: [IndexPath]) -> [PhotoCell] {
+    var cells: [PhotoCell] = []
     
     indexPaths.forEach { indexPath in
-      if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+      if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell {
         cells.append(cell)
       }
     }
@@ -699,7 +699,7 @@ extension GroupedAssetListController {
     self.collectionView.reloadData()
   }
   
-  private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+  private func setup(_ cell: PhotoCell, at indexPath: IndexPath) {
     
     let asset = assetGroups[indexPath.section].assets[indexPath.row]
     cell.collectionType = self.collectionType
@@ -709,10 +709,10 @@ extension GroupedAssetListController {
     cell.cellMediaType = self.mediaType
     cell.cellContentType = self.contentType
     let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
-    cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
+    cell.loadThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
     cell.setupUI()
     cell.setupAppearance()
-    cell.selectButtonSetup(by: self.mediaType)
+    cell.setupSelectButton(by: self.mediaType)
     
     if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
       cell.isSelected = true
@@ -722,7 +722,7 @@ extension GroupedAssetListController {
     cell.checkIsSelected()
   }
   
-  public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
+  public func setupHeder(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
     view.mediaContentType = self.contentType
     view.deleteSelectedButton.contentType = self.contentType
     view.setupUI()
@@ -741,8 +741,8 @@ extension GroupedAssetListController: UICollectionViewDelegate, UICollectionView
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-    configure(cell, at: indexPath)
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
+    setup(cell, at: indexPath)
     return cell
   }
   
@@ -766,7 +766,7 @@ extension GroupedAssetListController: UICollectionViewDelegate, UICollectionView
       
       guard let sectionHeader = headerView as? GroupedAssetsReusableHeaderView else { return headerView }
       
-      self.hederConfigure(sectionHeader, at: indexPath)
+      self.setupHeder(sectionHeader, at: indexPath)
       
       handleSelectAllButtonSection(indexPath)
       checkSelectedHeaderView(for: indexPath, headerView: sectionHeader)
@@ -815,7 +815,7 @@ extension GroupedAssetListController: UICollectionViewDelegate, UICollectionView
   
   func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
     
-    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear
@@ -870,7 +870,7 @@ extension GroupedAssetListController: UICollectionViewDelegate, UICollectionView
   
   func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
     
-    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear
@@ -1170,7 +1170,7 @@ extension GroupedAssetListController {
   
   private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
     
-    guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
+    guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell else { return }
     
     let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
     

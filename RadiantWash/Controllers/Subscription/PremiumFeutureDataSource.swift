@@ -18,9 +18,9 @@ class PremiumFeutureDataSource: NSObject {
 
 extension PremiumFeutureDataSource {
   
-  private func cellConfigure(cell: PremiumFeatureTableViewCell, at indexPath: IndexPath) {
+  private func setupData(cell: PremiumFeatureCell, at indexPath: IndexPath) {
     let featureModel = premiumFeaturesViewModel.getFeatureModel(at: indexPath)
-    cell.configure(model: featureModel)
+    cell.setup(model: featureModel)
   }
 }
 
@@ -35,8 +35,8 @@ extension PremiumFeutureDataSource: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.premiumFeature, for: indexPath) as! PremiumFeatureTableViewCell
-    self.cellConfigure(cell: cell, at: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.premiumFeature, for: indexPath) as! PremiumFeatureCell
+    self.setupData(cell: cell, at: indexPath)
     return cell
   }
   

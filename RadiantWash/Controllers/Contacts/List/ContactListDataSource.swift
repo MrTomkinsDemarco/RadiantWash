@@ -38,18 +38,18 @@ class ContactListDataSource: NSObject {
 
 extension ContactListDataSource {
   
-  private func cellConfigure(cell: ContactTableViewCell, at indexPath: IndexPath) {
+  private func setupData(cell: ContactCell, at indexPath: IndexPath) {
     
     guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
-    cell.contactEditingMode = self.contactContentIsEditing
-    cell.updateContactCell(contact, contentType: self.contentType)
+    cell.isEditingMode = self.contactContentIsEditing
+    cell.updateCell(contact, contentType: self.contentType)
   }
   
-  private func checkForEditingMode(cell: ContactTableViewCell, at indexPath: IndexPath) {
+  private func checkForEditingMode(cell: ContactCell, at indexPath: IndexPath) {
     
     guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
-    cell.contactEditingMode = self.contactContentIsEditing
-    cell.checkForContactsImageDataAndSelectableMode(for: contact)
+    cell.isEditingMode = self.contactContentIsEditing
+    cell.checkSelectableMode(contact: contact)
   }
   
   private func didSelectDeselectContact() {
@@ -75,14 +75,14 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! ContactTableViewCell
-    self.cellConfigure(cell: cell, at: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! ContactCell
+    self.setupData(cell: cell, at: indexPath)
     return cell
   }
   
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     
-    guard let cell = tableView.cellForRow(at: indexPath) as? ContactTableViewCell else { return }
+    guard let cell = tableView.cellForRow(at: indexPath) as? ContactCell else { return }
     self.checkForEditingMode(cell: cell, at: indexPath)
   }
   

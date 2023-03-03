@@ -61,12 +61,12 @@ extension DropDownMenuController {
     }
   }
   
-  private func configure(_ cell: DropDownMenuTableViewCell, at indexPath: IndexPath) {
+  private func setup(_ cell: DropDownMenuCell, at indexPath: IndexPath) {
     
     guard let tableView = self.tableView else { return }
     
     let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
-    cell.configure(with: menuSectionItems[indexPath.row], row: rowPosition)
+    cell.setup(with: menuSectionItems[indexPath.row], row: rowPosition)
   }
   
   private func calculateMenuContentSize() {
@@ -94,8 +94,8 @@ extension DropDownMenuController: UITableViewDataSource, UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.dropDownCell, for: indexPath) as! DropDownMenuTableViewCell
-    configure(cell, at: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.dropDownCell, for: indexPath) as! DropDownMenuCell
+    setup(cell, at: indexPath)
     return cell
   }
   

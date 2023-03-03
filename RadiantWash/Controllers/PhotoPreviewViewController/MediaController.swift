@@ -39,8 +39,8 @@ class MediaController: UIViewController {
   private var shouldTrackScrolling = true
   private var currentActivePlayIndexPath: IndexPath?
   
-  private var visibleCell: PhotoCollectionViewCell? {
-    return previewCollectionView.visibleCells.first as? PhotoCollectionViewCell
+  private var visibleCell: PhotoCell? {
+    return previewCollectionView.visibleCells.first as? PhotoCell
   }
   private var visibleCellIndex: IndexPath? {
     guard let visibleCell = visibleCell else {
@@ -103,10 +103,10 @@ extension MediaController {
                               y: self.collectionView.frame.height / 2)
     guard let centerIndexPath = self.collectionView.indexPathForItem(at: centerPoint), centerIndexPath == indexPath else {return }
     
-    if let cell = self.previewCollectionView.cellForItem(at: indexPath) as? PhotoPreviewCollectionViewCell {
+    if let cell = self.previewCollectionView.cellForItem(at: indexPath) as? PhotoPreviewCell {
       cell.didPlayCurrenMediaItem { successfully in
         guard successfully else { return }
-        if let collectionCell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+        if let collectionCell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
           collectionCell.carouselCollectionCellIsPlaying = cell.isPlaying
         }
       }
@@ -119,17 +119,17 @@ extension MediaController {
                               y: self.collectionView.frame.height / 2)
     guard let centerIndexPath = self.collectionView.indexPathForItem(at: centerPoint) else {return }
     
-    if let cell = self.previewCollectionView.cellForItem(at: centerIndexPath) as? PhotoPreviewCollectionViewCell {
-      cell.setDeinitMediaPlayer()
+    if let cell = self.previewCollectionView.cellForItem(at: centerIndexPath) as? PhotoPreviewCell {
+      cell.deinitPlayer()
     }
   }
 }
 
-extension MediaController: PhotoCollectionViewCellDelegate {
+extension MediaController: PhotoCellDelegate {
   
-  func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {}
+  func didShowFullScreenPHasset(at cell: PhotoCell) {}
   
-  func didSelect(cell: PhotoCollectionViewCell) {
+  func didSelect(cell: PhotoCell) {
     
     guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
     
@@ -185,7 +185,7 @@ extension MediaController {
     for previouslySelectedIndexPath in previouslySelectedIndexPaths {
       self.collectionView.selectItem(at: previouslySelectedIndexPath, animated: false, scrollPosition: [])
       self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: previouslySelectedIndexPath)
-      if let cell = self.collectionView.cellForItem(at: previouslySelectedIndexPath) as? PhotoCollectionViewCell {
+      if let cell = self.collectionView.cellForItem(at: previouslySelectedIndexPath) as? PhotoCell {
         cell.checkIsSelected()
       }
     }
@@ -278,7 +278,7 @@ extension MediaController {
   
   private func setAsBest(phasset: PHAsset, at indexPath: IndexPath) {
     
-    guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
+    guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell else { return }
     let bestIndexPath = IndexPath(row: 0, section: indexPath.section)
     let oldIndexPath = IndexPath(row: 1, section: indexPath.section)
     self.assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
@@ -291,14 +291,14 @@ extension MediaController {
       self.collectionView.moveItem(at: indexPath, to: bestIndexPath)
     } completion: { _ in
       Utils.delay(0.3) {
-        if let bestCell = self.collectionView.cellForItem(at: bestIndexPath) as? PhotoCollectionViewCell, let secondCell = self.collectionView.cellForItem(at: oldIndexPath) as? PhotoCollectionViewCell {
+        if let bestCell = self.collectionView.cellForItem(at: bestIndexPath) as? PhotoCell, let secondCell = self.collectionView.cellForItem(at: oldIndexPath) as? PhotoCell {
           UIView.transition(with: cell, duration: 0.3, options: .curveEaseInOut) {
-            bestCell.setSelectable(availible: false)
+            bestCell.setupSelectable(availible: false)
             bestCell.setupBestView()
-            bestCell.setBestView(availible: true)
+            bestCell.setupBestView(availible: true)
             
-            secondCell.setSelectable(availible: true)
-            secondCell.setBestView(availible: false)
+            secondCell.setupSelectable(availible: true)
+            secondCell.setupBestView(availible: false)
             
           } completion: { _ in
             UIView.performWithoutAnimation {
@@ -474,7 +474,7 @@ extension MediaController  {
     self.collectionView.reloadData()
   }
   
-  private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+  private func setup(_ cell: PhotoCell, at indexPath: IndexPath) {
     
     var asset: PHAsset {
       switch collectionType {
@@ -494,10 +494,10 @@ extension MediaController  {
     cell.cellMediaType = self.mediaType
     cell.cellContentType = self.contentType
     let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
-    cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
+    cell.loadThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
     cell.setupUI()
     cell.setupAppearance()
-    cell.selectButtonSetup(by: self.mediaType)
+    cell.setupSelectButton(by: self.mediaType)
     self.currentImage = cell.photoThumbnailImageView
     
     if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
@@ -509,7 +509,7 @@ extension MediaController  {
     cell.checkIsSelected()
   }
   
-  private func configurePreview(_ cell: PhotoPreviewCollectionViewCell, at indexPath: IndexPath) {
+  private func configurePreview(_ cell: PhotoPreviewCell, at indexPath: IndexPath) {
     
     var asset: PHAsset {
       switch collectionType {
@@ -526,9 +526,9 @@ extension MediaController  {
     cell.indexPath = indexPath
     cell.tag = indexPath.section * 1000 + indexPath.row
     cell.cellMediaType = self.mediaType
-    cell.configureLayout(with: self.contentType)
+    cell.setupLayout(with: self.contentType)
     let previewSize = self.previewCollectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
-    cell.configurePreview(from: asset, imageManager: self.prefetchCacheImageManager, size: previewSize, of: self.contentType)
+    cell.setupPreview(from: asset, imageManager: self.prefetchCacheImageManager, size: previewSize, of: self.contentType)
   }
 }
 
@@ -557,11 +557,11 @@ extension MediaController: UICollectionViewDelegate, UICollectionViewDataSource 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     
     if collectionView == self.collectionView {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-      configure(cell, at: indexPath)
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
+      setup(cell, at: indexPath)
       return cell
     } else {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoPreviewCell, for: indexPath) as! PhotoPreviewCollectionViewCell
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoPreviewCell, for: indexPath) as! PhotoPreviewCell
       configurePreview(cell, at: indexPath)
       return cell
     }
@@ -623,7 +623,7 @@ extension MediaController: UICollectionViewDelegate, UICollectionViewDataSource 
   
   func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
     
-    guard let indexPath = configuration.identifier as? IndexPath, let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath, let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell)
     targetPreview.parameters.backgroundColor = theme.backgroundColor
@@ -632,7 +632,7 @@ extension MediaController: UICollectionViewDelegate, UICollectionViewDataSource 
   }
   
   func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell)
     targetPreview.parameters.backgroundColor = theme.backgroundColor
@@ -745,7 +745,7 @@ extension MediaController {
   
   private func handleDecelerateScrollCollection(at indexPath: IndexPath) {
     collectionView.reloadSelectedItems(at: [indexPath])
-    if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell{
+    if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
       cell.checkIsSelected()
     }
   }
@@ -759,13 +759,13 @@ extension MediaController {
     
     guard let currentPlayIndexPath = self.currentActivePlayIndexPath, currentPlayIndexPath == centerIndexPath else { return }
     
-    if let cell = self.previewCollectionView.cellForItem(at: currentPlayIndexPath) as? PhotoPreviewCollectionViewCell {
+    if let cell = self.previewCollectionView.cellForItem(at: currentPlayIndexPath) as? PhotoPreviewCell {
       if cell.isPlaying {
-        cell.setStopPlayCurrentMediaItem()
+        cell.stopPlayingItem()
       }
     }
     
-    if let cell = self.collectionView.cellForItem(at: currentPlayIndexPath) as? PhotoCollectionViewCell {
+    if let cell = self.collectionView.cellForItem(at: currentPlayIndexPath) as? PhotoCell {
       if cell.carouselCollectionCellIsPlaying {
         cell.carouselCollectionCellIsPlaying = false
       }
@@ -779,7 +779,7 @@ extension MediaController: PreviewCollectionCellDelegate {
     
     self.currentActivePlayIndexPath = indexPath
     
-    if let indexPath = indexPath, let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+    if let indexPath = indexPath, let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell {
       cell.carouselCollectionCellIsPlaying = isPlaying
     }
   }

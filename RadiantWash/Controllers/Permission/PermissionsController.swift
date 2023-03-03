@@ -69,7 +69,7 @@ extension PermissionsController {
     }
   }
   
-  private func handlePermissionChange(at cell: PermissionTableViewCell, with permission: Permission) {
+  private func handlePermissionChange(at cell: PermissionCell, with permission: Permission) {
     
     switch permission.status {
     case .authorized:
@@ -78,7 +78,7 @@ extension PermissionsController {
       AlertManager.showPermissionAlert(of: .openSettings, at: self, for: permission)
     case .notDetermined:
       permission.requestForPermission { granted, error in
-        cell.setButtonState(for: permission)
+        cell.setupButtonState(permission: permission)
       }
     case .notSupported:
       return

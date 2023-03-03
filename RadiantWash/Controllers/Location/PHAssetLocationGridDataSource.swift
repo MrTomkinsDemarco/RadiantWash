@@ -37,11 +37,11 @@ class PHAssetLocationGridDataSource: NSObject {
 
 extension PHAssetLocationGridDataSource {
   
-  private func configure(cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+  private func setup(cell: PhotoCell, at indexPath: IndexPath) {
     
     guard let phasset = self.phassetLocationViewModel.getPhasset(at: indexPath) else { return }
     
-    cell.selectButtonSetup(by: self.mediaType)
+    cell.setupSelectButton(by: self.mediaType)
     cell.indexPath = indexPath
     cell.tag = indexPath.section * 1000 + indexPath.row
     cell.cellMediaType = self.mediaType
@@ -51,7 +51,7 @@ extension PHAssetLocationGridDataSource {
       self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
     }
     
-    cell.loadCellThumbnail(phasset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
+    cell.loadThumbnail(phasset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
     cell.setupUI()
     cell.setupAppearance()
     
@@ -63,7 +63,7 @@ extension PHAssetLocationGridDataSource {
     cell.checkIsSelected()
   }
   
-  private func configure(header: LocationHeaderCollectionReusableView, at indexPath: IndexPath) {
+  private func setup(header: LocationHeaderCollectionReusableView, at indexPath: IndexPath) {
     
     guard let phasset = self.phassetLocationViewModel.getPhasset(at: indexPath) else { return }
     
@@ -108,8 +108,8 @@ extension PHAssetLocationGridDataSource: UICollectionViewDelegate, UICollectionV
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-    self.configure(cell: cell, at: indexPath)
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
+    self.setup(cell: cell, at: indexPath)
     return cell
   }
   
@@ -131,7 +131,7 @@ extension PHAssetLocationGridDataSource: UICollectionViewDelegate, UICollectionV
       
       guard let sectionHeader = headerView as? LocationHeaderCollectionReusableView else { return headerView}
       
-      self.configure(header: sectionHeader, at: indexPath)
+      self.setup(header: sectionHeader, at: indexPath)
       
       return sectionHeader
       
@@ -168,7 +168,7 @@ extension PHAssetLocationGridDataSource  {
   
   func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
     
-    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear
@@ -177,7 +177,7 @@ extension PHAssetLocationGridDataSource  {
   }
   
   func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+    guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return nil}
     
     let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
     targetPreview.parameters.backgroundColor = .clear

@@ -21,43 +21,43 @@ class SettingsDataSource: NSObject {
 
 extension SettingsDataSource {
   
-  private func getCurrentSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> CurrentSubscriptionTableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.currentSubscription, for: indexPath) as! CurrentSubscriptionTableViewCell
+  private func getCurrentSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> CurrentSubscriptionCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.currentSubscription, for: indexPath) as! CurrentSubscriptionCell
     self.subscriptionCellConfiguration(cell: cell)
     return cell
   }
   
-  private func getPremiumFeatureSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> PremiumFeaturesSubscriptionTableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
-    self.featuresCellConfigure(cell: cell)
+  private func getPremiumFeatureSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> PremiumFeaturesSubscriptionCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionCell
+    self.setupDataFeatures(cell: cell)
     return cell
   }
   
-  private func getContentTypeCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> ContentTypeTableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-    self.cellConfigure(cell: cell, at: indexPath)
+  private func getContentTypeCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> ContentTypeCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeCell
+    self.setupData(cell: cell, at: indexPath)
     return cell
   }
   
-  private func cellConfigure(cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
+  private func setupData(cell: ContentTypeCell, at indexPath: IndexPath) {
     
     let settingsModel = settingsViewModel.getSettingsModel(at: indexPath)
-    cell.settingsCellConfigure(with: settingsModel)
+    cell.setupDataSettings(with: settingsModel)
   }
   
-  private func featuresCellConfigure(cell: FeaturesSubscriptionTableViewCell) {
-    cell.featuresConfigure(features: PremiumFeature.allCases)
+  private func setupDatafeatures(cell: FeaturesSubscriptionCell) {
+    cell.setup(features: PremiumFeature.allCases)
   }
   
-  private func featuresCellConfigure(cell: PremiumFeaturesSubscriptionTableViewCell) {
-    cell.featuresConfigure(leadingFeatures: [.deepClean, .multiselect], trailingFeautures: [.location, .compression])
+  private func setupDataFeatures(cell: PremiumFeaturesSubscriptionCell) {
+    cell.setup(leadingFeatures: [.deepClean, .multiselect], trailingFeautures: [.location, .compression])
   }
   
-  private func subscriptionCellConfiguration(cell: CurrentSubscriptionTableViewCell) {
+  private func subscriptionCellConfiguration(cell: CurrentSubscriptionCell) {
     cell.delegate = self
     settingsViewModel.getCurrentSubscription { model in
       Utils.UI {
-        cell.configure(model: model)
+        cell.setup(model: model)
       }
     }
   }

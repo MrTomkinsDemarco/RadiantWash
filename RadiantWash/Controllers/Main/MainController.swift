@@ -133,8 +133,8 @@ extension MainController {
       let contentCount = self.contentCount[contentType]
       let diskUsage = SettingsManager.getDiskSpaceFiles(of: contentType)
       self.diskSpaceForStartingScreen[contentType] = diskUsage
-      if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-        cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
+      if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCell {
+        cell.setup(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
       }
     }
   }
@@ -182,8 +182,8 @@ extension MainController {
   
   private func setProgressSize(for type: MediaContentType, progress: CGFloat) {
     U.UI {
-      if let cell = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-        cell.setProgress(progress)
+      if let cell = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCell {
+        cell.setupProgress(progress)
       }
     }
   }
@@ -197,8 +197,8 @@ extension MainController: UpdateContentDataBaseListener {
       if let calculatedSpace = calculatedSpace {
         self.diskSpaceForStartingScreen[mediaType] = calculatedSpace
       }
-      if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-        cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
+      if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCell {
+        cell.setup(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
       }
     }
   }
@@ -439,8 +439,8 @@ extension MainController: UICollectionViewDelegate, UICollectionViewDataSource {
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.mediaTypeCell, for: indexPath) as! MediaTypeCollectionViewCell
-    configure(cell, at: indexPath)
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.mediaTypeCell, for: indexPath) as! MediaTypeCell
+    setup(cell, at: indexPath)
     return cell
   }
   
@@ -472,11 +472,11 @@ extension MainController {
     mediaCollectionView.alwaysBounceVertical = false
   }
   
-  private func configure(_ cell: MediaTypeCollectionViewCell, at indexPath: IndexPath) {
+  private func setup(_ cell: MediaTypeCell, at indexPath: IndexPath) {
     
     let mediaContentType = getMainScreenCellType(by: indexPath)
     let diskInUse = diskSpaceForStartingScreen[getMainScreenCellType(by: indexPath)]
-    cell.configureCell(mediaType: mediaContentType, contentCount: contentCount[mediaContentType], diskSpace: diskInUse)
+    cell.setup(mediaType: mediaContentType, contentCount: contentCount[mediaContentType], diskSpace: diskInUse)
   }
   
   private func getMainScreenCellType(by indexPath: IndexPath) -> MediaContentType {

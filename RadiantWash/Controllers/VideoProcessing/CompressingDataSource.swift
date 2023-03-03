@@ -18,15 +18,15 @@ class CompressingDataSource: NSObject {
     self.compressionSettinsViewModel = compressionSettinsViewModel
   }
   
-  private func cellConfigure(cell: CompressionSettingsTableViewCell, at indexPath: IndexPath, phasset: PHAsset?) {
+  private func setupData(cell: CompressionSettingsCell, at indexPath: IndexPath, phasset: PHAsset?) {
     let compressionModel = compressionSettinsViewModel.getSettingsModel(at: indexPath)
-    cell.compressionConfigureCell(with: compressionModel, phasset: phasset)
+    cell.setup(model: compressionModel, phasset: phasset)
   }
   
-  private func configureVideoPreview(cell: VideoPreviewTableViewCell, at indexPath: IndexPath, with phasset: PHAsset? ) {
+  private func configureVideoPreview(cell: VideoPreviewCell, at indexPath: IndexPath, with phasset: PHAsset? ) {
     guard let asset = self.compressionSettinsViewModel.getCompressingPHAsset() else { return }
     let size = CGSize(width: CGFloat(asset.pixelWidth), height: CGFloat(asset.pixelHeight))
-    cell.configurePreview(from: asset, imageManager: self.prefetchCacheImageManager, size: size)
+    cell.setupPreview(from: asset, imageManager: self.prefetchCacheImageManager, size: size)
   }
 }
 
@@ -44,13 +44,13 @@ extension CompressingDataSource: UITableViewDelegate, UITableViewDataSource {
     switch indexPath.section {
     case 0:
       let asset = self.compressionSettinsViewModel.getCompressingPHAsset()
-      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.videoPreviewCell, for: indexPath) as! VideoPreviewTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.videoPreviewCell, for: indexPath) as! VideoPreviewCell
       self.configureVideoPreview(cell: cell, at: indexPath, with: asset)
       return cell
     default:
-      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.compressionCell, for: indexPath) as! CompressionSettingsTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.compressionCell, for: indexPath) as! CompressionSettingsCell
       let phasset = compressionSettinsViewModel.getCompressingPHAsset()
-      self.cellConfigure(cell: cell, at: indexPath, phasset: phasset)
+      self.setupData(cell: cell, at: indexPath, phasset: phasset)
       return cell
     }
   }
