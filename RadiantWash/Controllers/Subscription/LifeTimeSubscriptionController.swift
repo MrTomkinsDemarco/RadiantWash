@@ -89,6 +89,83 @@ class LifeTimeSubscriptionController: UIViewController {
     actionButtonContainerStackView.layoutIfNeeded()
   }
   
+  private func setupObserver() {
+    
+    U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
+  }
+  
+  private func setupActionButton() {
+    
+    subscribeTitleTextLabel.textAlignment = .left
+    subscribeSubtitleTextLabel.textAlignment = .left
+    subscribePriceTextLabel.textAlignment = .right
+    subscribePriceInfoTextLabel.textAlignment = .right
+    subscribeTitleTextLabel.numberOfLines = 2
+    
+    subscribeTitleTextLabel.font = FontManager.subscriptionFont(of: .buttonTitle)
+    subscribePriceTextLabel.font = FontManager.subscriptionFont(of: .buttonPrice)
+    
+    actionButtonContainerView.setCorner(12)
+  }
+  
+  private func setupActivityIndicator() {
+    
+    self.activityIndicatorView.color = .white
+    self.activityIndicatorView.isHidden = true
+  }
+  
+  private func setupLostConnectionView() {
+    
+    self.lostConnectionView.isHidden = true
+    
+    self.lostConnectionView.addSubview(self.lostConnectionImageView)
+    self.lostConnectionImageView.translatesAutoresizingMaskIntoConstraints = false
+    self.lostConnectionImageView.leadingAnchor.constraint(equalTo: self.lostConnectionView.leadingAnchor, constant: 20).isActive = true
+    self.lostConnectionImageView.centerYAnchor.constraint(equalTo: self.lostConnectionView.centerYAnchor).isActive = true
+    self.lostConnectionImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+    self.lostConnectionImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+    
+    self.lostConnectionView.addSubview(self.lostConnetctionMessage)
+    self.lostConnetctionMessage.translatesAutoresizingMaskIntoConstraints = false
+    
+    self.lostConnetctionMessage.leadingAnchor.constraint(equalTo: self.lostConnectionImageView.trailingAnchor, constant: 20).isActive = true
+    self.lostConnetctionMessage.topAnchor.constraint(equalTo: self.lostConnectionView.topAnchor).isActive = true
+    self.lostConnetctionMessage.bottomAnchor.constraint(equalTo: self.lostConnectionView.bottomAnchor).isActive = true
+    self.lostConnetctionMessage.trailingAnchor.constraint(equalTo: self.lostConnectionView.trailingAnchor, constant: -20).isActive = true
+  }
+  
+  private func setupUI() {
+    
+    self.trailingStackView.isHidden = true
+    self.subscribeSubtitleTextLabel.isHidden = true
+    self.subscribePriceInfoTextLabel.isHidden = true
+    
+    self.actionButtonContainerView.isHidden = true
+    
+    actionButtonContainerViewWidthConstraint.constant = U.screenWidth - 80
+    bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
+    
+    let containerHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh
+    self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
+    mainContaintainerHeightConstraint.constant = containerHeight
+    mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
+    
+    topShevronView.setCorner(3)
+    
+    titleTextLabel.textAlignment = .center
+    titleTextLabel.font = FontManager.subscriptionFont(of: .lifeTimeTitle)
+    
+    titleTextLabel.text = Localization.Settings.Title.lifeTime
+    crownImageView.image = I.systemItems.navigationBarItems.premium
+    crownImageView.contentMode = .scaleAspectFit
+    crownImageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 3, height: 3), shadowOpacity: 10, shadowRadius: 14)
+    
+    lostConnectionImageView.tintColor = theme.tintColor
+    lostConnetctionMessage.font = FontManager.subscriptionFont(of: .helperText)
+    lostConnetctionMessage.numberOfLines = 2
+    lostConnectionView.backgroundColor = .clear
+  }
+  
   @IBAction func didTapPurchaseLifeTimeActionButton(_ sender: Any) {
     
     guard statusSubscriptionLoaded != .disable else { return }
@@ -330,79 +407,6 @@ extension LifeTimeSubscriptionController {
 
 extension LifeTimeSubscriptionController: Themeble {
   
-  private func setupActionButton() {
-    
-    subscribeTitleTextLabel.textAlignment = .left
-    subscribeSubtitleTextLabel.textAlignment = .left
-    subscribePriceTextLabel.textAlignment = .right
-    subscribePriceInfoTextLabel.textAlignment = .right
-    subscribeTitleTextLabel.numberOfLines = 2
-    
-    subscribeTitleTextLabel.font = FontManager.subscriptionFont(of: .buttonTitle)
-    subscribePriceTextLabel.font = FontManager.subscriptionFont(of: .buttonPrice)
-    
-    actionButtonContainerView.setCorner(12)
-  }
-  
-  private func setupActivityIndicator() {
-    
-    self.activityIndicatorView.color = .white
-    self.activityIndicatorView.isHidden = true
-  }
-  
-  private func setupLostConnectionView() {
-    
-    self.lostConnectionView.isHidden = true
-    
-    self.lostConnectionView.addSubview(self.lostConnectionImageView)
-    self.lostConnectionImageView.translatesAutoresizingMaskIntoConstraints = false
-    self.lostConnectionImageView.leadingAnchor.constraint(equalTo: self.lostConnectionView.leadingAnchor, constant: 20).isActive = true
-    self.lostConnectionImageView.centerYAnchor.constraint(equalTo: self.lostConnectionView.centerYAnchor).isActive = true
-    self.lostConnectionImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-    self.lostConnectionImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-    
-    self.lostConnectionView.addSubview(self.lostConnetctionMessage)
-    self.lostConnetctionMessage.translatesAutoresizingMaskIntoConstraints = false
-    
-    self.lostConnetctionMessage.leadingAnchor.constraint(equalTo: self.lostConnectionImageView.trailingAnchor, constant: 20).isActive = true
-    self.lostConnetctionMessage.topAnchor.constraint(equalTo: self.lostConnectionView.topAnchor).isActive = true
-    self.lostConnetctionMessage.bottomAnchor.constraint(equalTo: self.lostConnectionView.bottomAnchor).isActive = true
-    self.lostConnetctionMessage.trailingAnchor.constraint(equalTo: self.lostConnectionView.trailingAnchor, constant: -20).isActive = true
-  }
-  
-  private func setupUI() {
-    
-    self.trailingStackView.isHidden = true
-    self.subscribeSubtitleTextLabel.isHidden = true
-    self.subscribePriceInfoTextLabel.isHidden = true
-    
-    self.actionButtonContainerView.isHidden = true
-    //    buttonShadow.isHidden = true
-    
-    actionButtonContainerViewWidthConstraint.constant = U.screenWidth - 80
-    bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
-    
-    let containerHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh
-    self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
-    mainContaintainerHeightConstraint.constant = containerHeight
-    mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
-    
-    topShevronView.setCorner(3)
-    
-    titleTextLabel.textAlignment = .center
-    titleTextLabel.font = FontManager.subscriptionFont(of: .lifeTimeTitle)
-    
-    titleTextLabel.text = Localization.Settings.Title.lifeTime
-    crownImageView.image = I.systemItems.navigationBarItems.premium
-    crownImageView.contentMode = .scaleAspectFit
-    crownImageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 3, height: 3), shadowOpacity: 10, shadowRadius: 14)
-    
-    lostConnectionImageView.tintColor = theme.tintColor
-    lostConnetctionMessage.font = FontManager.subscriptionFont(of: .helperText)
-    lostConnetctionMessage.numberOfLines = 2
-    lostConnectionView.backgroundColor = .clear
-  }
-  
   func setupAppearance() {
     
     self.view.backgroundColor = .clear
@@ -418,11 +422,6 @@ extension LifeTimeSubscriptionController: Themeble {
     subscribeSubtitleTextLabel.textColor = theme.activeTitleTextColor
     subscribePriceTextLabel.textColor = theme.activeTitleTextColor
     subscribePriceInfoTextLabel.textColor = theme.activeTitleTextColor
-  }
-  
-  private func setupObserver() {
-    
-    U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
   }
 }
 

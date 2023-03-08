@@ -60,9 +60,49 @@ class VideoCollectionCompressingController: UIViewController {
     
     S.lastSavedLocalIdenifier = nil
   }
-}
-
-extension VideoCollectionCompressingController {
+  
+  private func setupUI() {
+    
+    self.navigationControllerHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+    self.bottomMenuHeightConstraint.constant = 0
+    self.bottomButtonView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
+  }
+  
+  private func setupNavigation() {
+    
+    self.navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
+                                       leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                       rightBarButtonImage: I.systemItems.navigationBarItems.sort,
+                                       contentType: self.contentType,
+                                       leftButtonTitle: nil,
+                                       rightButtonTitle: nil)
+  }
+  
+  private func setupSortDescriptionMenu() {
+    
+    if #available(iOS 14.0, *) {
+      self.performSordDescriptionMenu()
+    }
+  }
+  
+  private func setupDelegate() {
+    
+    self.navigationBar.delegate = self
+    self.bottomButtonView.delegate = self
+    self.scrollView.delegate = self
+  }
+  
+  private func setupCollectionView() {
+    
+    flowLayout.isSquare = true
+    flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
+    
+    self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
+    
+    self.collectionView.collectionViewLayout = flowLayout
+    self.collectionView.allowsMultipleSelection = false
+    self.collectionView.contentInset.top = 20
+  }
   
   private func setupDataSource(with sort: SortingType) {
     
@@ -76,9 +116,6 @@ extension VideoCollectionCompressingController {
     self.collectionView.delegate = self.videoCollectionDataSource
     self.videoCollectionDataSource.delegate = self
   }
-}
-
-extension VideoCollectionCompressingController {
   
   private func getVideoSorted(with key: SortingType, updatable: Bool = false) {
     
@@ -125,89 +162,6 @@ extension VideoCollectionCompressingController {
     popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
     self.present(dropDownViewController, animated: true, completion: nil)
   }
-}
-
-extension VideoCollectionCompressingController: SelectDropDownMenuDelegate {
-  
-  func handleDropDownMenu(_ item: MenuItemType) {
-    switch item {
-    case .sortByDate:
-      self.getVideoSorted(with: .date)
-    case .sortBySize:
-      self.getVideoSorted(with: .size)
-    case .sortByDimension:
-      self.getVideoSorted(with: .dimension)
-    case .sortByEdit:
-      self.getVideoSorted(with: .edit)
-    case .duration:
-      self.getVideoSorted(with: .duration)
-    default:
-      return
-    }
-  }
-}
-
-extension VideoCollectionCompressingController {
-  
-  private func handleBottomButton() {}
-}
-
-extension VideoCollectionCompressingController {
-  
-  private func setupCollectionView() {
-    
-    flowLayout.isSquare = true
-    flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
-    
-    self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
-    
-    self.collectionView.collectionViewLayout = flowLayout
-    self.collectionView.allowsMultipleSelection = false
-    self.collectionView.contentInset.top = 20
-  }
-}
-
-extension VideoCollectionCompressingController: VideoCollectionDataSourceDelegate {
-  
-  func handleSelectPHAsset(at indexPath: IndexPath) {
-    
-    guard let selectedItems = self.collectionView.indexPathsForSelectedItems else { return }
-    
-    self.bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-    self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 70 + U.bottomSafeAreaHeight : 5
-    if let selectedItem = selectedItems.first {
-      let phasset = self.assetCollection[selectedItem.row]
-      
-      let size = phasset.imageSize
-      let stringSize = U.getSpaceFromInt(size)
-      bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .compres)) \(stringSize)")
-    }
-    
-    U.animate(0.5) {
-      self.collectionView.layoutIfNeeded()
-      self.view.layoutIfNeeded()
-    }
-  }
-  
-  func showComressionViewController(with indexPath: IndexPath) {
-    let phasset = self.videoCollectionViewModel.getPhasset(at: indexPath)
-    let storyboard = UIStoryboard(name: C.identifiers.storyboards.videoProcessing, bundle: nil)
-    let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as!
-    VideoCompressingController
-    viewController.processingPHAsset = phasset
-    viewController.updateCollectionWithNewCompressionPHAssets = {
-      self.getVideoSorted(with: self.sortingType, updatable: true)
-    }
-    
-    self.navigationController?.pushViewController(viewController, animated: true)
-  }
-  
-  func share(phasset: PHAsset) {
-    ShareManager.shared.shareVideoFile(from: phasset) {}
-  }
-}
-
-extension VideoCollectionCompressingController {
   
   @available(iOS 14.0, *)
   private func performSordDescriptionMenu() {
@@ -235,9 +189,6 @@ extension VideoCollectionCompressingController {
     let durationItem: MenuItem = .init(type: .duration, selected: true, checkmark: self.sortingType == .duration)
     return [dateItem, sizeItem, dimensionItem, editItem, durationItem]
   }
-}
-
-extension VideoCollectionCompressingController {
   
   private func updateCachedAssets() {
     
@@ -293,6 +244,66 @@ extension VideoCollectionCompressingController {
   }
 }
 
+extension VideoCollectionCompressingController: SelectDropDownMenuDelegate {
+  
+  func handleDropDownMenu(_ item: MenuItemType) {
+    switch item {
+    case .sortByDate:
+      self.getVideoSorted(with: .date)
+    case .sortBySize:
+      self.getVideoSorted(with: .size)
+    case .sortByDimension:
+      self.getVideoSorted(with: .dimension)
+    case .sortByEdit:
+      self.getVideoSorted(with: .edit)
+    case .duration:
+      self.getVideoSorted(with: .duration)
+    default:
+      return
+    }
+  }
+}
+
+extension VideoCollectionCompressingController: VideoCollectionDataSourceDelegate {
+  
+  func handleSelectPHAsset(at indexPath: IndexPath) {
+    
+    guard let selectedItems = self.collectionView.indexPathsForSelectedItems else { return }
+    
+    self.bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+    self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 70 + U.bottomSafeAreaHeight : 5
+    if let selectedItem = selectedItems.first {
+      let phasset = self.assetCollection[selectedItem.row]
+      
+      let size = phasset.imageSize
+      let stringSize = U.getSpaceFromInt(size)
+      bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .compres)) \(stringSize)")
+    }
+    
+    U.animate(0.5) {
+      self.collectionView.layoutIfNeeded()
+      self.view.layoutIfNeeded()
+    }
+  }
+  
+  func showComressionViewController(with indexPath: IndexPath) {
+    let phasset = self.videoCollectionViewModel.getPhasset(at: indexPath)
+    let storyboard = UIStoryboard(name: C.identifiers.storyboards.videoProcessing, bundle: nil)
+    let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as!
+    VideoCompressingController
+    viewController.processingPHAsset = phasset
+    viewController.updateCollectionWithNewCompressionPHAssets = {
+      self.getVideoSorted(with: self.sortingType, updatable: true)
+    }
+    
+    self.navigationController?.pushViewController(viewController, animated: true)
+  }
+  
+  func share(phasset: PHAsset) {
+    ShareManager.shared.shareVideoFile(from: phasset) {}
+  }
+}
+
 extension VideoCollectionCompressingController: NavigationBarDelegate {
   
   func didTapLeftBarButton(_ sender: UIButton) {
@@ -318,40 +329,6 @@ extension VideoCollectionCompressingController: UIScrollViewDelegate {
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     updateCachedAssets()
-  }
-}
-
-extension VideoCollectionCompressingController {
-  
-  private func setupUI() {
-    
-    self.navigationControllerHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
-    self.bottomMenuHeightConstraint.constant = 0
-    self.bottomButtonView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
-  }
-  
-  private func setupNavigation() {
-    
-    self.navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
-                                       leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                       rightBarButtonImage: I.systemItems.navigationBarItems.sort,
-                                       contentType: self.contentType,
-                                       leftButtonTitle: nil,
-                                       rightButtonTitle: nil)
-  }
-  
-  private func setupSortDescriptionMenu() {
-    
-    if #available(iOS 14.0, *) {
-      self.performSordDescriptionMenu()
-    }
-  }
-  
-  private func setupDelegate() {
-    
-    self.navigationBar.delegate = self
-    self.bottomButtonView.delegate = self
-    self.scrollView.delegate = self
   }
 }
 

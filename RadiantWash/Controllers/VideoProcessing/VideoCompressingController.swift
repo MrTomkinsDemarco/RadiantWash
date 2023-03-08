@@ -82,6 +82,34 @@ class VideoCompressingController: UIViewController {
       break
     }
   }
+  
+  private func setupUI() {
+    
+    bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .compres))
+    bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
+    
+    navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+    self.bottomButtonViewHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
+  }
+  
+  private func setupNavigation() {
+    
+    navigationBarView.setupNavigation(title: LocalizationService.Main.getNavigationTitle(for: .videoCompression),
+                                      leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                      rightBarButtonImage: nil, contentType: .none, leftButtonTitle: nil, rightButtonTitle: nil)
+  }
+  
+  private func setupDelegate() {
+    
+    navigationBarView.delegate = self
+    bottomButtonBarView.delegate = self
+    compressionSettingsDataSource.delegate = self
+  }
+  
+  private func setupObservers() {
+    
+    Utils.notificationCenter.addObserver(self, selector: #selector(self.handleCompressionProgress(_:)), name: .compressionVideoProgress, object: nil)
+  }
 }
 
 extension VideoCompressingController: BottomActionButtonDelegate {
@@ -367,34 +395,6 @@ extension VideoCompressingController {
 }
 
 extension VideoCompressingController: Themeble {
-  
-  private func setupUI() {
-    
-    bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .compres))
-    bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
-    
-    navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
-    self.bottomButtonViewHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
-  }
-  
-  private func setupNavigation() {
-    
-    navigationBarView.setupNavigation(title: LocalizationService.Main.getNavigationTitle(for: .videoCompression),
-                                      leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                      rightBarButtonImage: nil, contentType: .none, leftButtonTitle: nil, rightButtonTitle: nil)
-  }
-  
-  private func setupDelegate() {
-    
-    navigationBarView.delegate = self
-    bottomButtonBarView.delegate = self
-    compressionSettingsDataSource.delegate = self
-  }
-  
-  private func setupObservers() {
-    
-    Utils.notificationCenter.addObserver(self, selector: #selector(self.handleCompressionProgress(_:)), name: .compressionVideoProgress, object: nil)
-  }
   
   func setupAppearance() {
     

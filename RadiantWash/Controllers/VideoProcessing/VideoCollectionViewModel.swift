@@ -15,9 +15,6 @@ class VideoCollectionViewModel {
   init(phassets: [PHAsset]) {
     self.phassets = phassets
   }
-}
-
-extension VideoCollectionViewModel {
   
   public func numberOfSection() -> Int {
     return 1

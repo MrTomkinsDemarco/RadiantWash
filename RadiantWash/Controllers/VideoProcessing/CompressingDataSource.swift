@@ -28,6 +28,13 @@ class CompressingDataSource: NSObject {
     let size = CGSize(width: CGFloat(asset.pixelWidth), height: CGFloat(asset.pixelHeight))
     cell.setupPreview(from: asset, imageManager: self.prefetchCacheImageManager, size: size)
   }
+  
+  public func prefetch(_ asset: PHAsset) {
+    
+    let size = CGSize(width: CGFloat(asset.pixelWidth), height: CGFloat(asset.pixelHeight))
+    
+    self.prefetchCacheImageManager.startCachingImages(for: [asset], targetSize: size, contentMode: .aspectFill, options: nil)
+  }
 }
 
 extension CompressingDataSource: UITableViewDelegate, UITableViewDataSource {
@@ -87,15 +94,5 @@ extension CompressingDataSource: UITableViewDelegate, UITableViewDataSource {
     headerView.contentView.alpha = 0.8
     headerView.textLabel?.textColor = ThemeManager.theme.sectionTitleTextColor
     headerView.textLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-  }
-}
-
-extension CompressingDataSource {
-  
-  public func prefetch(_ asset: PHAsset) {
-    
-    let size = CGSize(width: CGFloat(asset.pixelWidth), height: CGFloat(asset.pixelHeight))
-    
-    self.prefetchCacheImageManager.startCachingImages(for: [asset], targetSize: size, contentMode: .aspectFill, options: nil)
   }
 }

@@ -67,12 +67,45 @@ class GroupedAssetListController: UIViewController {
     super.viewDidAppear(animated)
     
     updateCachedAssets()
-    self.defaultContainerHeight = self.photoContentContainerView.frame.height
+    defaultContainerHeight = self.photoContentContainerView.frame.height
     handleDeepCleanStartSelectablePHAssetsGroup()
   }
-}
-
-extension GroupedAssetListController {
+  
+  private func setupUI() {
+    
+    let bottomButtonImageSize = CGSize(width: 18, height: 24)
+    switch mediaType {
+    case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+      self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
+    default:
+      self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
+    }
+  }
+  
+  private func setupNavigation() {
+    
+    navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+    if #available(iOS 14.0, *) {
+      setupDropDown()
+    }
+    navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
+                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+                                  contentType: self.contentType,
+                                  leftButtonTitle: nil,
+                                  rightButtonTitle: nil)
+  }
+  
+  private func setupObservers() {
+    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
+  }
+  
+  private func setupDelegate() {
+    
+    scrollView.delegate = self
+    navigationBar.delegate = self
+    bottomButtonBarView.delegate = self
+  }
   
   private func didTapBackSingleCleanActionButton() {
     changedPhassetGroupCompletionHandler?(assetGroups)
@@ -84,12 +117,9 @@ extension GroupedAssetListController {
     self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contentType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [], updatableContactsGroup: [])
     self.navigationController?.popViewController(animated: true)
   }
-}
-
-extension GroupedAssetListController {
   
   @available(iOS 14.0, *)
-  func dropDownSetup() {
+  func setupDropDown() {
     let menuItems = getDropDownItems()
     let menu = performMenu(from: menuItems)
     navigationBar.rightBarButtonItem.menu = menu
@@ -144,44 +174,6 @@ extension GroupedAssetListController {
     popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
     self.present(dropDownViewController, animated: true, completion: nil)
   }
-}
-
-extension GroupedAssetListController: SelectDropDownMenuDelegate {
-  
-  func handleDropDownMenu(_ item: MenuItemType) {
-    switch item {
-    case .select, .deselect:
-      self.handleSelectAll(of: item)
-    case .delete:
-      self.deleteSelectedAssets()
-    default:
-      return
-    }
-  }
-  
-  private func handleSelectAll(of type: MenuItemType) {
-    
-    self.subscriptionManagger.purchasePremiumHandler { status in
-      switch status {
-      case .lifetime, .purchasedPremium:
-        self.shouldSelectAllAssetsInSections(type != .select)
-      case .nonPurchased:
-        var limitType: LimitAccessType {
-          return self.contentType == .userPhoto ? .selectAllPhotos : .selectAllVideos
-        }
-        let asssetsCount = self.assetGroups.map({$0.assets}).joined().count - self.assetGroups.count
-        
-        if asssetsCount < limitType.selectAllLimit {
-          self.shouldSelectAllAssetsInSections(type != .select)
-        } else {
-          self.subscriptionManagger.limitVersionActionHandler(of: limitType, at: self)
-        }
-      }
-    }
-  }
-}
-
-extension GroupedAssetListController {
   
   private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
     
@@ -199,9 +191,6 @@ extension GroupedAssetListController {
     viewController.groupSelectionDelegate = self
     self.navigationController?.pushViewController(viewController, animated: true)
   }
-}
-
-extension GroupedAssetListController {
   
   private func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) -> ConcurrentProcessOperation {
     
@@ -410,86 +399,59 @@ extension GroupedAssetListController {
       self.handleDeleteAssetsButton()
     }
   }
-}
-
-extension GroupedAssetListController: PhotoCellDelegate {
   
-  func didShowFullScreenPHasset(at cell: PhotoCell) {
-    guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
-    self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+  private func setupCollectionView() {
+    
+    self.collectionViewFlowLayout.delegate = self
+    self.collectionView.dataSource = self
+    self.collectionView.delegate = self
+    
+    self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
+                                       bundle: nil),
+                                 forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
+    
+    self.collectionView.register(UINib(nibName: C.identifiers.xibs.groupHeader,
+                                       bundle: nil),
+                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                 withReuseIdentifier: C.identifiers.views.groupHeaderView)
+    
+    self.collectionView.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 5, right: 10)
+    self.collectionViewFlowLayout.fixedDivisionCount = 4
+    self.collectionViewFlowLayout.itemSpacing = 0
+    self.collectionView.collectionViewLayout = collectionViewFlowLayout
+    self.collectionView.allowsMultipleSelection = true
+    self.collectionView.reloadData()
   }
   
-  func didSelect(cell: PhotoCell) {
-    guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+  private func setup(_ cell: PhotoCell, at indexPath: IndexPath) {
     
-    let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+    let asset = assetGroups[indexPath.section].assets[indexPath.row]
+    cell.collectionType = self.collectionType
+    cell.delegate = self
+    cell.indexPath = indexPath
+    cell.tag = indexPath.section * 1000 + indexPath.row
+    cell.cellMediaType = self.mediaType
+    cell.cellContentType = self.contentType
+    let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
+    cell.loadThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
+    cell.setupUI()
+    cell.setupAppearance()
+    cell.setupSelectButton(by: self.mediaType)
     
-    if cell.isSelected {
-      self.collectionView.deselectItem(at: indexPath, animated: true)
-      self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-      if self.selectedAssets.contains(phasset) {
-        self.selectedAssets = self.selectedAssets.filter({$0 != phasset})
-      }
+    if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
+      cell.isSelected = true
     } else {
-      self.subscriptionManagger.purchasePremiumHandler { status in
-        switch status {
-        case .lifetime, .purchasedPremium:
-          self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-          self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-          if !self.selectedAssets.contains(phasset) {
-            self.selectedAssets.append(phasset)
-          }
-        case .nonPurchased:
-          var limitCount: Int {
-            switch self.contentType {
-            case .userPhoto:
-              return LimitAccessType.selectAllPhotos.selectAllLimit
-            default:
-              return LimitAccessType.selectAllVideos.selectAllLimit
-            }
-          }
-          
-          var accesstype: LimitAccessType {
-            switch self.contentType {
-            case .userPhoto:
-              return .selectPhotos
-            default:
-              return .selectVideo
-            }
-          }
-          
-          if self.collectionView.indexPathsForSelectedItems?.count == limitCount {
-            self.subscriptionManagger.limitVersionActionHandler(of: accesstype, at: self)
-          } else {
-            self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-            if !self.selectedAssets.contains(phasset) {
-              self.selectedAssets.append(phasset)
-            }
-          }
-        }
-      }
+      cell.isSelected = false
     }
-    self.handleActionButtons(indexPath: indexPath)
+    cell.checkIsSelected()
   }
-}
-
-extension GroupedAssetListController: GroupSelectableAssetsDelegate {
   
-  func didSelect(selectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup]) {
-    
-    self.assetGroups = phassetsGroups
-    
-    if self.assetGroups.isEmpty {
-      didTapBackSingleCleanActionButton()
-    } else {
-      self.collectionView.reloadDataWitoutAnimation()
-      self.handleSelected(for: selectedIndexPath) {}
-    }
+  public func setupHeder(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
+    view.mediaContentType = self.contentType
+    view.deleteSelectedButton.contentType = self.contentType
+    view.setupUI()
+    view.setGroupDate(self.assetGroups[indexPath.section].creationDate)
   }
-}
-
-extension GroupedAssetListController {
   
   private func checkForSelectedSection() {
     
@@ -593,9 +555,6 @@ extension GroupedAssetListController {
       isDeepCleaningSelectableFlow ? didTapBackDeepCleanActionButton() : didTapBackSingleCleanActionButton()
     }
   }
-}
-
-extension GroupedAssetListController {
   
   private func getIndexPathInSectionWithoutFirst(section: Int) -> [IndexPath] {
     let cellsCountInSection = self.collectionView.numberOfItems(inSection: section)
@@ -612,9 +571,6 @@ extension GroupedAssetListController {
     }
     return cells
   }
-}
-
-extension GroupedAssetListController {
   
   private func handleSelectAllButtonSection(_ indexPath: IndexPath) {
     
@@ -654,6 +610,413 @@ extension GroupedAssetListController {
       self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
     }
   }
+  
+  private func showDeleteConfirmAlert() {
+    
+    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedAssets.count)) {
+      self.deleteSelectedAssets()
+    }
+  }
+  
+  private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
+    
+    let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { success in
+      if !success {
+        U.delay(1) {
+          self.progressAlertController.closeProgressAnimatedController()
+          U.delay(1) {
+            ErrorHandler.shared.showDeleteAlertError(self.contentType == .userVideo ? .errorDeleteVideo : .errorDeletePhoto)
+          }
+        }
+      }
+      completionHandler(success)
+    }
+    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: assets.count)) {
+      let type: ProgressAlertType = .progressDeleteAlertType(self.contentType)
+      self.progressAlertController.showSimpleProgressAlerControllerBar(of: type, from: self)
+      U.delay(1) {
+        self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
+      }
+    }
+  }
+  
+  /// `delete selected phassets from bottom action`
+  private func deleteSelectedAssets() {
+    
+    guard let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems else { return }
+    
+    let selectedPhassets: [PHAsset] = selectedIndexPaths.map({self.assetGroups[$0.section].assets[$0.row]})
+    
+    guard !selectedPhassets.isEmpty else { return }
+    
+    var sectionsOperation = self.assetGroups.enumerated().filter({
+      $0.element.assets.intersects(with: selectedPhassets)
+    }).map({$0.offset})
+    
+    let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+    progressAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
+    
+    let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedPhassets) { success in
+      U.UI {
+        if success {
+          
+          var removableSections: [Int] = []
+          var updatedAssetsGroups: [PhassetGroup] = self.assetGroups
+          
+          let _: [PhassetGroup] = sectionsOperation.map({
+            let assets = self.assetGroups[$0].assets.subtracting(selectedPhassets)
+            assets.count == 1 ? removableSections.append($0) : ()
+            updatedAssetsGroups[$0].assets = assets.count == 1 ? [] : assets
+            return updatedAssetsGroups[$0]
+          })
+          
+          sectionsOperation = sectionsOperation.subtracting(removableSections)
+          let _ = updatedAssetsGroups.remove(elementsAtIndices: removableSections)
+          
+          self.collectionView.performBatchUpdates {
+            self.collectionView.deleteItems(at: selectedIndexPaths)
+            self.collectionView.deleteSections(IndexSet(removableSections))
+            self.assetGroups = updatedAssetsGroups
+          } completion: { _ in
+            U.delay(1) {
+              self.reloadDataAfterRefactor()
+              self.progressAlertController.closeProgressAnimatedController()
+            }
+          }
+        } else {
+          U.delay(1) {
+            self.progressAlertController.closeProgressAnimatedController()
+          }
+        }
+      }
+    }
+    
+    U.delay(1) {
+      self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
+    }
+  }
+  
+  private func deleteAsset(at indexPath: IndexPath) {
+    
+    let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+    
+    self.showDelecteConfirmAlert(for: [phasset]) { success in
+      U.UI {
+        if success {
+          self.selectedAssets.removeAll(phasset)
+          
+          self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
+          
+          let oldGropsValue = self.assetGroups.count
+          let newGroupsValue = self.assetGroups.filter({$0.assets.count != 1})
+          if oldGropsValue != newGroupsValue.count {
+            for asset in self.assetGroups[indexPath.section].assets {
+              self.selectedAssets.removeAll(asset)
+            }
+            self.collectionView.performBatchUpdates {
+              self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+              self.assetGroups.remove(at: indexPath.section)
+              self.assetGroups = newGroupsValue
+            } completion: { _ in
+              U.delay(1) {
+                self.handleActionButtons()
+                self.progressAlertController.closeProgressAnimatedController()
+              }
+            }
+          } else {
+            self.collectionView.performBatchUpdates {
+              self.collectionView.deleteItems(at: [indexPath])
+              self.assetGroups = newGroupsValue
+            } completion: { _ in
+              U.delay(1) {
+                self.handleActionButtons(indexPath: indexPath)
+                self.progressAlertController.closeProgressAnimatedController()
+              }
+            }
+          }
+          if indexPath.row == 0 {
+            self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
+          }
+        }
+      }
+    }
+  }
+  
+  private func onDeleteAllSelectedInSectionButtonTapped(for sectionHeader: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
+    
+    guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+    
+    let indexPathOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
+    
+    let selectedIndexPathsInSection = selectedIndexPath.intersection(with: indexPathOfSection)
+    let selectedIndixes = selectedIndexPathsInSection.map({$0.row})
+    
+    if !selectedIndexPathsInSection.isEmpty {
+      let changedGroupsPHAssets = assetGroups[indexPath.section].assets
+      let phassets = selectedIndixes.map({changedGroupsPHAssets[$0]})
+      
+      if !phassets.isEmpty {
+        self.showDelecteConfirmAlert(for: phassets) { success in
+          
+          guard success else {return }
+          
+          self.selectedAssets = self.selectedAssets.filter({!phassets.contains($0)})
+          
+          U.UI {
+            if phassets.count == indexPathOfSection.count {
+              self.assetGroups.remove(at: indexPath.section)
+              self.collectionView.performBatchUpdates {
+                self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+              } completion: { _ in
+                U.delay(1) {
+                  self.handleSelectAllButtonSection(indexPath)
+                  self.checkForSelectedSection()
+                  self.handleActionButtons()
+                  self.progressAlertController.closeProgressAnimatedController()
+                }
+              }
+            } else {
+              self.assetGroups[indexPath.section].assets = self.assetGroups[indexPath.section].assets.filter({!phassets.contains($0)})
+              self.collectionView.performBatchUpdates {
+                self.collectionView.deleteItems(at: selectedIndexPathsInSection)
+              } completion: { _ in
+                U.delay(1) {
+                  self.handleSelectAllButtonSection(indexPath)
+                  self.checkForSelectedSection()
+                  self.handleActionButtons()
+                  self.progressAlertController.closeProgressAnimatedController()
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
+    
+    let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+    let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+    let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
+    
+    let fullScreenPreviewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .fullPreview), image: fullScreenPreviewActionImage) { _ in
+      self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+    }
+    
+    let setAsBestAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .setAsBest), image: setAsBestActionImage) { _ in
+      self.setAsBest(asset: asset, at: indexPath)
+    }
+    
+    let deleteAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) { _ in
+      self.deleteAsset(at: indexPath)
+    }
+    
+    var menu: UIMenu {
+      switch indexPath.row {
+      case 0:
+        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+      default:
+        return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+      }
+    }
+    return menu
+  }
+  
+  private func handleDeleteAssetsButton() {
+    
+    U.UI { [self] in
+      guard !isDeepCleaningSelectableFlow else {
+        bottomMenuHeightConstraint.constant = 0
+        return
+      }
+      
+      var bottomBarDefaultHeight: CGFloat {
+        switch Advertisement.manager.advertisementBannerStatus {
+        case .active:
+          return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+        case .hiden:
+          return AppDimensions.BottomButton.bottomBarDefaultHeight
+        }
+      }
+      
+      /// `bottom menu`
+      bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? bottomBarDefaultHeight  : 0
+      
+      bottomButtonBarView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedAssets.count))")
+      
+      U.animate(0.5) {
+        self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+        
+        self.photoContentContainerView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
+      }
+    }
+  }
+  
+  @objc func advertisementDidChange() {
+    self.handleDeleteAssetsButton()
+  }
+  
+  private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
+    
+    guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell else { return }
+    
+    let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
+    
+    cell.isSelected ? cell.delegate?.didSelect(cell: cell) : ()
+    
+    assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
+    collectionView.performBatchUpdates {
+      collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
+    } completion: { _ in
+      self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
+      self.handleActionButtons(indexPath: indexPath)
+    }
+  }
+  
+  private func updateCachedAssets() {
+    
+    guard isViewLoaded && view.window != nil else { return }
+    
+    let visibleRect = CGRect(origin: collectionView!.contentOffset, size: collectionView!.bounds.size)
+    let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
+    
+    let delta = abs(preheatRect.midY - previousPreheatRect.midY)
+    guard delta > view.bounds.height / 3 else { return }
+    
+    let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
+    let addedAssets = addedRects
+      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+      .compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
+    let _ = removedRects
+      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+      .compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
+    
+    let options = PHImageRequestOptions()
+    options.isNetworkAccessAllowed = true
+    let size = CGSize(width: 300, height: 300)
+    
+    prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+    previousPreheatRect = preheatRect
+  }
+  
+  private func resetCachedAssets() {
+    prefetchCacheImageManager.stopCachingImagesForAllAssets()
+    previousPreheatRect = .zero
+  }
+}
+
+extension GroupedAssetListController: SelectDropDownMenuDelegate {
+  
+  func handleDropDownMenu(_ item: MenuItemType) {
+    switch item {
+    case .select, .deselect:
+      self.handleSelectAll(of: item)
+    case .delete:
+      self.deleteSelectedAssets()
+    default:
+      return
+    }
+  }
+  
+  private func handleSelectAll(of type: MenuItemType) {
+    
+    self.subscriptionManagger.purchasePremiumHandler { status in
+      switch status {
+      case .lifetime, .purchasedPremium:
+        self.shouldSelectAllAssetsInSections(type != .select)
+      case .nonPurchased:
+        var limitType: LimitAccessType {
+          return self.contentType == .userPhoto ? .selectAllPhotos : .selectAllVideos
+        }
+        let asssetsCount = self.assetGroups.map({$0.assets}).joined().count - self.assetGroups.count
+        
+        if asssetsCount < limitType.selectAllLimit {
+          self.shouldSelectAllAssetsInSections(type != .select)
+        } else {
+          self.subscriptionManagger.limitVersionActionHandler(of: limitType, at: self)
+        }
+      }
+    }
+  }
+}
+
+extension GroupedAssetListController: PhotoCellDelegate {
+  
+  func didShowFullScreenPHasset(at cell: PhotoCell) {
+    guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+    self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+  }
+  
+  func didSelect(cell: PhotoCell) {
+    guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+    
+    let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+    
+    if cell.isSelected {
+      self.collectionView.deselectItem(at: indexPath, animated: true)
+      self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+      if self.selectedAssets.contains(phasset) {
+        self.selectedAssets = self.selectedAssets.filter({$0 != phasset})
+      }
+    } else {
+      self.subscriptionManagger.purchasePremiumHandler { status in
+        switch status {
+        case .lifetime, .purchasedPremium:
+          self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+          self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+          if !self.selectedAssets.contains(phasset) {
+            self.selectedAssets.append(phasset)
+          }
+        case .nonPurchased:
+          var limitCount: Int {
+            switch self.contentType {
+            case .userPhoto:
+              return LimitAccessType.selectAllPhotos.selectAllLimit
+            default:
+              return LimitAccessType.selectAllVideos.selectAllLimit
+            }
+          }
+          
+          var accesstype: LimitAccessType {
+            switch self.contentType {
+            case .userPhoto:
+              return .selectPhotos
+            default:
+              return .selectVideo
+            }
+          }
+          
+          if self.collectionView.indexPathsForSelectedItems?.count == limitCount {
+            self.subscriptionManagger.limitVersionActionHandler(of: accesstype, at: self)
+          } else {
+            self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+            if !self.selectedAssets.contains(phasset) {
+              self.selectedAssets.append(phasset)
+            }
+          }
+        }
+      }
+    }
+    self.handleActionButtons(indexPath: indexPath)
+  }
+}
+
+extension GroupedAssetListController: GroupSelectableAssetsDelegate {
+  
+  func didSelect(selectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup]) {
+    
+    self.assetGroups = phassetsGroups
+    
+    if self.assetGroups.isEmpty {
+      didTapBackSingleCleanActionButton()
+    } else {
+      self.collectionView.reloadDataWitoutAnimation()
+      self.handleSelected(for: selectedIndexPath) {}
+    }
+  }
 }
 
 extension GroupedAssetListController: NavigationBarDelegate {
@@ -671,62 +1034,6 @@ extension GroupedAssetListController: BottomActionButtonDelegate {
   
   func didTapActionButton() {
     showDeleteConfirmAlert()
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func setupCollectionView() {
-    
-    self.collectionViewFlowLayout.delegate = self
-    self.collectionView.dataSource = self
-    self.collectionView.delegate = self
-    
-    self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
-                                       bundle: nil),
-                                 forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
-    
-    self.collectionView.register(UINib(nibName: C.identifiers.xibs.groupHeader,
-                                       bundle: nil),
-                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                 withReuseIdentifier: C.identifiers.views.groupHeaderView)
-    
-    self.collectionView.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 5, right: 10)
-    self.collectionViewFlowLayout.fixedDivisionCount = 4
-    self.collectionViewFlowLayout.itemSpacing = 0
-    self.collectionView.collectionViewLayout = collectionViewFlowLayout
-    self.collectionView.allowsMultipleSelection = true
-    self.collectionView.reloadData()
-  }
-  
-  private func setup(_ cell: PhotoCell, at indexPath: IndexPath) {
-    
-    let asset = assetGroups[indexPath.section].assets[indexPath.row]
-    cell.collectionType = self.collectionType
-    cell.delegate = self
-    cell.indexPath = indexPath
-    cell.tag = indexPath.section * 1000 + indexPath.row
-    cell.cellMediaType = self.mediaType
-    cell.cellContentType = self.contentType
-    let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
-    cell.loadThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
-    cell.setupUI()
-    cell.setupAppearance()
-    cell.setupSelectButton(by: self.mediaType)
-    
-    if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
-      cell.isSelected = true
-    } else {
-      cell.isSelected = false
-    }
-    cell.checkIsSelected()
-  }
-  
-  public func setupHeder(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
-    view.mediaContentType = self.contentType
-    view.deleteSelectedButton.contentType = self.contentType
-    view.setupUI()
-    view.setGroupDate(self.assetGroups[indexPath.section].creationDate)
   }
 }
 
@@ -907,319 +1214,6 @@ extension GroupedAssetListController: UICollectionViewDelegate, UICollectionView
   }
 }
 
-extension GroupedAssetListController {
-  
-  private func showDeleteConfirmAlert() {
-    
-    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedAssets.count)) {
-      self.deleteSelectedAssets()
-    }
-  }
-  
-  private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
-    
-    let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { success in
-      if !success {
-        U.delay(1) {
-          self.progressAlertController.closeProgressAnimatedController()
-          U.delay(1) {
-            ErrorHandler.shared.showDeleteAlertError(self.contentType == .userVideo ? .errorDeleteVideo : .errorDeletePhoto)
-          }
-        }
-      }
-      completionHandler(success)
-    }
-    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: assets.count)) {
-      let type: ProgressAlertType = .progressDeleteAlertType(self.contentType)
-      self.progressAlertController.showSimpleProgressAlerControllerBar(of: type, from: self)
-      U.delay(1) {
-        self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
-      }
-    }
-  }
-  
-  /// `delete selected phassets from bottom action`
-  private func deleteSelectedAssets() {
-    
-    guard let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems else { return }
-    
-    let selectedPhassets: [PHAsset] = selectedIndexPaths.map({self.assetGroups[$0.section].assets[$0.row]})
-    
-    guard !selectedPhassets.isEmpty else { return }
-    
-    var sectionsOperation = self.assetGroups.enumerated().filter({
-      $0.element.assets.intersects(with: selectedPhassets)
-    }).map({$0.offset})
-    
-    let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
-    progressAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
-    
-    let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedPhassets) { success in
-      U.UI {
-        if success {
-          
-          var removableSections: [Int] = []
-          var updatedAssetsGroups: [PhassetGroup] = self.assetGroups
-          
-          let _: [PhassetGroup] = sectionsOperation.map({
-            let assets = self.assetGroups[$0].assets.subtracting(selectedPhassets)
-            assets.count == 1 ? removableSections.append($0) : ()
-            updatedAssetsGroups[$0].assets = assets.count == 1 ? [] : assets
-            return updatedAssetsGroups[$0]
-          })
-          
-          sectionsOperation = sectionsOperation.subtracting(removableSections)
-          let _ = updatedAssetsGroups.remove(elementsAtIndices: removableSections)
-          
-          self.collectionView.performBatchUpdates {
-            self.collectionView.deleteItems(at: selectedIndexPaths)
-            self.collectionView.deleteSections(IndexSet(removableSections))
-            self.assetGroups = updatedAssetsGroups
-          } completion: { _ in
-            U.delay(1) {
-              self.reloadDataAfterRefactor()
-              self.progressAlertController.closeProgressAnimatedController()
-            }
-          }
-        } else {
-          U.delay(1) {
-            self.progressAlertController.closeProgressAnimatedController()
-          }
-        }
-      }
-    }
-    
-    U.delay(1) {
-      self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
-    }
-  }
-  
-  private func deleteAsset(at indexPath: IndexPath) {
-    
-    let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
-    
-    self.showDelecteConfirmAlert(for: [phasset]) { success in
-      U.UI {
-        if success {
-          self.selectedAssets.removeAll(phasset)
-          
-          self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
-          
-          let oldGropsValue = self.assetGroups.count
-          let newGroupsValue = self.assetGroups.filter({$0.assets.count != 1})
-          if oldGropsValue != newGroupsValue.count {
-            for asset in self.assetGroups[indexPath.section].assets {
-              self.selectedAssets.removeAll(asset)
-            }
-            self.collectionView.performBatchUpdates {
-              self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-              self.assetGroups.remove(at: indexPath.section)
-              self.assetGroups = newGroupsValue
-            } completion: { _ in
-              U.delay(1) {
-                self.handleActionButtons()
-                self.progressAlertController.closeProgressAnimatedController()
-              }
-            }
-          } else {
-            self.collectionView.performBatchUpdates {
-              self.collectionView.deleteItems(at: [indexPath])
-              self.assetGroups = newGroupsValue
-            } completion: { _ in
-              U.delay(1) {
-                self.handleActionButtons(indexPath: indexPath)
-                self.progressAlertController.closeProgressAnimatedController()
-              }
-            }
-          }
-          if indexPath.row == 0 {
-            self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
-          }
-        }
-      }
-    }
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func onDeleteAllSelectedInSectionButtonTapped(for sectionHeader: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
-    
-    guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
-    
-    let indexPathOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
-    
-    let selectedIndexPathsInSection = selectedIndexPath.intersection(with: indexPathOfSection)
-    let selectedIndixes = selectedIndexPathsInSection.map({$0.row})
-    
-    if !selectedIndexPathsInSection.isEmpty {
-      let changedGroupsPHAssets = assetGroups[indexPath.section].assets
-      let phassets = selectedIndixes.map({changedGroupsPHAssets[$0]})
-      
-      if !phassets.isEmpty {
-        self.showDelecteConfirmAlert(for: phassets) { success in
-          
-          guard success else {return }
-          
-          self.selectedAssets = self.selectedAssets.filter({!phassets.contains($0)})
-          
-          U.UI {
-            if phassets.count == indexPathOfSection.count {
-              self.assetGroups.remove(at: indexPath.section)
-              self.collectionView.performBatchUpdates {
-                self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-              } completion: { _ in
-                U.delay(1) {
-                  self.handleSelectAllButtonSection(indexPath)
-                  self.checkForSelectedSection()
-                  self.handleActionButtons()
-                  self.progressAlertController.closeProgressAnimatedController()
-                }
-              }
-            } else {
-              self.assetGroups[indexPath.section].assets = self.assetGroups[indexPath.section].assets.filter({!phassets.contains($0)})
-              self.collectionView.performBatchUpdates {
-                self.collectionView.deleteItems(at: selectedIndexPathsInSection)
-              } completion: { _ in
-                U.delay(1) {
-                  self.handleSelectAllButtonSection(indexPath)
-                  self.checkForSelectedSection()
-                  self.handleActionButtons()
-                  self.progressAlertController.closeProgressAnimatedController()
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
-    
-    let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
-    let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
-    let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
-    
-    let fullScreenPreviewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .fullPreview), image: fullScreenPreviewActionImage) { _ in
-      self.showFullScreenAssetPreviewAndFocus(at: indexPath)
-    }
-    
-    let setAsBestAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .setAsBest), image: setAsBestActionImage) { _ in
-      self.setAsBest(asset: asset, at: indexPath)
-    }
-    
-    let deleteAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) { _ in
-      self.deleteAsset(at: indexPath)
-    }
-    
-    var menu: UIMenu {
-      switch indexPath.row {
-      case 0:
-        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
-      default:
-        return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
-      }
-    }
-    return menu
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func handleDeleteAssetsButton() {
-    
-    U.UI { [self] in
-      guard !isDeepCleaningSelectableFlow else {
-        bottomMenuHeightConstraint.constant = 0
-        return
-      }
-      
-      var bottomBarDefaultHeight: CGFloat {
-        switch Advertisement.manager.advertisementBannerStatus {
-        case .active:
-          return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
-        case .hiden:
-          return AppDimensions.BottomButton.bottomBarDefaultHeight
-        }
-      }
-      
-      /// `bottom menu`
-      bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? bottomBarDefaultHeight  : 0
-      
-      bottomButtonBarView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedAssets.count))")
-      
-      U.animate(0.5) {
-        self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
-        
-        self.photoContentContainerView.layoutIfNeeded()
-        self.view.layoutIfNeeded()
-      }
-    }
-  }
-  
-  @objc func advertisementDidChange() {
-    self.handleDeleteAssetsButton()
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
-    
-    guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCell else { return }
-    
-    let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
-    
-    cell.isSelected ? cell.delegate?.didSelect(cell: cell) : ()
-    
-    assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
-    collectionView.performBatchUpdates {
-      collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
-    } completion: { _ in
-      self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
-      self.handleActionButtons(indexPath: indexPath)
-    }
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func updateCachedAssets() {
-    
-    guard isViewLoaded && view.window != nil else { return }
-    
-    let visibleRect = CGRect(origin: collectionView!.contentOffset, size: collectionView!.bounds.size)
-    let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
-    
-    let delta = abs(preheatRect.midY - previousPreheatRect.midY)
-    guard delta > view.bounds.height / 3 else { return }
-    
-    let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
-    let addedAssets = addedRects
-      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
-      .compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
-    let _ = removedRects
-      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
-      .compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
-    
-    let options = PHImageRequestOptions()
-    options.isNetworkAccessAllowed = true
-    let size = CGSize(width: 300, height: 300)
-    
-    prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: size, contentMode: .aspectFill, options: options)
-    previousPreheatRect = preheatRect
-  }
-  
-  private func resetCachedAssets() {
-    prefetchCacheImageManager.stopCachingImagesForAllAssets()
-    previousPreheatRect = .zero
-  }
-}
-
 extension GroupedAssetListController: UIPopoverPresentationControllerDelegate {
   
   func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
@@ -1271,45 +1265,6 @@ extension GroupedAssetListController: UIScrollViewDelegate {
       addedHandler(newRect)
       removedHandler(oldRect)
     }
-  }
-}
-
-extension GroupedAssetListController {
-  
-  private func setupUI() {
-    
-    let bottomButtonImageSize = CGSize(width: 18, height: 24)
-    switch mediaType {
-    case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
-      self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
-    default:
-      self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
-    }
-  }
-  
-  private func setupNavigation() {
-    
-    navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
-    if #available(iOS 14.0, *) {
-      dropDownSetup()
-    }
-    navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
-                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
-                                  contentType: self.contentType,
-                                  leftButtonTitle: nil,
-                                  rightButtonTitle: nil)
-  }
-  
-  private func setupObservers() {
-    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
-  }
-  
-  private func setupDelegate() {
-    
-    scrollView.delegate = self
-    navigationBar.delegate = self
-    bottomButtonBarView.delegate = self
   }
 }
 

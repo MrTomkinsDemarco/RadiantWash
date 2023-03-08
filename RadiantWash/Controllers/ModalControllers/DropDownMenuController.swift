@@ -37,14 +37,8 @@ class DropDownMenuController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupUI()
     setupTableView()
   }
-}
-
-extension DropDownMenuController {
-  
-  private func setupUI() {}
   
   private func setupTableView() {
     
@@ -81,6 +75,19 @@ extension DropDownMenuController {
     }
     preferredContentSize = CGSize(width: viewWidth, height: viewHeight)
   }
+  
+  private func checkIndexPosition(from indexPath: IndexPath, numberOfRows: Int) -> RowPosition {
+    
+    if indexPath.row == 0 {
+      return .top
+    } else if indexPath.row + 1 < numberOfRows {
+      return .middle
+    } else if indexPath.row + 1 == numberOfRows {
+      return .bottom
+    } else {
+      return .none
+    }
+  }
 }
 
 extension DropDownMenuController: UITableViewDataSource, UITableViewDelegate {
@@ -107,21 +114,5 @@ extension DropDownMenuController: UITableViewDataSource, UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 35
-  }
-}
-
-extension DropDownMenuController {
-  
-  private func checkIndexPosition(from indexPath: IndexPath, numberOfRows: Int) -> RowPosition {
-    
-    if indexPath.row == 0 {
-      return .top
-    } else if indexPath.row + 1 < numberOfRows {
-      return .middle
-    } else if indexPath.row + 1 == numberOfRows {
-      return .bottom
-    } else {
-      return .none
-    }
   }
 }

@@ -29,9 +29,6 @@ class PHAssetLocationViewModel {
     self.phassets = phasset
     self.sortSections(by: self.phassets)
   }
-}
-
-extension PHAssetLocationViewModel {
   
   private func sortSections(by phassets: [PHAsset]) {
     
@@ -47,9 +44,6 @@ extension PHAssetLocationViewModel {
     })
     self.phassetsSection = sortedSections
   }
-}
-
-extension PHAssetLocationViewModel {
   
   public func numberOfSection() -> Int {
     return phassetsSection.count

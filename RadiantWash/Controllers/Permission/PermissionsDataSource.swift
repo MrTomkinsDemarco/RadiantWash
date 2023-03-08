@@ -22,22 +22,6 @@ class PermissionsDataSource: NSObject {
   init(permissionViewModel: PermissionViewModel) {
     self.permissionViewModel = permissionViewModel
   }
-}
-
-extension PermissionsDataSource: PermissionsActionsDelegate {
-  
-  func didTapContinueButton() {
-    self.handleContinueButton()
-  }
-  
-  func permissionActionChange(at cell: PermissionCell) {
-    
-    guard let permission = cell.permission else { return }
-    self.permissionActionDidChange(cell, permission)
-  }
-}
-
-extension PermissionsDataSource {
   
   private func setupPermission(cell: PermissionCell, at indexPath: IndexPath) {
     let permission = self.permissionViewModel.getPermission(at: indexPath)
@@ -53,6 +37,19 @@ extension PermissionsDataSource {
     cell.setupUI()
     cell.setupAppearance()
     cell.delegate = self
+  }
+}
+
+extension PermissionsDataSource: PermissionsActionsDelegate {
+  
+  func didTapContinueButton() {
+    self.handleContinueButton()
+  }
+  
+  func permissionActionChange(at cell: PermissionCell) {
+    
+    guard let permission = cell.permission else { return }
+    self.permissionActionDidChange(cell, permission)
   }
 }
 

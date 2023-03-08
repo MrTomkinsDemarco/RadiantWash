@@ -84,171 +84,6 @@ class DateSelectorController: UIViewController {
     mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
   }
   
-  @IBAction func didTapSetPickerAutoSettingsActionButton(_ sender: Any) {
-    
-    self.checkForEnableAutoPicker()
-    self.dateSelectedType = autoPickCheckIsOn ? .lastDeepCleanDateSelectable : .lowerDateSelectable
-    U.delay(0.5) {
-      self.checkLastDeepCleanDate()
-    }
-  }
-}
-
-extension DateSelectorController {
-  
-  public func setPicker(_ value: Date) {
-    U.UI {
-      self.monthDatePicker.setCurrentDate(value, animated: true)
-      self.yearDatePicker.setCurrentDate(value, animated: true)
-    }
-  }
-  
-  private func setTheDate(month: Int, year: Int, dateType: PickerDateSelectType) {
-    
-    switch dateType{
-    case .lowerDateSelectable:
-      self.currentPickUpDate = U.getDateFromComponents(day: 1, month: month, year: year)
-    case .upperDateSelectable:
-      let endOfTheMonth = U.numbersOfDays(at: month, in: year)
-      let date = U.getDateFromComponents(day: endOfTheMonth, month: month, year: year)
-      self.currentPickUpDate = date
-    case .lastDeepCleanDateSelectable:
-      self.currentPickUpDate = dateType.rawValue
-    case .currentDateSelectable:
-      self.currentPickUpDate = dateType.rawValue
-    default:
-      return
-    }
-  }
-  
-  private func checkLastDeepCleanDate() {
-    if self.dateSelectedType.rawValue != S.lowerBoundSavedDate {
-      setTheDate(month: 0, year: 0, dateType: .lastDeepCleanDateSelectable)
-      self.setPicker(self.dateSelectedType.rawValue)
-    } else {
-      self.dateSelectedType = .lowerDateSelectable
-      self.setPicker(self.dateSelectedType.rawValue)
-      self.setDisableDateAutoPicker()
-    }
-  }
-  
-  private func checkForEnableAutoPicker() {
-    autoPickCheckIsOn = !autoPickCheckIsOn
-    autoDatePickImageView.isHidden = !autoPickCheckIsOn
-  }
-  
-  private func setDisableDateAutoPicker() {
-    autoPickCheckIsOn = false
-    autoDatePickImageView.isHidden = true
-  }
-  
-  
-  public func checkTheDate(with dateSelectType: PickerDateSelectType, completion: @escaping () -> Void) {
-    
-    switch dateSelectType {
-    case .lowerDateSelectable:
-      if let date = currentPickUpDate {
-        if date > S.upperBoundSavedDate {
-          self.downgradeLower()
-        } else if date.getYear() == S.upperBoundSavedDate.getYear(), date.getMonth() == S.upperBoundSavedDate.getMonth() {
-          self.downgradeLower()
-        } else {
-          completion()
-        }
-      }
-    case .upperDateSelectable:
-      if let date = currentPickUpDate {
-        if date < S.lowerBoundSavedDate {
-          self.downgradeUpper()
-        } else if date.getYear() == S.lowerBoundSavedDate.getYear(), date.getMonth() == S.lowerBoundSavedDate.getMonth() {
-          self.downgradeUpper()
-        } else {
-          completion()
-        }
-      }
-    case .lastDeepCleanDateSelectable:
-      self.checkLastDeepCleanDate()
-      completion()
-    default:
-      return
-    }
-  }
-  
-  private func downgradeLower() {
-    var month = S.upperBoundSavedDate.getMonth()
-    var year = S.upperBoundSavedDate.getYear()
-    
-    if month == 1 {
-      month = 12
-      year -= 1
-    } else {
-      month -= 1
-    }
-    
-    let newPickDate = U.getDateFromComponents(day: 1, month: month, year: year)
-    self.setPicker(newPickDate)
-  }
-  
-  private func downgradeUpper() {
-    var month = S.lowerBoundSavedDate.getMonth()
-    var year = S.lowerBoundSavedDate.getYear()
-    
-    if month == 12 {
-      month = 1
-      year += 1
-    } else {
-      month += 1
-    }
-    
-    let theLastDayOfSummer = Utils.numbersOfDays(at: month, in: year)
-    let newPickDate = U.getDateFromComponents(day: theLastDayOfSummer, month: month, year: year)
-    self.setPicker(newPickDate)
-  }
-  
-  private func closeDatePicker() {
-    self.dismiss(animated: true) {
-      if let date = self.currentPickUpDate {
-        self.selectedDateCompletion?(date)
-      }
-    }
-  }
-}
-
-extension DateSelectorController: StartingNavigationBarDelegate {
-  
-  func didTapLeftBarButtonItem(_ sender: UIButton) {}
-  
-  func didTapRightBarButtonItem(_ sender: UIButton) {
-    self.dismiss(animated: true, completion: nil)
-  }
-}
-
-extension DateSelectorController: SegmentDatePickerDelegate {
-  
-  func datePicker(_ segmentDatePicker: SegmentDatePicker, didSelect row: Int, in component: Int) {
-    
-    let month = monthDatePicker.currentDate.getMonth()
-    let year = yearDatePicker.currentDate.getYear()
-    self.setTheDate(month: month, year: year, dateType: self.dateSelectedType)
-    U.delay(1) {
-      self.checkTheDate(with: self.dateSelectedType) {
-        
-      }
-    }
-  }
-}
-
-extension DateSelectorController: BottomActionButtonDelegate {
-  
-  func didTapActionButton() {
-    self.checkTheDate(with: self.dateSelectedType) {
-      self.closeDatePicker()
-    }
-  }
-}
-
-extension DateSelectorController: Themeble {
-  
   private func setupUI() {
     
     var containerHeight: CGFloat {
@@ -396,6 +231,168 @@ extension DateSelectorController: Themeble {
     customNavBar.delegate = self
     bottomButtonView.delegate = self
   }
+  
+  public func setupPicker(_ value: Date) {
+    U.UI {
+      self.monthDatePicker.setCurrentDate(value, animated: true)
+      self.yearDatePicker.setCurrentDate(value, animated: true)
+    }
+  }
+  
+  private func setupTheDate(month: Int, year: Int, dateType: PickerDateSelectType) {
+    
+    switch dateType{
+    case .lowerDateSelectable:
+      self.currentPickUpDate = U.getDateFromComponents(day: 1, month: month, year: year)
+    case .upperDateSelectable:
+      let endOfTheMonth = U.numbersOfDays(at: month, in: year)
+      let date = U.getDateFromComponents(day: endOfTheMonth, month: month, year: year)
+      self.currentPickUpDate = date
+    case .lastDeepCleanDateSelectable:
+      self.currentPickUpDate = dateType.rawValue
+    case .currentDateSelectable:
+      self.currentPickUpDate = dateType.rawValue
+    default:
+      return
+    }
+  }
+  
+  private func checkLastDeepCleanDate() {
+    if self.dateSelectedType.rawValue != S.lowerBoundSavedDate {
+      setupTheDate(month: 0, year: 0, dateType: .lastDeepCleanDateSelectable)
+      self.setupPicker(self.dateSelectedType.rawValue)
+    } else {
+      self.dateSelectedType = .lowerDateSelectable
+      self.setupPicker(self.dateSelectedType.rawValue)
+      self.setupDisableDateAutoPicker()
+    }
+  }
+  
+  private func setupAutoPicker() {
+    autoPickCheckIsOn = !autoPickCheckIsOn
+    autoDatePickImageView.isHidden = !autoPickCheckIsOn
+  }
+  
+  private func setupDisableDateAutoPicker() {
+    autoPickCheckIsOn = false
+    autoDatePickImageView.isHidden = true
+  }
+  
+  
+  public func setupDate(with dateSelectType: PickerDateSelectType, completion: @escaping () -> Void) {
+    
+    switch dateSelectType {
+    case .lowerDateSelectable:
+      if let date = currentPickUpDate {
+        if date > S.upperBoundSavedDate {
+          self.downgradeLower()
+        } else if date.getYear() == S.upperBoundSavedDate.getYear(), date.getMonth() == S.upperBoundSavedDate.getMonth() {
+          self.downgradeLower()
+        } else {
+          completion()
+        }
+      }
+    case .upperDateSelectable:
+      if let date = currentPickUpDate {
+        if date < S.lowerBoundSavedDate {
+          self.downgradeUpper()
+        } else if date.getYear() == S.lowerBoundSavedDate.getYear(), date.getMonth() == S.lowerBoundSavedDate.getMonth() {
+          self.downgradeUpper()
+        } else {
+          completion()
+        }
+      }
+    case .lastDeepCleanDateSelectable:
+      self.checkLastDeepCleanDate()
+      completion()
+    default:
+      return
+    }
+  }
+  
+  private func downgradeLower() {
+    var month = S.upperBoundSavedDate.getMonth()
+    var year = S.upperBoundSavedDate.getYear()
+    
+    if month == 1 {
+      month = 12
+      year -= 1
+    } else {
+      month -= 1
+    }
+    
+    let newPickDate = U.getDateFromComponents(day: 1, month: month, year: year)
+    self.setupPicker(newPickDate)
+  }
+  
+  private func downgradeUpper() {
+    var month = S.lowerBoundSavedDate.getMonth()
+    var year = S.lowerBoundSavedDate.getYear()
+    
+    if month == 12 {
+      month = 1
+      year += 1
+    } else {
+      month += 1
+    }
+    
+    let theLastDayOfSummer = Utils.numbersOfDays(at: month, in: year)
+    let newPickDate = U.getDateFromComponents(day: theLastDayOfSummer, month: month, year: year)
+    self.setupPicker(newPickDate)
+  }
+  
+  private func closeDatePicker() {
+    self.dismiss(animated: true) {
+      if let date = self.currentPickUpDate {
+        self.selectedDateCompletion?(date)
+      }
+    }
+  }
+  
+  @IBAction func didTapSetPickerAutoSettingsActionButton(_ sender: Any) {
+    
+    self.setupAutoPicker()
+    self.dateSelectedType = autoPickCheckIsOn ? .lastDeepCleanDateSelectable : .lowerDateSelectable
+    U.delay(0.5) {
+      self.checkLastDeepCleanDate()
+    }
+  }
+}
+
+extension DateSelectorController: StartingNavigationBarDelegate {
+  
+  func didTapLeftBarButtonItem(_ sender: UIButton) {}
+  
+  func didTapRightBarButtonItem(_ sender: UIButton) {
+    self.dismiss(animated: true, completion: nil)
+  }
+}
+
+extension DateSelectorController: SegmentDatePickerDelegate {
+  
+  func datePicker(_ segmentDatePicker: SegmentDatePicker, didSelect row: Int, in component: Int) {
+    
+    let month = monthDatePicker.currentDate.getMonth()
+    let year = yearDatePicker.currentDate.getYear()
+    self.setupTheDate(month: month, year: year, dateType: self.dateSelectedType)
+    U.delay(1) {
+      self.setupDate(with: self.dateSelectedType) {
+        
+      }
+    }
+  }
+}
+
+extension DateSelectorController: BottomActionButtonDelegate {
+  
+  func didTapActionButton() {
+    self.setupDate(with: self.dateSelectedType) {
+      self.closeDatePicker()
+    }
+  }
+}
+
+extension DateSelectorController: Themeble {
   
   func setupAppearance() {
     

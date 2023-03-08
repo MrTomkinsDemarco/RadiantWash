@@ -25,7 +25,7 @@ class ExportContactsController: UIViewController {
   public var rightExportFileFormat: ExportContactsAvailibleFormat = .none
   
   public var selectExportFormatCompletion: ((_ selectedFormat: ExportContactsAvailibleFormat) -> Void)?
-  public var selectExtraOptionalOption: (() -> Void)?
+  public var selectOption: (() -> Void)?
   
   private var dissmissGestureRecognizer = UIPanGestureRecognizer()
   
@@ -51,21 +51,6 @@ class ExportContactsController: UIViewController {
       break
     }
   }
-  
-  @IBAction func didTapLeftActionButton(_ sender: Any) {
-    self.dismiss(animated: true) {
-      self.selectExportFormatCompletion?(self.leftExportFileFormat)
-    }
-  }
-  
-  @IBAction func didTapRightActionButton(_ sender: Any) {
-    self.dismiss(animated: true) {
-      self.selectExportFormatCompletion?(self.rightExportFileFormat)
-    }
-  }
-}
-
-extension ExportContactsController: Themeble {
   
   private func setupUI() {
     
@@ -99,20 +84,6 @@ extension ExportContactsController: Themeble {
     self.view.layoutIfNeeded()
   }
   
-  func setupAppearance() {
-    
-    self.view.backgroundColor = .clear
-    mainContainerView.backgroundColor = theme.backgroundColor
-    topShevronView.backgroundColor = theme.subTitleTextColor
-    controllerTitleTextLabel.textColor = theme.titleTextColor
-    leftButton.setTitleColor(theme.titleTextColor, for: .normal)
-    rightButton.setTitleColor(theme.titleTextColor, for: .normal)
-    bottomButtonView.buttonColor = theme.cellBackGroundColor
-    bottomButtonView.buttonTintColor = theme.secondaryTintColor
-    bottomButtonView.buttonTitleColor = theme.titleTextColor
-    bottomButtonView.updateColorsSettings()
-  }
-  
   private func setupDelegate() {
     
     bottomButtonView.delegate = self
@@ -125,6 +96,35 @@ extension ExportContactsController: Themeble {
     dissmissGestureRecognizer.cancelsTouchesInView = false
     animator.panGestureRecognizer.delegate = self
     self.view.addGestureRecognizer(dissmissGestureRecognizer)
+  }
+  
+  @IBAction func didTapLeftActionButton(_ sender: Any) {
+    self.dismiss(animated: true) {
+      self.selectExportFormatCompletion?(self.leftExportFileFormat)
+    }
+  }
+  
+  @IBAction func didTapRightActionButton(_ sender: Any) {
+    self.dismiss(animated: true) {
+      self.selectExportFormatCompletion?(self.rightExportFileFormat)
+    }
+  }
+}
+
+extension ExportContactsController: Themeble {
+  
+  func setupAppearance() {
+    
+    self.view.backgroundColor = .clear
+    mainContainerView.backgroundColor = theme.backgroundColor
+    topShevronView.backgroundColor = theme.subTitleTextColor
+    controllerTitleTextLabel.textColor = theme.titleTextColor
+    leftButton.setTitleColor(theme.titleTextColor, for: .normal)
+    rightButton.setTitleColor(theme.titleTextColor, for: .normal)
+    bottomButtonView.buttonColor = theme.cellBackGroundColor
+    bottomButtonView.buttonTintColor = theme.secondaryTintColor
+    bottomButtonView.buttonTitleColor = theme.titleTextColor
+    bottomButtonView.updateColorsSettings()
   }
 }
 
@@ -158,14 +158,14 @@ extension ExportContactsController: BottomActionButtonDelegate {
     
     if let backupViewController = segue.destination as? BackupContactsController {
       backupViewController.didSeceltCloseController = {
-        self.closeControllerWithCompletion()
+        self.closeController()
       }
     }
   }
   
-  private func closeControllerWithCompletion() {
+  private func closeController() {
     self.dismiss(animated: true) {
-      self.selectExtraOptionalOption?()
+      self.selectOption?()
     }
   }
 }

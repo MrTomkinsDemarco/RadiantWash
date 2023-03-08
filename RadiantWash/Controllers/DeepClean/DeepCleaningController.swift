@@ -131,9 +131,275 @@ class DeepCleaningController: UIViewController {
     objects[.userContacts] = MediaInfoContainerModel(contentType: .userContacts)
     self.mediaStoreModel = MediaStoreInfoModel(objects: objects)
   }
-}
-
-extension DeepCleaningController {
+  
+  private func setupUI() {
+    
+    dateSelectContainerHeigntConstraint.constant = AppDimensions.DateSelectController.dateSelectableHeight
+    bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
+  }
+  
+  private func setupDateInterval() {
+    
+    dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+  }
+  
+  private func setupObservers() {
+    
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenShotsPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarSelfiesPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarLivePhotosPhaassetScan, object: nil)
+    
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanLargeVideoPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicateVideoPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarVideoPhassetScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenRecordingsPhassetScan, object: nil)
+    
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanEmptyContactsScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedContactsScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
+    
+    U.notificationCenter.addObserver(self, selector: #selector(handleDeepCleanProgressNotification(_:)), name: .progressDeepCleanDidChangeProgress, object: nil)
+    
+    U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanPhotoFilesScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanVideoFilesScan, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
+  }
+  
+  private func removeObservers() {
+    
+    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarPhotoPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanScreenShotsPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarSelfiesPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarLivePhotosPhaassetScan, object: nil)
+    
+    U.notificationCenter.removeObserver(self, name: .deepCleanLargeVideoPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicateVideoPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarVideoPhassetScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanScreenRecordingsPhassetScan, object: nil)
+    
+    U.notificationCenter.removeObserver(self, name: .deepCleanEmptyContactsScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicatedContactsScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanDupLicatedMailsScan, object: nil)
+    
+    U.notificationCenter.removeObserver(self, name: .progressDeepCleanDidChangeProgress, object: nil)
+    
+    U.notificationCenter.removeObserver(self, name: .deepCleanPhotoFilesScan, object: nil)
+    U.notificationCenter.removeObserver(self, name: .deepCleanVideoFilesScan, object: nil)
+  }
+  
+  private func setupDelegate() {
+    dateSelectPickerView.delegate = self
+    bottomButtonView.delegate = self
+    selectableAssetsDelegate = self
+    navigationBar.delegate = self
+    progressAlert.delegate = self
+  }
+  
+  private func setupNavigation() {
+    
+    self.navigationController?.navigationBar.isHidden = true
+    let mainTitle = LocalizationService.Main.getNavigationTitle(for: .deepClean)
+    navigationBar.setIsDropShadow = false
+    navigationBar.setupNavigation(title: mainTitle,
+                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                  rightBarButtonImage: nil,
+                                  contentType: .none,
+                                  leftButtonTitle: nil,
+                                  rightButtonTitle: nil)
+  }
+  
+  private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
+    
+    guard let segue = segue as? SwiftMessagesSegue else { return }
+    
+    segue.configure(layout: .bottomMessage)
+    segue.dimMode = .gray(interactive: true)
+    segue.interactiveHide = true
+    segue.messageView.configureNoDropShadow()
+    
+    let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower : AppDimensions.DateSelectController.datePickerContainerHeightUper
+    
+    segue.messageView.backgroundHeight = height
+    
+    if let dateSelectedController = segue.destination as? DateSelectorController {
+      dateSelectedController.dateSelectedType = selectedType
+      dateSelectedController.setupPicker(selectedType.rawValue)
+      dateSelectedController.selectedDateCompletion = { selectedDate in
+        switch selectedType {
+        case .lowerDateSelectable:
+          if self.lowerBoundDate != selectedDate {
+            self.lowerBoundDate = selectedDate
+            self.removeObservers()
+            self.cleanAndResetAllValues()
+          }
+        case .upperDateSelectable:
+          if self.upperBoundDate != selectedDate {
+            self.upperBoundDate = selectedDate
+            self.removeObservers()
+            self.cleanAndResetAllValues()
+          }
+        default:
+          return
+        }
+        self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+      }
+    }
+  }
+  
+  private func setProcessingActionButton(_ state: DeepCleaningState) {
+    
+    deepCleaningState = state
+    U.UI {
+      switch state {
+      case .redyForStartingCleaning:
+        self.bottomButtonView.stopAnimatingButton()
+        self.bottomButtonView.setButtonProcess(false)
+        self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
+        self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startAnalyzing))
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+      case .willStartCleaning:
+        self.bottomButtonView.stopAnimatingButton()
+        self.bottomButtonView.setButtonProcess(true)
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+      case .didCleaning:
+        self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
+        self.bottomButtonView.startAnimatingButton()
+        self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .stopAnalyzing))
+        self.bottomButtonView.setButtonProcess(false)
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+      case .willAvailibleDelete:
+        self.bottomButtonView.stopAnimatingButton()
+        self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startCleaning))
+        self.bottomButtonView.setButtonProcess(false)
+        self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+      case .canclel:
+        return
+      }
+    }
+  }
+  
+  private func updateCleaningItemPopUpinfo() {
+    
+    let selectedAssetsCollectionsIDs = self.deepCleanModel.objects.compactMap({$0.value}).flatMap({$0.selectedAssetsCollectionID})
+    
+    guard !selectedAssetsCollectionsIDs.isEmpty else { return }
+    
+    var fullMessageBody: String = ""
+    let deepCleanSelectedTitle: String = "Deep Clean Selected Info:"
+    let diskSpaceAfterCleanMessage: String = "Calculated space after clean:"
+    let selectedPhotoVideoMessage: String = "Selected photo (video):"
+    let selectedContactsMessage: String = "Selected contacts:"
+    
+    var photosVideoID: [String] = []
+    var contactsIDS: [String] = []
+    
+    if let spaceUsage = self.futuredCleaningSpaceUsage, spaceUsage != 0 {
+      let stringSpace = U.getSpaceFromInt(spaceUsage)
+      fullMessageBody = diskSpaceAfterCleanMessage + " " + stringSpace
+    }
+    
+    for (key, value) in self.deepCleanModel.objects {
+      switch key {
+      case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+        let collectionIDS = value.selectedAssetsCollectionID
+        photosVideoID.append(contentsOf: collectionIDS)
+      case .singleScreenShots, .singleLivePhotos, .singleScreenRecordings, .singleLargeVideos:
+        let collectionIDS = value.selectedAssetsCollectionID
+        photosVideoID.append(contentsOf: collectionIDS)
+      case .emptyContacts:
+        let collectionIDS = value.selectedAssetsCollectionID
+        contactsIDS.append(contentsOf: collectionIDS)
+      case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+        let groups = self.deepCleanModel.objects[key]!.contactsFlowGroup
+        if !groups.isEmpty {
+          let collectionIDS = value.selectedAssetsCollectionID
+          
+          for id in collectionIDS {
+            if let group = groups.first(where: {$0.groupIdentifier == id}) {
+              contactsIDS.append(contentsOf: group.contacts.map({$0.identifier}))
+            }
+          }
+        }
+      default:
+        print("")
+      }
+    }
+    
+    let photoVideoCount: Int = Set(photosVideoID).count
+    let contactsSelectedCount: Int = Set(contactsIDS).count
+    
+    if photoVideoCount != 0 {
+      fullMessageBody = fullMessageBody + "\n" + selectedPhotoVideoMessage + " " + "\(photoVideoCount)"
+    }
+    
+    if contactsSelectedCount != 0 {
+      fullMessageBody = fullMessageBody + "\n" + selectedContactsMessage + " " + "\(contactsSelectedCount)"
+    }
+    
+    guard !fullMessageBody.isEmpty else { return }
+    
+    U.delay(0.5) {
+      self.showInfoPopUpMessage(with: deepCleanSelectedTitle, and: fullMessageBody)
+    }
+  }
+  
+  private func showInfoPopUpMessage(with title: String, and body: String) {
+    
+    let messageView = MessageView.viewFromNib(layout: .cardView)
+    var config = SwiftMessages.Config()
+    config.presentationStyle = .top
+    config.duration = .seconds(seconds: 3)
+    messageView.configureContent(title: title, body: body, iconImage: nil, iconText: nil, buttonImage: nil, buttonTitle: nil, buttonTapHandler: nil)
+    messageView.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+    messageView.titleLabel?.textColor = theme.titleTextColor
+    messageView.bodyLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+    messageView.bodyLabel?.textColor = theme.subTitleTextColor
+    messageView.backgroundView.backgroundColor = theme.backgroundColor
+    messageView.configureDropShadow()
+    SwiftMessages.show(config: config, view: messageView)
+  }
+  
+  private func checkCleaningButtonState() {
+    
+    guard deepCleaningState == .willAvailibleDelete else { return }
+    handleButtonStateActive()
+  }
+  
+  private func showBottomButtonBar() {
+    bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
+    U.animate(0.35) {
+      self.tableView.contentInset.bottom =  AppDimensions.BottomButton.bottomBarDefaultHeight - 30
+      self.tableView.layoutIfNeeded()
+      self.view.layoutIfNeeded()
+    }
+  }
+  
+  private func hideBottomButtonBar() {
+    bottomContainerHeightConstraint.constant = 0
+    U.animate(0.35) {
+      self.tableView.contentInset.bottom = 0
+      self.tableView.layoutIfNeeded()
+      self.view.layoutIfNeeded()
+    }
+  }
+  
+  private func handleButtonStateActive() {
+    
+    let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
+    bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
+    self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight - 20 : 0
+    
+    U.animate(0.5) {
+      self.tableView.layoutIfNeeded()
+      self.view.layoutIfNeeded()
+    }
+  }
   
   private func prepareStartDeepCleanProcessing() {
     self.progressAlert.showSimpleProgressAlerControllerBar(of: .prepareDeepClean, from: self, delegate: nil)
@@ -383,78 +649,6 @@ extension DeepCleaningController {
       }
     }
   }
-}
-
-extension DeepCleaningController: DateSelectebleViewDelegate {
-  
-  func didSelectStartingDate() {
-    if isDeepCleanSearchingProcessRunning {
-      showStopDeepCleanScanAlert()
-    } else {
-      performSegue(withIdentifier: C.identifiers.segue.showLowerDatePicker, sender: self)
-    }
-  }
-  
-  func didSelectEndingDate() {
-    if isDeepCleanSearchingProcessRunning {
-      showStopDeepCleanScanAlert()
-    } else {
-      performSegue(withIdentifier: C.identifiers.segue.showUpperDatePicker, sender: self)
-    }
-  }
-}
-
-extension DeepCleaningController: DeepCleanSelectableAssetsDelegate {
-  
-  func didSelect(assetsListIds: [String], contentType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset], updatableContactsGroup: [ContactsGroup]) {
-    
-    var enabled: Bool
-    let isSelected = !assetsListIds.isEmpty
-    let topIndexPath = IndexPath(row: 0, section: 0)
-    
-    switch contentType {
-    case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
-      self.deepCleanModel.objects[contentType]!.mediaFlowGroup.first?.assets = updatableAssets
-      enabled = !updatableAssets.isEmpty
-    case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .similarVideos, .duplicatedVideos:
-      self.deepCleanModel.objects[contentType]!.mediaFlowGroup = updatableGroup
-      enabled = !updatableGroup.isEmpty
-    case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-      self.deepCleanModel.objects[contentType]!.contactsFlowGroup = updatableContactsGroup
-      enabled = !updatableContactsGroup.isEmpty
-    default:
-      return
-    }
-    
-    let state: ProcessingProgressOperationState = isSelected ? .selected : enabled ? .complete : .empty
-    
-    self.deepCleanModel.objects[contentType]!.selectedAssetsCollectionID = assetsListIds
-    self.deepCleanModel.objects[contentType]!.cleanState = state
-    
-    let allSelectedAssetsIDS = Array(Set(self.deepCleanModel.objects.compactMap({$0.value}).flatMap({$0.selectedAssetsCollectionID})))
-    if !allSelectedAssetsIDS.isEmpty {
-      
-      switch contentType {
-      case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
-        self.checkCleaningButtonState()
-      case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-        self.checkCleaningButtonState()
-      default:
-        return
-      }
-    } else {
-      self.futuredCleaningSpaceUsage = 0
-      self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
-      self.checkCleaningButtonState()
-    }
-    
-    U.UI {
-      self.tableView.reloadRowWithoutAnimation(at: contentType.deepCleanIndexPath)
-    }
-  }
-}
-
-extension DeepCleaningController {
   
   @objc func flowRoatingHandleNotification(_ notification: Notification) {
     
@@ -596,9 +790,6 @@ extension DeepCleaningController {
     self.deepCleanManager.stopDeepCleanOperation()
     self.cleanAndResetAllValues()
   }
-}
-
-extension DeepCleaningController {
   
   private func selectCleaningMedia(at indexPath: IndexPath) {
     
@@ -665,7 +856,7 @@ extension DeepCleaningController {
   private func showContactViewController(object model: DeepCleanStateModel, contacts: [CNContact] = [], contactGroup: [ContactsGroup] = [], contentType: PhotoMediaType) {
     let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
     let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsController
-    viewController.handleContactsPreviousSelected(selectedContactsIDs: model.selectedAssetsCollectionID, contactsCollection: contacts, contactsGroupCollection: contactGroup.filter({!$0.contacts.isEmpty}))
+    viewController.setupContactsPreviousSelected(selectedContactsIDs: model.selectedAssetsCollectionID, contactsCollection: contacts, contactsGroupCollection: contactGroup.filter({!$0.contacts.isEmpty}))
     viewController.isDeepCleaningSelectableFlow = true
     viewController.contacts = contacts
     viewController.contactGroup = contactGroup.filter({!$0.contacts.isEmpty})
@@ -691,6 +882,75 @@ extension DeepCleaningController {
   private func prefetchPHAssets(_ assets: [PHAsset]) {
     U.BG {
       self.photoManager.prefetchsForPHAssets(assets)
+    }
+  }
+}
+
+extension DeepCleaningController: DateSelectebleViewDelegate {
+  
+  func didSelectStartingDate() {
+    if isDeepCleanSearchingProcessRunning {
+      showStopDeepCleanScanAlert()
+    } else {
+      performSegue(withIdentifier: C.identifiers.segue.showLowerDatePicker, sender: self)
+    }
+  }
+  
+  func didSelectEndingDate() {
+    if isDeepCleanSearchingProcessRunning {
+      showStopDeepCleanScanAlert()
+    } else {
+      performSegue(withIdentifier: C.identifiers.segue.showUpperDatePicker, sender: self)
+    }
+  }
+}
+
+extension DeepCleaningController: DeepCleanSelectableAssetsDelegate {
+  
+  func didSelect(assetsListIds: [String], contentType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset], updatableContactsGroup: [ContactsGroup]) {
+    
+    var enabled: Bool
+    let isSelected = !assetsListIds.isEmpty
+    let topIndexPath = IndexPath(row: 0, section: 0)
+    
+    switch contentType {
+    case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
+      self.deepCleanModel.objects[contentType]!.mediaFlowGroup.first?.assets = updatableAssets
+      enabled = !updatableAssets.isEmpty
+    case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .similarVideos, .duplicatedVideos:
+      self.deepCleanModel.objects[contentType]!.mediaFlowGroup = updatableGroup
+      enabled = !updatableGroup.isEmpty
+    case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+      self.deepCleanModel.objects[contentType]!.contactsFlowGroup = updatableContactsGroup
+      enabled = !updatableContactsGroup.isEmpty
+    default:
+      return
+    }
+    
+    let state: ProcessingProgressOperationState = isSelected ? .selected : enabled ? .complete : .empty
+    
+    self.deepCleanModel.objects[contentType]!.selectedAssetsCollectionID = assetsListIds
+    self.deepCleanModel.objects[contentType]!.cleanState = state
+    
+    let allSelectedAssetsIDS = Array(Set(self.deepCleanModel.objects.compactMap({$0.value}).flatMap({$0.selectedAssetsCollectionID})))
+    if !allSelectedAssetsIDS.isEmpty {
+      
+      switch contentType {
+      case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
+        self.checkCleaningButtonState()
+      case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+        self.checkCleaningButtonState()
+      default:
+        return
+      }
+    } else {
+      self.futuredCleaningSpaceUsage = 0
+      self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
+      self.checkCleaningButtonState()
+    }
+    
+    U.UI {
+      self.tableView.reloadRowWithoutAnimation(at: contentType.deepCleanIndexPath)
     }
   }
 }
@@ -810,278 +1070,6 @@ extension DeepCleaningController: UITableViewDelegate, UITableViewDataSource {
       sectionTitleTextLabel.text = MediaContentType.userContacts.mediaContentTypeName
     }
     return view
-  }
-}
-
-extension DeepCleaningController {
-  
-  private func setupUI() {
-    
-    dateSelectContainerHeigntConstraint.constant = AppDimensions.DateSelectController.dateSelectableHeight
-    bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
-  }
-  
-  private func setupDateInterval() {
-    
-    dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-  }
-  
-  private func setupObservers() {
-    
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenShotsPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarSelfiesPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarLivePhotosPhaassetScan, object: nil)
-    
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanLargeVideoPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicateVideoPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarVideoPhassetScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenRecordingsPhassetScan, object: nil)
-    
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanEmptyContactsScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedContactsScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
-    
-    U.notificationCenter.addObserver(self, selector: #selector(handleDeepCleanProgressNotification(_:)), name: .progressDeepCleanDidChangeProgress, object: nil)
-    
-    U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanPhotoFilesScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanVideoFilesScan, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
-  }
-  
-  private func removeObservers() {
-    
-    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarPhotoPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanScreenShotsPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarSelfiesPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarLivePhotosPhaassetScan, object: nil)
-    
-    U.notificationCenter.removeObserver(self, name: .deepCleanLargeVideoPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicateVideoPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanSimilarVideoPhassetScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanScreenRecordingsPhassetScan, object: nil)
-    
-    U.notificationCenter.removeObserver(self, name: .deepCleanEmptyContactsScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicatedContactsScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanDupLicatedMailsScan, object: nil)
-    
-    U.notificationCenter.removeObserver(self, name: .progressDeepCleanDidChangeProgress, object: nil)
-    
-    U.notificationCenter.removeObserver(self, name: .deepCleanPhotoFilesScan, object: nil)
-    U.notificationCenter.removeObserver(self, name: .deepCleanVideoFilesScan, object: nil)
-  }
-  
-  private func setupDelegate() {
-    dateSelectPickerView.delegate = self
-    bottomButtonView.delegate = self
-    selectableAssetsDelegate = self
-    navigationBar.delegate = self
-    progressAlert.delegate = self
-  }
-  
-  private func setupNavigation() {
-    
-    self.navigationController?.navigationBar.isHidden = true
-    let mainTitle = LocalizationService.Main.getNavigationTitle(for: .deepClean)
-    navigationBar.setIsDropShadow = false
-    navigationBar.setupNavigation(title: mainTitle,
-                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                  rightBarButtonImage: nil,
-                                  contentType: .none,
-                                  leftButtonTitle: nil,
-                                  rightButtonTitle: nil)
-  }
-  
-  private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
-    
-    guard let segue = segue as? SwiftMessagesSegue else { return }
-    
-    segue.configure(layout: .bottomMessage)
-    segue.dimMode = .gray(interactive: true)
-    segue.interactiveHide = true
-    segue.messageView.configureNoDropShadow()
-    
-    let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower : AppDimensions.DateSelectController.datePickerContainerHeightUper
-    
-    segue.messageView.backgroundHeight = height
-    
-    if let dateSelectedController = segue.destination as? DateSelectorController {
-      dateSelectedController.dateSelectedType = selectedType
-      dateSelectedController.setPicker(selectedType.rawValue)
-      dateSelectedController.selectedDateCompletion = { selectedDate in
-        switch selectedType {
-        case .lowerDateSelectable:
-          if self.lowerBoundDate != selectedDate {
-            self.lowerBoundDate = selectedDate
-            self.removeObservers()
-            self.cleanAndResetAllValues()
-          }
-        case .upperDateSelectable:
-          if self.upperBoundDate != selectedDate {
-            self.upperBoundDate = selectedDate
-            self.removeObservers()
-            self.cleanAndResetAllValues()
-          }
-        default:
-          return
-        }
-        self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-      }
-    }
-  }
-  
-  private func setProcessingActionButton(_ state: DeepCleaningState) {
-    
-    deepCleaningState = state
-    U.UI {
-      switch state {
-      case .redyForStartingCleaning:
-        self.bottomButtonView.stopAnimatingButton()
-        self.bottomButtonView.setButtonProcess(false)
-        self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
-        self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startAnalyzing))
-        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-      case .willStartCleaning:
-        self.bottomButtonView.stopAnimatingButton()
-        self.bottomButtonView.setButtonProcess(true)
-        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-      case .didCleaning:
-        self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
-        self.bottomButtonView.startAnimatingButton()
-        self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .stopAnalyzing))
-        self.bottomButtonView.setButtonProcess(false)
-        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-      case .willAvailibleDelete:
-        self.bottomButtonView.stopAnimatingButton()
-        self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startCleaning))
-        self.bottomButtonView.setButtonProcess(false)
-        self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
-        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-      case .canclel:
-        return
-      }
-    }
-  }
-  
-  private func updateCleaningItemPopUpinfo() {
-    
-    let selectedAssetsCollectionsIDs = self.deepCleanModel.objects.compactMap({$0.value}).flatMap({$0.selectedAssetsCollectionID})
-    
-    guard !selectedAssetsCollectionsIDs.isEmpty else { return }
-    
-    var fullMessageBody: String = ""
-    let deepCleanSelectedTitle: String = "Deep Clean Selected Info:"
-    let diskSpaceAfterCleanMessage: String = "Calculated space after clean:"
-    let selectedPhotoVideoMessage: String = "Selected photo (video):"
-    let selectedContactsMessage: String = "Selected contacts:"
-    
-    var photosVideoID: [String] = []
-    var contactsIDS: [String] = []
-    
-    if let spaceUsage = self.futuredCleaningSpaceUsage, spaceUsage != 0 {
-      let stringSpace = U.getSpaceFromInt(spaceUsage)
-      fullMessageBody = diskSpaceAfterCleanMessage + " " + stringSpace
-    }
-    
-    for (key, value) in self.deepCleanModel.objects {
-      switch key {
-      case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .duplicatedVideos, .similarVideos:
-        let collectionIDS = value.selectedAssetsCollectionID
-        photosVideoID.append(contentsOf: collectionIDS)
-      case .singleScreenShots, .singleLivePhotos, .singleScreenRecordings, .singleLargeVideos:
-        let collectionIDS = value.selectedAssetsCollectionID
-        photosVideoID.append(contentsOf: collectionIDS)
-      case .emptyContacts:
-        let collectionIDS = value.selectedAssetsCollectionID
-        contactsIDS.append(contentsOf: collectionIDS)
-      case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-        let groups = self.deepCleanModel.objects[key]!.contactsFlowGroup
-        if !groups.isEmpty {
-          let collectionIDS = value.selectedAssetsCollectionID
-          
-          for id in collectionIDS {
-            if let group = groups.first(where: {$0.groupIdentifier == id}) {
-              contactsIDS.append(contentsOf: group.contacts.map({$0.identifier}))
-            }
-          }
-        }
-      default:
-        print("")
-      }
-    }
-    
-    let photoVideoCount: Int = Set(photosVideoID).count
-    let contactsSelectedCount: Int = Set(contactsIDS).count
-    
-    if photoVideoCount != 0 {
-      fullMessageBody = fullMessageBody + "\n" + selectedPhotoVideoMessage + " " + "\(photoVideoCount)"
-    }
-    
-    if contactsSelectedCount != 0 {
-      fullMessageBody = fullMessageBody + "\n" + selectedContactsMessage + " " + "\(contactsSelectedCount)"
-    }
-    
-    guard !fullMessageBody.isEmpty else { return }
-    
-    U.delay(0.5) {
-      self.showInfoPopUpMessage(with: deepCleanSelectedTitle, and: fullMessageBody)
-    }
-  }
-  
-  private func showInfoPopUpMessage(with title: String, and body: String) {
-    
-    let messageView = MessageView.viewFromNib(layout: .cardView)
-    var config = SwiftMessages.Config()
-    config.presentationStyle = .top
-    config.duration = .seconds(seconds: 3)
-    messageView.configureContent(title: title, body: body, iconImage: nil, iconText: nil, buttonImage: nil, buttonTitle: nil, buttonTapHandler: nil)
-    messageView.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-    messageView.titleLabel?.textColor = theme.titleTextColor
-    messageView.bodyLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
-    messageView.bodyLabel?.textColor = theme.subTitleTextColor
-    messageView.backgroundView.backgroundColor = theme.backgroundColor
-    messageView.configureDropShadow()
-    SwiftMessages.show(config: config, view: messageView)
-  }
-  
-  private func checkCleaningButtonState() {
-    
-    guard deepCleaningState == .willAvailibleDelete else { return }
-    handleButtonStateActive()
-  }
-  
-  private func showBottomButtonBar() {
-    bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
-    U.animate(0.35) {
-      self.tableView.contentInset.bottom =  AppDimensions.BottomButton.bottomBarDefaultHeight - 30
-      self.tableView.layoutIfNeeded()
-      self.view.layoutIfNeeded()
-    }
-  }
-  
-  private func hideBottomButtonBar() {
-    bottomContainerHeightConstraint.constant = 0
-    U.animate(0.35) {
-      self.tableView.contentInset.bottom = 0
-      self.tableView.layoutIfNeeded()
-      self.view.layoutIfNeeded()
-    }
-  }
-  
-  private func handleButtonStateActive() {
-    
-    let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
-    bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
-    self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight - 20 : 0
-    
-    U.animate(0.5) {
-      self.tableView.layoutIfNeeded()
-      self.view.layoutIfNeeded()
-    }
   }
 }
 

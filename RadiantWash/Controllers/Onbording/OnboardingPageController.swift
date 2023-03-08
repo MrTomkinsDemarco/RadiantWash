@@ -43,30 +43,6 @@ class OnboardingPageController: UIViewController {
     
     animationView.stop()
   }
-}
-
-extension OnboardingPageController {
-  
-  private func setupOnboarding() {
-    
-    guard let onboarding = onboarding else { return }
-    
-    if let index = Onboarding.allCases.firstIndex(of: onboarding) {
-      self.currentIndex = index
-    }
-    
-    sceneTitle = onboarding.rawValue
-    titleTextLabel.text = onboarding.title
-    subtitleTextLabel.text = onboarding.description
-    animationView.animation = LottieAnimation.named(onboarding.animationName)
-    animationView.loopMode = .loop
-    animationView.backgroundBehavior = .pauseAndRestore
-    
-    thumbnailView.image = onboarding.thumbnail
-  }
-}
-
-extension OnboardingPageController: Themeble {
   
   private func setupUI() {
     
@@ -92,6 +68,27 @@ extension OnboardingPageController: Themeble {
       thumbnailsCenterConstraint = thumbnailsCenterConstraint.setMultiplier(multiplier: 0.75)
     }
   }
+  
+  private func setupOnboarding() {
+    
+    guard let onboarding = onboarding else { return }
+    
+    if let index = Onboarding.allCases.firstIndex(of: onboarding) {
+      self.currentIndex = index
+    }
+    
+    sceneTitle = onboarding.rawValue
+    titleTextLabel.text = onboarding.title
+    subtitleTextLabel.text = onboarding.description
+    animationView.animation = LottieAnimation.named(onboarding.animationName)
+    animationView.loopMode = .loop
+    animationView.backgroundBehavior = .pauseAndRestore
+    
+    thumbnailView.image = onboarding.thumbnail
+  }
+}
+
+extension OnboardingPageController: Themeble {
   
   func setupAppearance() {
     

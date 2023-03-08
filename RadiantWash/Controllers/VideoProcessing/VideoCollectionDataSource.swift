@@ -36,9 +36,6 @@ class VideoCollectionDataSource: NSObject {
     self.contentType = contentType
     self.collectionView = collectionView
   }
-}
-
-extension VideoCollectionDataSource {
   
   private func setup(cell: PhotoCell, at indexPath: IndexPath) {
     
@@ -64,6 +61,15 @@ extension VideoCollectionDataSource {
       cell.isSelected = false
     }
     cell.checkIsSelected()
+  }
+  
+  private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
+    
+    let shareVideoActionImage = I.systemItems.defaultItems.share
+    let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareVideoActionImage) { _ in
+      self.delegate?.share(phasset: asset)
+    }
+    return UIMenu(title: "", children: [shareAction])
   }
 }
 
@@ -182,17 +188,5 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
         }
       }
     }
-  }
-}
-
-extension VideoCollectionDataSource {
-  
-  private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
-    
-    let shareVideoActionImage = I.systemItems.defaultItems.share
-    let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareVideoActionImage) { _ in
-      self.delegate?.share(phasset: asset)
-    }
-    return UIMenu(title: "", children: [shareAction])
   }
 }

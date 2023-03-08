@@ -20,93 +20,11 @@ class AdvertisementController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupUI()
     setupHandleAdvertisement()
     setupAppearance()
     setupNavigation()
-    addSubscriptionChangeObserver()
+    setupSubscriptionObserver()
     setupObserver()
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    
-  }
-}
-
-extension AdvertisementController: SubscriptionObserver {
-  
-  private func setupHandleAdvertisement() {
-    
-    switch subscriptionManager.applicationDevelopmentSubscriptionStatus {
-    case .production:
-      self.productionSetup()
-    case .premiumSimulated, .lifeTimeSimulated:
-      self.advertisementHandler(status: .hiden)
-    case .limitedSimulated:
-      self.advertisementHandler(status: .active)
-    }
-  }
-  
-  private func productionSetup() {
-  
-    let status: AdvertisementStatus = subscriptionManager.getPurchasePremium() ? .hiden : .active
-    status == .active ? self.setupAdvertisemenetBanner() : ()
-    self.advertisementHandler(status: status)
-    
-    Network.theyLive { status in
-      switch status {
-      case .connedcted:
-        SubscriptionManager.instance.purchasePremiumHandler { status in
-          Utils.UI {
-            switch status {
-            case .lifetime, .purchasedPremium:
-              if Advertisement.manager.advertisementBannerStatus != .hiden {
-                self.advertisementHandler(status: .hiden)
-              }
-            case .nonPurchased:
-              if Advertisement.manager.advertisementBannerStatus != .active {
-                self.setupAdvertisemenetBanner()
-                self.advertisementHandler(status: .active)
-              }
-            }
-          }
-        }
-      case .unreachable:
-        self.advertisementHandler(status: .hiden)
-      }
-    }
-  }
-  
-  func setupAdvertisemenetBanner() {
-    
-    let size = GADAdSizeFullWidthPortraitWithHeight(50)
-    var advertisementBannerView: GADBannerView!
-    advertisementBannerView = GADBannerView(adSize: size)
-    advertisementBannerView.adUnitID = Advertisement.manager.getUnitID(for: .production)
-    advertisementBannerView.tag = Advertisement.manager.advertimentBannerTag
-    advertisementBannerView.delegate = self
-    advertisementBannerView.rootViewController = self
-    advertisementBannerView.load(GADRequest())
-    self.advertisementView.addSubview(advertisementBannerView)
-  }
-  
-  func subscriptionDidChange() {
-    self.setupHandleAdvertisement()
-  }
-  
-  @objc func networkStatusDidChange() {
-    self.setupHandleAdvertisement()
-  }
-}
-
-extension AdvertisementController: Themeble {
-  
-  private func setupUI() {}
-  
-  func setupAppearance() {
-    self.view.backgroundColor = theme.backgroundColor
-    self.advertisementView.backgroundColor = theme.backgroundColor
   }
   
   func setupNavigation() {
@@ -116,9 +34,6 @@ extension AdvertisementController: Themeble {
   func setupObserver() {
     U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
   }
-}
-
-extension AdvertisementController {
   
   private func advertisementHandler(status: AdvertisementStatus) {
     
@@ -146,10 +61,83 @@ extension AdvertisementController {
     DispatchQueue.main.async {
       
       UIView.animate(withDuration: 0.3) {
-        //      self.view.layoutIfNeeded()
         self.advertisementView.layoutIfNeeded()
       } completion: { _ in }
     }
+  }
+}
+
+extension AdvertisementController: SubscriptionObserver {
+  
+  private func setupHandleAdvertisement() {
+    
+    switch subscriptionManager.applicationDevelopmentSubscriptionStatus {
+    case .production:
+      self.setupProduction()
+    case .premiumSimulated, .lifeTimeSimulated:
+      self.advertisementHandler(status: .hiden)
+    case .limitedSimulated:
+      self.advertisementHandler(status: .active)
+    }
+  }
+  
+  private func setupProduction() {
+  
+    let status: AdvertisementStatus = subscriptionManager.getPurchasePremium() ? .hiden : .active
+    status == .active ? self.setupAdvertisementBanner() : ()
+    self.advertisementHandler(status: status)
+    
+    Network.theyLive { status in
+      switch status {
+      case .connedcted:
+        SubscriptionManager.instance.purchasePremiumHandler { status in
+          Utils.UI {
+            switch status {
+            case .lifetime, .purchasedPremium:
+              if Advertisement.manager.advertisementBannerStatus != .hiden {
+                self.advertisementHandler(status: .hiden)
+              }
+            case .nonPurchased:
+              if Advertisement.manager.advertisementBannerStatus != .active {
+                self.setupAdvertisementBanner()
+                self.advertisementHandler(status: .active)
+              }
+            }
+          }
+        }
+      case .unreachable:
+        self.advertisementHandler(status: .hiden)
+      }
+    }
+  }
+  
+  func setupAdvertisementBanner() {
+    
+    let size = GADAdSizeFullWidthPortraitWithHeight(50)
+    var advertisementBannerView: GADBannerView!
+    advertisementBannerView = GADBannerView(adSize: size)
+    advertisementBannerView.adUnitID = Advertisement.manager.getUnitID(for: .production)
+    advertisementBannerView.tag = Advertisement.manager.advertimentBannerTag
+    advertisementBannerView.delegate = self
+    advertisementBannerView.rootViewController = self
+    advertisementBannerView.load(GADRequest())
+    self.advertisementView.addSubview(advertisementBannerView)
+  }
+  
+  func subscriptionDidChange() {
+    self.setupHandleAdvertisement()
+  }
+  
+  @objc func networkStatusDidChange() {
+    self.setupHandleAdvertisement()
+  }
+}
+
+extension AdvertisementController: Themeble {
+  
+  func setupAppearance() {
+    self.view.backgroundColor = theme.backgroundColor
+    self.advertisementView.backgroundColor = theme.backgroundColor
   }
 }
 

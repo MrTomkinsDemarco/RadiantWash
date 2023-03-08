@@ -65,7 +65,7 @@ class MediaContentController: UIViewController {
     super.viewDidLoad()
     
     self.contactsManager.setProcess(.search, state: .availible)
-    checkForAssetsCount()
+    setupAssetsCount()
     setupUI()
     setupDateInterval()
     setupAppearance()
@@ -99,9 +99,6 @@ class MediaContentController: UIViewController {
       break
     }
   }
-}
-
-extension MediaContentController {
   
   private func updateSingleChanged(phasset collection: [PHAsset], content type: PhotoMediaType, completionHandler: @escaping () -> Void) {
     self.singleCleanModel.objects[type]?.phassets = collection
@@ -152,158 +149,132 @@ extension MediaContentController {
       }
     }
   }
-}
-
-//      MARK: - show content controller -
-extension MediaContentController {
   
-  /// `0` - simmilar photos
-  /// `1` - duplicates
-  /// `2` - screenshots
-  /// `3` - similar selfies
-  /// `4` - live photos
-  /// `5` - recently deleted
+  private func setupUI() {
+    
+    if mediaContentType == .userContacts {
+      dateSelectContainerHeigntConstraint.constant = 0
+      dateSelectPickerView.isHidden = true
+    } else {
+      dateSelectContainerHeigntConstraint.constant = 60
+    }
+    dateSelectPickerView.layoutIfNeeded()
+  }
   
-  /// `0` - large video files
-  /// `1` - duplicates
-  /// `2` - similar videos
-  /// `3` - screen records files
-  /// `4` - recently deleted files
+  private func setupNavigation() {
+    
+    if mediaContentType != .userContacts {
+      
+      navigationBar.setIsDropShadow = false
+      
+      navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
+                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                    rightBarButtonImage: nil,
+                                    contentType: mediaContentType,
+                                    leftButtonTitle: nil,
+                                    rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
+    } else {
+      navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
+                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                    rightBarButtonImage: nil,
+                                    contentType: mediaContentType,
+                                    leftButtonTitle: nil,
+                                    rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
+    }
+  }
   
-  /// `0` - all contacts
-  /// `1` - empty contacts
-  /// `2` - duplicated contacts names
-  /// `3` - duplicated contacts phones
-  /// `4` - duplicated contacts emails
+  private func setupDelegate() {
+    
+    self.dateSelectPickerView.delegate = self
+    self.navigationBar.delegate = self
+  }
   
-  private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
+  private func setupObserver(for contentType: MediaContentType) {
     
-    guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
-    
-    searchingProcessingType = .singleSearchProcess
-    
-    U.application.isIdleTimerDisabled = true
-    
-    switch selectedType {
+    switch contentType {
     case .userPhoto:
-      switch index {
-      case 0:
-        self.showSimilarPhotos()
-      case 1:
-        self.showDuplicatePhotos()
-      case 2:
-        self.showScreenshots()
-      case 3:
-        self.showSimilarSelfies()
-      case 4:
-        self.showLivePhotos()
-      default:
-        return
-      }
+      /// `photo notification updates`
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarPhotoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedPhotoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenShotsPhotoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarSelfiePhotoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLivePhotoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedPhotoScan, object: nil)
     case .userVideo:
-      switch index {
-      case 0:
-        self.showLargeVideoFiles()
-      case 1:
-        self.showDuplicateVideoFiles()
-      case 2:
-        self.showSimilarVideoFiles()
-      case 3:
-        self.showScreenRecordsVideoFiles()
-      case 5:
-        self.showRecentlyDeletedVideos()
-      default:
-        return
-      }
+      /// `video notification updates`
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLargeVideoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedVideoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarVideoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenRecordingVideoScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedVideoScan, object: nil)
     case .userContacts:
-      switch index {
-      case 0:
-        self.showAllContacts()
-      case 1:
-        self.showEmptyGroupsContacts()
-      case 2:
-        self.showContactCleanController(cleanType: .duplicatedContactName)
-      case 3:
-        self.showContactCleanController(cleanType: .duplicatedPhoneNumnber)
-      case 4:
-        self.showContactCleanController(cleanType: .duplicatedEmail)
-      default:
-        return
-      }
+      /// `contacts notification updates`
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchAllContactsScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchEmptyContactsScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNamesContactsScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
+      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
+      
+      U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
     case .none:
       return
     }
+    
+    U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
   }
   
-  private func showPrescanMediaContent(by selectedType: MediaContentType, selected index: Int) {
+  private func setupDateInterval() {
     
-    let photoMediaType: PhotoMediaType = selectedType.sections[index]
+    dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+  }
+  
+  private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
     
-    switch photoMediaType.collectionType {
-    case .single:
-      
-      switch mediaContentType {
-      case .userContacts:
-        if let object = self.singleCleanModel.objects[photoMediaType] {
-          
-          if object.contactCleanType == .emptyContacts {
-            let contactactGroup = object.contactsGroup
-            
-            if !contactactGroup.isEmpty {
-              self.showContactViewController(contacts: [], contactGroup: contactactGroup, contentType: .emptyContacts)
-            } else {
-              ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
-            }
-          } else {
-            let collection = object.contacts
-            if !collection.isEmpty {
-              self.showContactViewController(contacts: collection, contentType: photoMediaType)
-            } else {
-              ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
-            }
+    guard let segue = segue as? SwiftMessagesSegue else { return }
+    
+    segue.configure(layout: .bottomMessage)
+    segue.dimMode = .gray(interactive: true)
+    segue.interactiveHide = true
+    segue.messageView.configureNoDropShadow()
+    
+    let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower :
+    AppDimensions.DateSelectController.datePickerContainerHeightUper
+    
+    segue.messageView.backgroundHeight = height
+    
+    if let dateSelectedController = segue.destination as? DateSelectorController {
+      dateSelectedController.dateSelectedType = selectedType
+      dateSelectedController.setupPicker(selectedType.rawValue)
+      dateSelectedController.selectedDateCompletion = { selectedDate in
+        switch selectedType {
+        case .lowerDateSelectable:
+          if self.lowerBoundDate != selectedDate {
+            self.lowerBoundDate = selectedDate
+            self.desintagrateSearchingResults()
           }
-          
-        }
-      case .userPhoto, .userVideo:
-        if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
-          self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
-        } else {
-          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
-        }
-      default:
-        return
-      }
-    case .grouped:
-      
-      switch mediaContentType {
-      case .userContacts:
-        if let objects = self.singleCleanModel.objects[photoMediaType] {
-          let collectionGroup = objects.contactsGroup
-          
-          if !collectionGroup.isEmpty {
-            self.showGroupedContactsController(contacts: collectionGroup, group: objects.contactCleanType, content: photoMediaType)
-          } else {
-            ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+        case .upperDateSelectable:
+          if self.upperBoundDate != selectedDate {
+            self.upperBoundDate = selectedDate
+            self.desintagrateSearchingResults()
           }
-        } else {
-          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+        default:
+          return
         }
-      case .userPhoto, .userVideo:
-        if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
-          self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
-        } else {
-          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
-        }
-      default:
-        return
+        self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
       }
-    default:
-      return
     }
   }
-}
-
-extension MediaContentController {
+  
+  private func setupShowContactsBackupController(segue: UIStoryboardSegue) {
+    
+    guard let segue = segue as? SwiftMessagesSegue else { return }
+    
+    segue.configure(layout: .bottomMessage)
+    segue.dimMode = .gray(interactive: false)
+    segue.interactiveHide = true
+    segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+    segue.messageView.configureNoDropShadow()
+  }
   
   public func handleShortcutProcessing(of processingType: RemoteCleanType) {
     switch processingType {
@@ -336,9 +307,6 @@ extension MediaContentController {
       return
     }
   }
-}
-
-extension MediaContentController {
   
   private func showSimilarPhotos() {
     
@@ -465,9 +433,6 @@ extension MediaContentController {
     getSortedRecentlyDeletedAssetsOperation.name = self.currentlyScanningProcess.rawValue
     phassetProcessingOperationQueuer.addOperation(getSortedRecentlyDeletedAssetsOperation)
   }
-}
-
-extension MediaContentController {
   
   private func showLargeVideoFiles() {
     
@@ -650,9 +615,6 @@ extension MediaContentController {
       }
     }
   }
-}
-
-extension MediaContentController {
   
   private func showAllContacts() {
     
@@ -745,9 +707,6 @@ extension MediaContentController {
       return
     }
   }
-}
-
-extension MediaContentController {
   
   private func showGropedContoller(grouped collection: [PhassetGroup], photoContent type: PhotoMediaType, media content: MediaContentType) {
     let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
@@ -851,11 +810,8 @@ extension MediaContentController {
     viewController.contentType = content
     self.navigationController?.pushViewController(viewController, animated: true)
   }
-}
-
-extension MediaContentController {
   
-  private func checkForAssetsCount() {
+  private func setupAssetsCount() {
     self.updateContent(type: self.mediaContentType)
   }
   
@@ -914,9 +870,6 @@ extension MediaContentController {
       self.updateGroupedContacts(contacts: duplicatedEmailGroups, media: .duplicatedEmails, cleanType: .duplicatedEmail) {}
     }
   }
-}
-
-extension MediaContentController {
   
   @objc func handleContentProgressUpdateNotification(_ notification: Notification) {
     
@@ -1104,9 +1057,6 @@ extension MediaContentController {
       }
     }
   }
-}
-
-extension MediaContentController {
   
   private func startSmartCleanProcessing() {
     
@@ -1176,6 +1126,155 @@ extension MediaContentController {
         self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
       }
+    }
+  }
+}
+
+//      MARK: - show content controller -
+extension MediaContentController {
+  
+  /// `0` - simmilar photos
+  /// `1` - duplicates
+  /// `2` - screenshots
+  /// `3` - similar selfies
+  /// `4` - live photos
+  /// `5` - recently deleted
+  
+  /// `0` - large video files
+  /// `1` - duplicates
+  /// `2` - similar videos
+  /// `3` - screen records files
+  /// `4` - recently deleted files
+  
+  /// `0` - all contacts
+  /// `1` - empty contacts
+  /// `2` - duplicated contacts names
+  /// `3` - duplicated contacts phones
+  /// `4` - duplicated contacts emails
+  
+  private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
+    
+    guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
+    
+    searchingProcessingType = .singleSearchProcess
+    
+    U.application.isIdleTimerDisabled = true
+    
+    switch selectedType {
+    case .userPhoto:
+      switch index {
+      case 0:
+        self.showSimilarPhotos()
+      case 1:
+        self.showDuplicatePhotos()
+      case 2:
+        self.showScreenshots()
+      case 3:
+        self.showSimilarSelfies()
+      case 4:
+        self.showLivePhotos()
+      default:
+        return
+      }
+    case .userVideo:
+      switch index {
+      case 0:
+        self.showLargeVideoFiles()
+      case 1:
+        self.showDuplicateVideoFiles()
+      case 2:
+        self.showSimilarVideoFiles()
+      case 3:
+        self.showScreenRecordsVideoFiles()
+      case 5:
+        self.showRecentlyDeletedVideos()
+      default:
+        return
+      }
+    case .userContacts:
+      switch index {
+      case 0:
+        self.showAllContacts()
+      case 1:
+        self.showEmptyGroupsContacts()
+      case 2:
+        self.showContactCleanController(cleanType: .duplicatedContactName)
+      case 3:
+        self.showContactCleanController(cleanType: .duplicatedPhoneNumnber)
+      case 4:
+        self.showContactCleanController(cleanType: .duplicatedEmail)
+      default:
+        return
+      }
+    case .none:
+      return
+    }
+  }
+  
+  private func showPrescanMediaContent(by selectedType: MediaContentType, selected index: Int) {
+    
+    let photoMediaType: PhotoMediaType = selectedType.sections[index]
+    
+    switch photoMediaType.collectionType {
+    case .single:
+      
+      switch mediaContentType {
+      case .userContacts:
+        if let object = self.singleCleanModel.objects[photoMediaType] {
+          
+          if object.contactCleanType == .emptyContacts {
+            let contactactGroup = object.contactsGroup
+            
+            if !contactactGroup.isEmpty {
+              self.showContactViewController(contacts: [], contactGroup: contactactGroup, contentType: .emptyContacts)
+            } else {
+              ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+            }
+          } else {
+            let collection = object.contacts
+            if !collection.isEmpty {
+              self.showContactViewController(contacts: collection, contentType: photoMediaType)
+            } else {
+              ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+            }
+          }
+          
+        }
+      case .userPhoto, .userVideo:
+        if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
+          self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
+        } else {
+          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+        }
+      default:
+        return
+      }
+    case .grouped:
+      
+      switch mediaContentType {
+      case .userContacts:
+        if let objects = self.singleCleanModel.objects[photoMediaType] {
+          let collectionGroup = objects.contactsGroup
+          
+          if !collectionGroup.isEmpty {
+            self.showGroupedContactsController(contacts: collectionGroup, group: objects.contactCleanType, content: photoMediaType)
+          } else {
+            ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+          }
+        } else {
+          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+        }
+      case .userPhoto, .userVideo:
+        if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
+          self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
+        } else {
+          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+        }
+      default:
+        return
+      }
+    default:
+      return
     }
   }
 }
@@ -1299,9 +1398,6 @@ extension MediaContentController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     self.didSelect(rowAt: indexPath)
   }
-}
-
-extension MediaContentController {
   
   private func setupCellFor(rowAt indexPath: IndexPath) -> UITableViewCell {
     switch indexPath.section {
@@ -1355,134 +1451,8 @@ extension MediaContentController {
 
 extension MediaContentController: Themeble {
   
-  private func setupUI() {
-    
-    if mediaContentType == .userContacts {
-      dateSelectContainerHeigntConstraint.constant = 0
-      dateSelectPickerView.isHidden = true
-    } else {
-      dateSelectContainerHeigntConstraint.constant = 60
-    }
-    dateSelectPickerView.layoutIfNeeded()
-  }
-  
-  private func setupNavigation() {
-    
-    if mediaContentType != .userContacts {
-      
-      navigationBar.setIsDropShadow = false
-      
-      navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
-                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                    rightBarButtonImage: nil,
-                                    contentType: mediaContentType,
-                                    leftButtonTitle: nil,
-                                    rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
-    } else {
-      navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
-                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                    rightBarButtonImage: nil,
-                                    contentType: mediaContentType,
-                                    leftButtonTitle: nil,
-                                    rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
-    }
-  }
-  
-  private func setupDelegate() {
-    
-    self.dateSelectPickerView.delegate = self
-    self.navigationBar.delegate = self
-  }
-  
-  private func setupObserver(for contentType: MediaContentType) {
-    
-    switch contentType {
-    case .userPhoto:
-      /// `photo notification updates`
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarPhotoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedPhotoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenShotsPhotoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarSelfiePhotoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLivePhotoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedPhotoScan, object: nil)
-    case .userVideo:
-      /// `video notification updates`
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLargeVideoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedVideoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarVideoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenRecordingVideoScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedVideoScan, object: nil)
-    case .userContacts:
-      /// `contacts notification updates`
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchAllContactsScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchEmptyContactsScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNamesContactsScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
-      U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
-      
-      U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
-    case .none:
-      return
-    }
-    
-    U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
-  }
-  
-  private func setupDateInterval() {
-    
-    dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-  }
-  
   func setupAppearance() {
     
     self.view.backgroundColor = theme.backgroundColor
-  }
-  
-  private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
-    
-    guard let segue = segue as? SwiftMessagesSegue else { return }
-    
-    segue.configure(layout: .bottomMessage)
-    segue.dimMode = .gray(interactive: true)
-    segue.interactiveHide = true
-    segue.messageView.configureNoDropShadow()
-    
-    let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower :
-    AppDimensions.DateSelectController.datePickerContainerHeightUper
-    
-    segue.messageView.backgroundHeight = height
-    
-    if let dateSelectedController = segue.destination as? DateSelectorController {
-      dateSelectedController.dateSelectedType = selectedType
-      dateSelectedController.setPicker(selectedType.rawValue)
-      dateSelectedController.selectedDateCompletion = { selectedDate in
-        switch selectedType {
-        case .lowerDateSelectable:
-          if self.lowerBoundDate != selectedDate {
-            self.lowerBoundDate = selectedDate
-            self.desintagrateSearchingResults()
-          }
-        case .upperDateSelectable:
-          if self.upperBoundDate != selectedDate {
-            self.upperBoundDate = selectedDate
-            self.desintagrateSearchingResults()
-          }
-        default:
-          return
-        }
-        self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-      }
-    }
-  }
-  
-  private func setupShowContactsBackupController(segue: UIStoryboardSegue) {
-    
-    guard let segue = segue as? SwiftMessagesSegue else { return }
-    
-    segue.configure(layout: .bottomMessage)
-    segue.dimMode = .gray(interactive: false)
-    segue.interactiveHide = true
-    segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
-    segue.messageView.configureNoDropShadow()
   }
 }

@@ -48,7 +48,7 @@ class ContactsGroupController: UIViewController {
     setupNavigation()
     setupTableView()
     setupObserversAndDelegate()
-    handleMergeContactsAppearButton(disableAnimation: true)
+    setupMergeContactsAppearButton(disableAnimation: true)
     setupAppearance()
     tableView.reloadData()
   }
@@ -67,9 +67,49 @@ class ContactsGroupController: UIViewController {
       return
     }
   }
-}
-
-extension ContactsGroupController {
+  
+  func setupUI() {
+    bottomButtonBarView.setImage(I.systemItems.defaultItems.merge)
+  }
+  
+  func setupNavigation() {
+    
+    self.navigationController?.navigationBar.isHidden = true
+    navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.systemItems.navigationBarItems.back, rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots, contentType: mediaType)
+    if #available(iOS 14.0, *) {
+      dropDownSetup()
+    }
+  }
+  
+  func setupViewModel(contacts: [ContactsGroup]) {
+    self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
+    self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
+    self.contactGroupListDataSource.contentType = self.contentType
+    self.contactGroupListDataSource.delegate = self
+  }
+  
+  private func setupTableView() {
+    tableView.register(UINib(nibName: C.identifiers.xibs.contactGroupHeader, bundle: nil), forHeaderFooterViewReuseIdentifier: C.identifiers.views.contactGroupHeader)
+    tableView.register(UINib(nibName: C.identifiers.xibs.groupContactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.groupContactCell)
+    tableView.delegate = contactGroupListDataSource
+    tableView.dataSource = contactGroupListDataSource
+    tableView.separatorStyle = .none
+    tableView.backgroundColor = .clear
+    tableView.contentInset.top = 20
+  }
+  
+  private func setupObserversAndDelegate() {
+    
+    navigationBar.delegate = self
+    bottomButtonBarView.delegate = self
+    progressAlert.delegate = self
+    
+    SingleContactsGroupOperationMediator.instance.setListener(listener: self)
+    U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(progressDeleteAlertNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(progressMergeAlertNotification(_:)), name: .progressMergeContactsAlertDidChangeProgress, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
+  }
   
   private func didSelectDeselecAllItems() {
     
@@ -83,15 +123,15 @@ extension ContactsGroupController {
       contactGroupListDataSource.selectedSections.removeAll()
     }
     self.tableView.reloadData()
-    self.handleMergeContactsAppearButton()
-    handleSelectedAssetsNavigationCount()
+    self.setupMergeContactsAppearButton()
+    self.setupSelectedAssetsCount()
   }
   
   private func forceDeselectAllItems() {
     contactGroupListDataSource.selectedSections.removeAll()
     self.tableView.reloadData()
-    self.handleMergeContactsAppearButton()
-    handleSelectedAssetsNavigationCount()
+    self.setupMergeContactsAppearButton()
+    self.setupSelectedAssetsCount()
   }
   
   private func didSelectPreviouslyIndexPath() {
@@ -106,7 +146,7 @@ extension ContactsGroupController {
     
     U.UI {
       self.tableView.reloadData()
-      self.handleSelectedAssetsNavigationCount()
+      self.setupSelectedAssetsCount()
     }
   }
   
@@ -123,9 +163,6 @@ extension ContactsGroupController {
   private func handleStartingSelectableAssets() {
     self.didSelectDeselecAllItems()
   }
-}
-
-extension ContactsGroupController {
   
   private func mergeSelectedItems() {
     
@@ -218,9 +255,6 @@ extension ContactsGroupController {
       }
     }
   }
-}
-
-extension ContactsGroupController {
   
   private func deleteContacts(in section: Int,_ completionHandler: @escaping(_ errorsCount: Int) -> Void) {
     P.hideIndicator()
@@ -235,9 +269,6 @@ extension ContactsGroupController {
       }
     }
   }
-}
-
-extension ContactsGroupController {
   
   private func updateContactsGroups(completionHandler: @escaping (_ contactsGroup: [ContactsGroup]) -> Void) {
     
@@ -245,13 +276,6 @@ extension ContactsGroupController {
       completionHandler(contactsGroup)
     }
   }
-}
-
-extension ContactsGroupController: AnimatedProgressDelegate {
-  func didProgressSetCanceled() {}
-}
-
-extension ContactsGroupController {
   
   private func updateRemovedIndexes(_ indexes: [Int], errorsCount: Int) {
     U.UI {
@@ -264,23 +288,23 @@ extension ContactsGroupController {
     self.setupViewModel(contacts: self.contactGroup)
     self.tableView.delegate = self.contactGroupListDataSource
     self.tableView.dataSource = self.contactGroupListDataSource
-    self.handleMergeContactsAppearButton()
+    self.setupMergeContactsAppearButton()
     
     UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
       self.tableView.reloadData()
     } completion: { _ in
       debugPrint("data source reloaded")
-      self.handleSelectedAssetsNavigationCount()
+      self.setupSelectedAssetsCount()
     }
   }
   
   @objc func mergeContactsDidChange(_ notification: Notification) {
     
-    handleMergeContactsAppearButton()
-    handleSelectedAssetsNavigationCount()
+    setupMergeContactsAppearButton()
+    setupSelectedAssetsCount()
   }
   
-  private func handleMergeContactsAppearButton(disableAnimation: Bool = false) {
+  private func setupMergeContactsAppearButton(disableAnimation: Bool = false) {
     
     guard !isDeepCleaningSelectableFlow else {
       bottomButtonHeightConstraint.constant = 0
@@ -314,7 +338,7 @@ extension ContactsGroupController {
     self.view.layoutIfNeeded()
   }
   
-  private func handleSelectedAssetsNavigationCount() {
+  private func setupSelectedAssetsCount() {
     
     guard isDeepCleaningSelectableFlow else { return }
     
@@ -329,8 +353,12 @@ extension ContactsGroupController {
   }
   
   @objc func advertisementDidChange() {
-    self.handleMergeContactsAppearButton(disableAnimation: true)
+    self.setupMergeContactsAppearButton(disableAnimation: true)
   }
+}
+
+extension ContactsGroupController: AnimatedProgressDelegate {
+  func didProgressSetCanceled() {}
 }
 
 extension ContactsGroupController {
@@ -385,7 +413,7 @@ extension ContactsGroupController {
         self.isSelectedAllItems ? self.shareAllItems(with: format) : self.shareSelectedItems(with: format)
       }
       
-      exportContactsController.selectExtraOptionalOption = {
+      exportContactsController.selectOption = {
         Utils.delay(1) {
           debugPrint("do nothing")
         }
@@ -619,49 +647,6 @@ extension ContactsGroupController: ContactsGroupDataSourceDelegate {
 }
 
 extension ContactsGroupController: Themeble {
-  
-  func setupUI() {
-    bottomButtonBarView.setImage(I.systemItems.defaultItems.merge)
-  }
-  
-  func setupNavigation() {
-    
-    self.navigationController?.navigationBar.isHidden = true
-    navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.systemItems.navigationBarItems.back, rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots, contentType: mediaType)
-    if #available(iOS 14.0, *) {
-      dropDownSetup()
-    }
-  }
-  
-  func setupViewModel(contacts: [ContactsGroup]) {
-    self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
-    self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
-    self.contactGroupListDataSource.contentType = self.contentType
-    self.contactGroupListDataSource.delegate = self
-  }
-  
-  private func setupTableView() {
-    tableView.register(UINib(nibName: C.identifiers.xibs.contactGroupHeader, bundle: nil), forHeaderFooterViewReuseIdentifier: C.identifiers.views.contactGroupHeader)
-    tableView.register(UINib(nibName: C.identifiers.xibs.groupContactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.groupContactCell)
-    tableView.delegate = contactGroupListDataSource
-    tableView.dataSource = contactGroupListDataSource
-    tableView.separatorStyle = .none
-    tableView.backgroundColor = .clear
-    tableView.contentInset.top = 20
-  }
-  
-  private func setupObserversAndDelegate() {
-    
-    navigationBar.delegate = self
-    bottomButtonBarView.delegate = self
-    progressAlert.delegate = self
-    
-    SingleContactsGroupOperationMediator.instance.setListener(listener: self)
-    U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(progressDeleteAlertNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(progressMergeAlertNotification(_:)), name: .progressMergeContactsAlertDidChangeProgress, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
-  }
   
   func setupAppearance() {
     

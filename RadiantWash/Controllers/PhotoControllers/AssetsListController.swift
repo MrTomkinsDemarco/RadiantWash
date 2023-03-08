@@ -70,14 +70,6 @@ class AssetsListController: UIViewController {
     updateCachedAssets()
   }
   
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-  }
-}
-
-extension AssetsListController {
-  
   private func showDeleteSelectedAssetsAlert() {
     
     guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
@@ -127,9 +119,6 @@ extension AssetsListController {
     }
     self.photoManager.serviceUtilityOperationsQueuer.addOperation(deleteOperation)
   }
-}
-
-extension AssetsListController {
   
   private func smoothReloadData() {
     UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {
@@ -164,9 +153,6 @@ extension AssetsListController {
     
     return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
   }
-}
-
-extension AssetsListController {
   
   private func handleDeepCleanStarSelectablePHAssets() {
     
@@ -267,9 +253,6 @@ extension AssetsListController {
     }
     self.handleActionButtons()
   }
-}
-
-extension AssetsListController {
   
   private func handleSelectAllButtonState() {
     let rightButtonTitle = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll)
@@ -333,6 +316,102 @@ extension AssetsListController {
       isDeepCleaningSelectableFlow ? self.deepCleanFlowBackActionButton() : self.singleCleanFlowBackActionButton()
     }
   }
+  
+  private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
+    
+    guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+    
+    let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
+    let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaController
+    viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
+    viewController.collectionType = self.collectionType
+    viewController.contentType = self.contentType
+    viewController.mediaType = self.mediaType
+    viewController.focusedIndexPath = indexPath
+    viewController.assetCollection = self.assetCollection
+    viewController.singleSelectionDelegate = self
+    viewController.previuousSelectedIndexPaths = selectedIndexPath
+    self.navigationController?.pushViewController(viewController, animated: true)
+  }
+  
+  private func deepCleanFlowBackActionButton() {
+    
+    P.showIndicator()
+    
+    self.getSelectedPhassetsIDs { ids in
+      P.hideIndicator()
+      self.selectedAssetsDelegate?.didSelect(assetsListIds: ids, contentType: self.mediaType, updatableGroup: [], updatableAssets: self.assetCollection, updatableContactsGroup: [])
+      self.navigationController?.popViewController(animated: true)
+    }
+  }
+  
+  private func singleCleanFlowBackActionButton() {
+    self.changedPhassetCompletionHandler?(assetCollection)
+    self.navigationController?.popViewController(animated: true)
+  }
+  
+  func setupUI() {
+    
+    bottomMenuHeightConstraint.constant = 0
+    navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+    
+    switch mediaType {
+    case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+      self.bottomButtonView.setImage(I.systemItems.defaultItems.recover, with: CGSize(width: 18, height: 24))
+    default:
+      self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+    }
+  }
+  
+  private func setupNavigation() {
+    
+    navigationBar.setupNavigation(title: mediaType.mediaTypeName,
+                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                  rightBarButtonImage: nil,
+                                  contentType: contentType,
+                                  leftButtonTitle: nil,
+                                  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll))
+  }
+  
+  private func setupDelegate() {
+    navigationBar.delegate = self
+    bottomButtonView.delegate = self
+    scrollView.delegate = self
+  }
+  
+  private func setupObservers() {
+    UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+    
+    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
+  }
+  
+  private func updateCachedAssets() {
+    
+    guard isViewLoaded && view.window != nil else { return }
+    
+    let visibleRect = CGRect(origin: collectionView!.contentOffset, size: collectionView!.bounds.size)
+    let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
+    
+    let delta = abs(preheatRect.midY - previousPreheatRect.midY)
+    guard delta > view.bounds.height / 3 else { return }
+    
+    let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
+    let addedAssets = addedRects
+      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+      .compactMap { indexPath in self.assetCollection[indexPath.row] }
+    let _ = removedRects
+      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+      .compactMap { indexPath in self.assetCollection[indexPath.row] }
+    
+    prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+    previousPreheatRect = preheatRect
+  }
+  
+  private func resetCachedAssets() {
+    prefetchCacheImageManager.stopCachingImagesForAllAssets()
+    previousPreheatRect = .zero
+  }
+
 }
 
 extension AssetsListController: PhotoCellDelegate {
@@ -392,80 +471,6 @@ extension AssetsListController: SimpleSelectableAssetsDelegate {
         self.handleSelected(for: selectedIndexPath)
       }
     }
-  }
-}
-
-extension AssetsListController {
-  
-  private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
-    
-    guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
-    
-    let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
-    let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaController
-    viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
-    viewController.collectionType = self.collectionType
-    viewController.contentType = self.contentType
-    viewController.mediaType = self.mediaType
-    viewController.focusedIndexPath = indexPath
-    viewController.assetCollection = self.assetCollection
-    viewController.singleSelectionDelegate = self
-    viewController.previuousSelectedIndexPaths = selectedIndexPath
-    self.navigationController?.pushViewController(viewController, animated: true)
-  }
-  
-  private func deepCleanFlowBackActionButton() {
-    
-    P.showIndicator()
-    
-    self.getSelectedPhassetsIDs { ids in
-      P.hideIndicator()
-      self.selectedAssetsDelegate?.didSelect(assetsListIds: ids, contentType: self.mediaType, updatableGroup: [], updatableAssets: self.assetCollection, updatableContactsGroup: [])
-      self.navigationController?.popViewController(animated: true)
-    }
-  }
-  
-  private func singleCleanFlowBackActionButton() {
-    self.changedPhassetCompletionHandler?(assetCollection)
-    self.navigationController?.popViewController(animated: true)
-  }
-}
-
-extension AssetsListController {
-  
-  func setupUI() {
-    
-    bottomMenuHeightConstraint.constant = 0
-    navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
-    
-    switch mediaType {
-    case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
-      self.bottomButtonView.setImage(I.systemItems.defaultItems.recover, with: CGSize(width: 18, height: 24))
-    default:
-      self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
-    }
-  }
-  
-  private func setupNavigation() {
-    
-    navigationBar.setupNavigation(title: mediaType.mediaTypeName,
-                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                  rightBarButtonImage: nil,
-                                  contentType: contentType,
-                                  leftButtonTitle: nil,
-                                  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll))
-  }
-  
-  private func setupDelegate() {
-    navigationBar.delegate = self
-    bottomButtonView.delegate = self
-    scrollView.delegate = self
-  }
-  
-  private func setupObservers() {
-    UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
-    
-    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
   }
 }
 
@@ -632,36 +637,6 @@ extension AssetsListController: UICollectionViewDelegate, UICollectionViewDataSo
         }
       }
     }
-  }
-}
-
-extension AssetsListController {
-  
-  private func updateCachedAssets() {
-    
-    guard isViewLoaded && view.window != nil else { return }
-    
-    let visibleRect = CGRect(origin: collectionView!.contentOffset, size: collectionView!.bounds.size)
-    let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
-    
-    let delta = abs(preheatRect.midY - previousPreheatRect.midY)
-    guard delta > view.bounds.height / 3 else { return }
-    
-    let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
-    let addedAssets = addedRects
-      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
-      .compactMap { indexPath in self.assetCollection[indexPath.row] }
-    let _ = removedRects
-      .flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
-      .compactMap { indexPath in self.assetCollection[indexPath.row] }
-    
-    prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
-    previousPreheatRect = preheatRect
-  }
-  
-  private func resetCachedAssets() {
-    prefetchCacheImageManager.stopCachingImagesForAllAssets()
-    previousPreheatRect = .zero
   }
 }
 

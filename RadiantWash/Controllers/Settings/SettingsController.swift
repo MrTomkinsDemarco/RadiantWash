@@ -34,7 +34,7 @@ class SettingsController: UIViewController, Storyboarded {
     setupTableView()
     setupDelegate()
     setupAppearance()
-    addSubscriptionChangeObserver()
+    setupSubscriptionObserver()
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -47,22 +47,13 @@ class SettingsController: UIViewController, Storyboarded {
       break
     }
   }
-}
-
-extension SettingsController: SubscriptionObserver {
   
-  func subscriptionDidChange() {
+  func setupUI() {
     
-    Utils.delay(0.3) {
-      self.setupViewModel()
-      self.tableView.delegate = self.settingsDataSource
-      self.tableView.dataSource = self.settingsDataSource
-      self.tableView.reloadDataWithoutAnimation()
+    if !U.hasTopNotch {
+      self.tableView.contentInset.bottom = 20
     }
   }
-}
-
-extension SettingsController {
   
   private func setupViewModel() {
     
@@ -104,9 +95,6 @@ extension SettingsController {
       }
     }
   }
-}
-
-extension SettingsController {
   
   private func setupNavigation() {
     
@@ -137,33 +125,6 @@ extension SettingsController {
     navigationBar.delegate = self
     settingsDataSource.delegate = self
   }
-}
-
-extension SettingsController: Themeble {
-  
-  func setupUI() {
-    
-    if !U.hasTopNotch {
-      self.tableView.contentInset.bottom = 20
-    }
-  }
-  
-  func setupAppearance() {
-    self.view.backgroundColor = theme.backgroundColor
-    self.tableView.backgroundColor = .clear
-  }
-}
-
-extension SettingsController: NavigationBarDelegate {
-  
-  func didTapLeftBarButton(_ sender: UIButton) {
-    self.navigationController?.popViewController(animated: true)
-  }
-  
-  func didTapRightBarButton(_ sender: UIButton) {}
-}
-
-extension SettingsController {
   
   private func setupShowVideoSizeSelectorController(segue: UIStoryboardSegue) {
     
@@ -186,6 +147,36 @@ extension SettingsController {
     segue.messageView.configureNoDropShadow()
     segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh - 50
   }
+}
+
+extension SettingsController: SubscriptionObserver {
+  
+  func subscriptionDidChange() {
+    
+    Utils.delay(0.3) {
+      self.setupViewModel()
+      self.tableView.delegate = self.settingsDataSource
+      self.tableView.dataSource = self.settingsDataSource
+      self.tableView.reloadDataWithoutAnimation()
+    }
+  }
+}
+
+extension SettingsController: Themeble {
+  
+  func setupAppearance() {
+    self.view.backgroundColor = theme.backgroundColor
+    self.tableView.backgroundColor = .clear
+  }
+}
+
+extension SettingsController: NavigationBarDelegate {
+  
+  func didTapLeftBarButton(_ sender: UIButton) {
+    self.navigationController?.popViewController(animated: true)
+  }
+  
+  func didTapRightBarButton(_ sender: UIButton) {}
 }
 
 extension SettingsController: SettingActionsDelegate {

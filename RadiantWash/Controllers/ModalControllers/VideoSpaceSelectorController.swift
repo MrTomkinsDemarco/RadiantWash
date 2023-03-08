@@ -69,7 +69,7 @@ class VideoSpaceSelectorController: UIViewController {
     setupNavigation()
     setupUI()
     setupStepSlider()
-    setSliderIndex()
+    setupSliderIndex()
     setupDelegate()
     setupAppearance()
   }
@@ -79,84 +79,6 @@ class VideoSpaceSelectorController: UIViewController {
     
     mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
   }
-}
-
-extension VideoSpaceSelectorController {
-  
-  @objc func changeSliderValue() {
-    switch sizeControll.index {
-    case 0:
-      setSliderValue(.superLow)
-    case 1:
-      setSliderValue(.low)
-    case 2:
-      setSliderValue(.medium)
-    case 3:
-      setSliderValue(.midleHight)
-    case 4:
-      setSliderValue(.hight)
-    default:
-      setSliderValue(.superHight)
-    }
-  }
-  
-  private func setSliderValue(_ size: LargeVideoSize) {
-    self.largeVideoSize = size
-  }
-  
-  private func setSliderIndex() {
-    
-    let size = SettingsManager.largeVideoLowerSize
-    let index = self.getSliderIndex(rawValue: size)
-    self.sizeControll.index = index
-    changeSliderValue()
-  }
-  
-  private func getSliderIndex(rawValue: Int64) -> UInt {
-    switch rawValue {
-    case LargeVideoSize.superLow.rawValue:
-      return 0
-    case LargeVideoSize.low.rawValue:
-      return 1
-    case LargeVideoSize.medium.rawValue:
-      return 2
-    case LargeVideoSize.midleHight.rawValue:
-      return 3
-    case LargeVideoSize.hight.rawValue:
-      return 4
-    case LargeVideoSize.superHight.rawValue:
-      return 5
-    default:
-      return 2
-    }
-  }
-}
-
-extension VideoSpaceSelectorController: BottomActionButtonDelegate {
-  
-  func didTapActionButton() {
-    
-    if let size = self.largeVideoSize {
-      SettingsManager.largeVideoLowerSize = size.rawValue
-    }
-    self.closeSizePicker()
-  }
-  
-  private func closeSizePicker() {
-    self.dismiss(animated: true) {}
-  }
-}
-
-extension VideoSpaceSelectorController: StartingNavigationBarDelegate {
-  
-  func didTapLeftBarButtonItem(_ sender: UIButton) {}
-  
-  func didTapRightBarButtonItem(_ sender: UIButton) {
-    self.dismiss(animated: true)
-  }
-}
-
-extension VideoSpaceSelectorController {
   
   private func setupNavigation() {
     
@@ -215,6 +137,78 @@ extension VideoSpaceSelectorController {
     
     navigationBar.delegate = self
     bottomButtonView.delegate = self
+  }
+  
+  @objc func changeSliderValue() {
+    switch sizeControll.index {
+    case 0:
+      setupSliderValue(.superLow)
+    case 1:
+      setupSliderValue(.low)
+    case 2:
+      setupSliderValue(.medium)
+    case 3:
+      setupSliderValue(.midleHight)
+    case 4:
+      setupSliderValue(.hight)
+    default:
+      setupSliderValue(.superHight)
+    }
+  }
+  
+  private func setupSliderValue(_ size: LargeVideoSize) {
+    self.largeVideoSize = size
+  }
+  
+  private func setupSliderIndex() {
+    
+    let size = SettingsManager.largeVideoLowerSize
+    let index = self.getSliderIndex(rawValue: size)
+    self.sizeControll.index = index
+    changeSliderValue()
+  }
+  
+  private func getSliderIndex(rawValue: Int64) -> UInt {
+    switch rawValue {
+    case LargeVideoSize.superLow.rawValue:
+      return 0
+    case LargeVideoSize.low.rawValue:
+      return 1
+    case LargeVideoSize.medium.rawValue:
+      return 2
+    case LargeVideoSize.midleHight.rawValue:
+      return 3
+    case LargeVideoSize.hight.rawValue:
+      return 4
+    case LargeVideoSize.superHight.rawValue:
+      return 5
+    default:
+      return 2
+    }
+  }
+}
+
+extension VideoSpaceSelectorController: BottomActionButtonDelegate {
+  
+  func didTapActionButton() {
+    
+    if let size = self.largeVideoSize {
+      SettingsManager.largeVideoLowerSize = size.rawValue
+    }
+    self.closeSizePicker()
+  }
+  
+  private func closeSizePicker() {
+    self.dismiss(animated: true) {}
+  }
+}
+
+extension VideoSpaceSelectorController: StartingNavigationBarDelegate {
+  
+  func didTapLeftBarButtonItem(_ sender: UIButton) {}
+  
+  func didTapRightBarButtonItem(_ sender: UIButton) {
+    self.dismiss(animated: true)
   }
 }
 

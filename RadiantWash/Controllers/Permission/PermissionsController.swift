@@ -36,13 +36,44 @@ class PermissionsController: UIViewController, Storyboarded {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    handlePermissionHasActive()
+    setupPermissionHasActive()
   }
-}
-
-extension PermissionsController {
   
-  private func handleContineButton() {
+  private func setupUI() {
+    
+    self.navigationController?.navigationBar.isHidden = true
+  }
+  
+  private func setupNavigation() {
+    
+    let navigationBarHeight = AppDimensions.NavigationBar.navigationBarHeight
+    navigationBarHeightConstraint.constant = !fromRootViewController ? navigationBarHeight : 0
+    
+    navigationBar.layoutIfNeeded()
+    self.view.layoutIfNeeded()
+    
+    if !fromRootViewController {
+      navigationBar.setupNavigation(title: self.permissionViewModel.title,
+                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                    rightBarButtonImage: nil,
+                                    contentType: .none,
+                                    leftButtonTitle: nil,
+                                    rightButtonTitle: nil)
+    } else {
+      navigationBar.isHidden = true
+    }
+  }
+  
+  private func setupDelegate() {
+    navigationBar.delegate = self
+  }
+  
+  private func setupObservers() {
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(self.applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+  }
+  
+  private func setupContineButton() {
     
     if #available(iOS 14.5, *) {
       if AppTrackerPermissions().notDetermined {
@@ -50,14 +81,14 @@ extension PermissionsController {
           AppTrackerPermissions().requestForPermission { _, _ in }
         }
       } else {
-        self.handleAtLeastOnePermission()
+        self.setupAtLeastOnePermission()
       }
     } else {
-      self.handleAtLeastOnePermission()
+      self.setupAtLeastOnePermission()
     }
   }
   
-  private func handleAtLeastOnePermission() {
+  private func setupAtLeastOnePermission() {
     
     if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
       AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
@@ -69,7 +100,7 @@ extension PermissionsController {
     }
   }
   
-  private func handlePermissionChange(at cell: PermissionCell, with permission: Permission) {
+  private func setupPermissionChange(at cell: PermissionCell, with permission: Permission) {
     
     switch permission.status {
     case .authorized:
@@ -85,7 +116,7 @@ extension PermissionsController {
     }
   }
   
-  private func handlePermissionHasActive() {
+  private func setupPermissionHasActive() {
     
     guard fromRootViewController, !SettingsManager.application.firstTimeApplicationStart else { return }
     
@@ -138,18 +169,6 @@ extension PermissionsController {
       self.tableView.reloadData()
     }
   }
-}
-
-extension PermissionsController: NavigationBarDelegate {
-  
-  func didTapLeftBarButton(_ sender: UIButton) {
-    self.navigationController?.popViewController(animated: true)
-  }
-  
-  func didTapRightBarButton(_ sender: UIButton) {}
-}
-
-extension PermissionsController {
   
   private func setupViewModel() {
     
@@ -171,11 +190,11 @@ extension PermissionsController {
     self.permissionDataSource.fromRootViewController = self.fromRootViewController
     
     self.permissionDataSource.permissionActionDidChange = { cell, permission in
-      self.handlePermissionChange(at: cell, with: permission)
+      self.setupPermissionChange(at: cell, with: permission)
     }
     
     self.permissionDataSource.handleContinueButton = {
-      self.handleContineButton()
+      self.setupContineButton()
     }
   }
   
@@ -194,41 +213,16 @@ extension PermissionsController {
   }
 }
 
+extension PermissionsController: NavigationBarDelegate {
+  
+  func didTapLeftBarButton(_ sender: UIButton) {
+    self.navigationController?.popViewController(animated: true)
+  }
+  
+  func didTapRightBarButton(_ sender: UIButton) {}
+}
+
 extension PermissionsController: Themeble {
-  
-  private func setupUI() {
-    
-    self.navigationController?.navigationBar.isHidden = true
-  }
-  
-  private func setupNavigation() {
-    
-    let navigationBarHeight = AppDimensions.NavigationBar.navigationBarHeight
-    navigationBarHeightConstraint.constant = !fromRootViewController ? navigationBarHeight : 0
-    
-    navigationBar.layoutIfNeeded()
-    self.view.layoutIfNeeded()
-    
-    if !fromRootViewController {
-      navigationBar.setupNavigation(title: self.permissionViewModel.title,
-                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                    rightBarButtonImage: nil,
-                                    contentType: .none,
-                                    leftButtonTitle: nil,
-                                    rightButtonTitle: nil)
-    } else {
-      navigationBar.isHidden = true
-    }
-  }
-  
-  private func setupDelegate() {
-    navigationBar.delegate = self
-  }
-  
-  private func setupObservers() {
-    
-    NotificationCenter.default.addObserver(self, selector: #selector(self.applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-  }
   
   func setupAppearance() {
     self.view.backgroundColor = theme.backgroundColor

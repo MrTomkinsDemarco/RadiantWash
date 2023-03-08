@@ -85,6 +85,123 @@ class SubscriptionController: UIViewController, Storyboarded {
     self.navigationController?.setNavigationBarHidden(true, animated: animated)
   }
   
+  private func setupObserver() {
+    
+    U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
+  }
+  
+  private func setupDelegate() {
+    
+    segmentControll.delegate = self
+  }
+  
+  private func setupNavigation() {
+    
+    navigationBar.delegate = self
+    navigationBar.setUpNavigation(lefTitle: LocalizationService.Buttons.getButtonTitle(of: .restore),
+                                  leftImage: I.systemItems.defaultItems.circleArrow,
+                                  rightImage: I.systemItems.navigationBarItems.dissmiss)
+    navigationBar.configureLeftButtonAppearance(tintColor: theme.navigationBarButtonTintColor,
+                                                textColor: theme.navigationBarButtonTintColor,
+                                                font: .systemFont(ofSize: 12, weight: .medium))
+    navigationBar.configureRightButtonAppearance(tintColor: theme.navigationBarButtonTintColor)
+  }
+  
+  private func setupTableView() {
+    
+    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.premiumFeature, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.premiumFeature)
+    self.tableView.separatorStyle = .none
+    self.tableView.alwaysBounceVertical = false
+  }
+  
+  private func setupUI() {
+    
+    premiumImageView.isHidden = true
+    backgroundImageView.image = Images.subsctiption.rocket
+    
+    subscribeContainerView.delegate = self
+    subscribeContainerView.setButtonSideOffset(25)
+    subscribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
+    
+    termsOfUseButton.setTitle(Localization.Subscription.Helper.termsOfUse, for: .normal)
+    termsOfUseButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
+    policyButton.setTitle(Localization.Subscription.Helper.privicy, for: .normal)
+    policyButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
+    
+    switch Screen.size {
+    case .small:
+      termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
+    default:
+      termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
+    }
+  }
+  
+  private func setupLayout() {
+    
+    switch Screen.size {
+      
+    case .small:
+      dimmerVewHeightConstraint.constant = 85
+      titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
+      subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.7)
+      subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.5)
+      
+      titleStackContainerBottomConstraint.constant = -10
+      titleStackContainerTopConstraint.constant = 0
+      
+      backgroundImageViewTopConstraint.constant = -180
+      backgroundImageViewLeadingConstraint.constant = -60
+    case .medium:
+      dimmerVewHeightConstraint.constant = 103
+      titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
+      subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.6)
+      subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.4)
+      
+      titleStackContainerBottomConstraint.constant = -10
+      titleStackContainerTopConstraint.constant = 0
+      
+      backgroundImageViewTopConstraint.constant = -240
+      backgroundImageViewLeadingConstraint.constant = -90
+    case .plus:
+      dimmerVewHeightConstraint.constant = 120
+      subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.3)
+      backgroundImageViewTopConstraint.constant = -260
+      backgroundImageViewLeadingConstraint.constant = -100
+    case .large:
+      dimmerVewHeightConstraint.constant = 135
+      
+      backgroundImageViewTopConstraint.constant = -170
+      backgroundImageViewLeadingConstraint.constant = -80
+    case .modern:
+      dimmerVewHeightConstraint.constant = 140
+      
+      backgroundImageViewTopConstraint.constant = -190
+      backgroundImageViewLeadingConstraint.constant = -90
+    case .pro:
+      dimmerVewHeightConstraint.constant = 145
+      
+      backgroundImageViewTopConstraint.constant = -193
+      backgroundImageViewLeadingConstraint.constant = -95
+      
+    case .max:
+      dimmerVewHeightConstraint.constant = 153
+      
+      backgroundImageViewTopConstraint.constant = -195
+      backgroundImageViewLeadingConstraint.constant = -100
+      
+    case .madMax:
+      dimmerVewHeightConstraint.constant = 155
+      
+      backgroundImageViewTopConstraint.constant = -200
+      backgroundImageViewLeadingConstraint.constant = -100
+    case .proMax:
+      dimmerVewHeightConstraint.constant = 160
+      
+      backgroundImageViewTopConstraint.constant = -210
+      backgroundImageViewLeadingConstraint.constant = -110
+    }
+  }
+  
   @IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
     self.didTapShowPolicy()
     
@@ -199,12 +316,12 @@ extension SubscriptionController {
         self.segmentControll.setSubscription(subscriptions: currentModel)
         self.setupSubscriptionSegment()
         completionHandler(.didLoad)
-        self.selectPriorytySubscription()
+        self.selectPrioritySubscription()
       }
     }
   }
   
-  private func selectPriorytySubscription() {
+  private func selectPrioritySubscription() {
     
     guard segmentControll.subscriptions != nil else { return }
     
@@ -220,7 +337,6 @@ extension SubscriptionController {
         UIPresenter.closePresentedWindow()
       } else {
         self.dismiss(animated: true)
-        //        UIPresenter.closePresentedWindow()
       }
     }
   }
@@ -410,57 +526,6 @@ extension SubscriptionController: SubscriptionSegmentControllDelegate {
 
 extension SubscriptionController: Themeble {
   
-  private func setupObserver() {
-    
-    U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
-  }
-  
-  private func setupDelegate() {
-    
-    segmentControll.delegate = self
-  }
-  
-  private func setupNavigation() {
-    
-    navigationBar.delegate = self
-    navigationBar.setUpNavigation(lefTitle: LocalizationService.Buttons.getButtonTitle(of: .restore),
-                                  leftImage: I.systemItems.defaultItems.circleArrow,
-                                  rightImage: I.systemItems.navigationBarItems.dissmiss)
-    navigationBar.configureLeftButtonAppearance(tintColor: theme.navigationBarButtonTintColor,
-                                                textColor: theme.navigationBarButtonTintColor,
-                                                font: .systemFont(ofSize: 12, weight: .medium))
-    navigationBar.configureRightButtonAppearance(tintColor: theme.navigationBarButtonTintColor)
-  }
-  
-  private func setupTableView() {
-    
-    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.premiumFeature, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.premiumFeature)
-    self.tableView.separatorStyle = .none
-    self.tableView.alwaysBounceVertical = false
-  }
-  
-  private func setupUI() {
-    
-    premiumImageView.isHidden = true
-    backgroundImageView.image = Images.subsctiption.rocket
-    
-    subscribeContainerView.delegate = self
-    subscribeContainerView.setButtonSideOffset(25)
-    subscribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
-    
-    termsOfUseButton.setTitle(Localization.Subscription.Helper.termsOfUse, for: .normal)
-    termsOfUseButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
-    policyButton.setTitle(Localization.Subscription.Helper.privicy, for: .normal)
-    policyButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
-    
-    switch Screen.size {
-    case .small:
-      termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
-    default:
-      termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
-    }
-  }
-  
   func setupAppearance() {
     
     self.view.backgroundColor = .clear
@@ -477,75 +542,6 @@ extension SubscriptionController: Themeble {
     termsOfUseButton.underline()
     
     self.segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
-  }
-}
-
-extension SubscriptionController {
-  
-  private func setupLayout() {
-    
-    switch Screen.size {
-      
-    case .small:
-      dimmerVewHeightConstraint.constant = 85
-      titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
-      subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.7)
-      subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.5)
-      
-      titleStackContainerBottomConstraint.constant = -10
-      titleStackContainerTopConstraint.constant = 0
-      
-      backgroundImageViewTopConstraint.constant = -180
-      backgroundImageViewLeadingConstraint.constant = -60
-    case .medium:
-      dimmerVewHeightConstraint.constant = 103
-      titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
-      subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.6)
-      subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.4)
-      
-      titleStackContainerBottomConstraint.constant = -10
-      titleStackContainerTopConstraint.constant = 0
-      
-      backgroundImageViewTopConstraint.constant = -240
-      backgroundImageViewLeadingConstraint.constant = -90
-    case .plus:
-      dimmerVewHeightConstraint.constant = 120
-      subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.3)
-      backgroundImageViewTopConstraint.constant = -260
-      backgroundImageViewLeadingConstraint.constant = -100
-    case .large:
-      dimmerVewHeightConstraint.constant = 135
-      
-      backgroundImageViewTopConstraint.constant = -170
-      backgroundImageViewLeadingConstraint.constant = -80
-    case .modern:
-      dimmerVewHeightConstraint.constant = 140
-      
-      backgroundImageViewTopConstraint.constant = -190
-      backgroundImageViewLeadingConstraint.constant = -90
-    case .pro:
-      dimmerVewHeightConstraint.constant = 145
-      
-      backgroundImageViewTopConstraint.constant = -193
-      backgroundImageViewLeadingConstraint.constant = -95
-      
-    case .max:
-      dimmerVewHeightConstraint.constant = 153
-      
-      backgroundImageViewTopConstraint.constant = -195
-      backgroundImageViewLeadingConstraint.constant = -100
-      
-    case .madMax:
-      dimmerVewHeightConstraint.constant = 155
-      
-      backgroundImageViewTopConstraint.constant = -200
-      backgroundImageViewLeadingConstraint.constant = -100
-    case .proMax:
-      dimmerVewHeightConstraint.constant = 160
-      
-      backgroundImageViewTopConstraint.constant = -210
-      backgroundImageViewLeadingConstraint.constant = -110
-    }
   }
 }
 

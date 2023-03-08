@@ -43,37 +43,12 @@ class OnboardingController: UIPageViewController, Storyboarded {
     
     self.navigationController?.setNavigationBarHidden(true, animated: animated)
   }
-}
-
-extension OnboardingController {
   
-  private func onboardingWillPass() {
-    self.coordinator?.currentState = .permission
-    self.coordinator?.showPermissionViewController()
-  }
-  
-  private func showNextPage(with index: Int) {
+  private func setupUI() {
     
-    guard self.onboardingViewModel.onboarding.count > index else { return }
-    self.setViewControllers([self.onboardingViewModel.viewController(from: index)], direction: .forward, animated: true, completion: nil)
+    scrollView = view.subviews.filter{ $0 is UIScrollView }.first as? UIScrollView
+    scrollView?.delegate = self
   }
-}
-
-extension OnboardingController: BottomActionButtonDelegate {
-  
-  func didTapActionButton() {
-    
-    let index = self.pageControl.currentPage + 1
-    
-    if onboardingViewModel.onboarding.count == index {
-      self.onboardingWillPass()
-    } else {
-      self.showNextPage(with: index)
-    }
-  }
-}
-
-extension OnboardingController {
   
   private func setupViewModel() {
     
@@ -162,15 +137,34 @@ extension OnboardingController {
     coordinator?.currentState = .permission
     coordinator?.showPermissionViewController()
   }
+  
+  private func onboardingWillPass() {
+    self.coordinator?.currentState = .permission
+    self.coordinator?.showPermissionViewController()
+  }
+  
+  private func showNextPage(with index: Int) {
+    
+    guard self.onboardingViewModel.onboarding.count > index else { return }
+    self.setViewControllers([self.onboardingViewModel.viewController(from: index)], direction: .forward, animated: true, completion: nil)
+  }
+}
+
+extension OnboardingController: BottomActionButtonDelegate {
+  
+  func didTapActionButton() {
+    
+    let index = self.pageControl.currentPage + 1
+    
+    if onboardingViewModel.onboarding.count == index {
+      self.onboardingWillPass()
+    } else {
+      self.showNextPage(with: index)
+    }
+  }
 }
 
 extension OnboardingController: Themeble {
-  
-  private func setupUI() {
-    
-    scrollView = view.subviews.filter{ $0 is UIScrollView }.first as? UIScrollView
-    scrollView?.delegate = self
-  }
   
   func setupAppearance() {
     

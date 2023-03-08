@@ -18,7 +18,7 @@ protocol SubscriptionObserveDelegate: AnyObject {}
 
 extension SubscriptionObserveDelegate {
   
-  func addSubscriptionChangeObserver(notificationCenter: NotificationCenter = NotificationCenter.default) {
+  func setupSubscriptionObserver(notificationCenter: NotificationCenter = NotificationCenter.default) {
     
     notificationCenter.addObserver(forName: .premiumDidChange, object: nil, queue: nil) { [weak self] _ in
       if let subscriptionUpdateObject = self as? SubscriptionUpdateDelegate {

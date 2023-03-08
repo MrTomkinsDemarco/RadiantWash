@@ -25,7 +25,7 @@ class LocationController: UIViewController {
   
   private var locationViewLayout: LocationViewLayout = .map {
     didSet {
-      self.setContainer(layout: self.locationViewLayout)
+      self.setupContainer(layout: self.locationViewLayout)
     }
   }
   
@@ -55,8 +55,6 @@ class LocationController: UIViewController {
     setupDataSource()
     setupUI()
     setupNavigationBar()
-    setupAppearance()
-    self.containerView.isHidden = true
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -67,28 +65,42 @@ class LocationController: UIViewController {
       return
     }
   }
-}
-
-extension LocationController: NavigationBarDelegate {
   
-  func didTapLeftBarButton(_ sender: UIButton) {
-    self.navigationController?.popViewController(animated: true)
+  func setupGridController() {
+    
+    self.addChild(locationGridController)
+    locationGridController.view.frame = containerView.bounds
+    containerView.addSubview(locationGridController.view)
+    locationGridController.didMove(toParent: self)
   }
   
-  func didTapRightBarButton(_ sender: UIButton) {
-    switch locationViewLayout {
-    case .map:
-      guard !self.visibleAssetCollection.isEmpty else { return }
-      setupGridLocationList(with: self.visibleAssetCollection)
-      locationViewLayout = .grid
-    case .grid:
-      setupGridLocationList(with: [])
-      locationViewLayout = .map
-    }
+  func setupUI() {
+    
+    mapView.showsCompass = false
+    mapView.showsUserLocation = false
+    mapView.overrideUserInterfaceStyle = .dark
+    containerView.isHidden = true
   }
-}
-
-extension LocationController {
+  
+  func setupNavigationBar() {
+    
+    navigationBar.setIsDropShadow = self.locationViewLayout == .grid
+    let rightBarButtonScaleFactor: CGFloat = self.locationViewLayout == .grid ? 0.7 : 0.9
+    let rightBarButtonImage: UIImage = self.locationViewLayout == .grid ? Images.location.map : Images.location.grid
+    navigationBar.setupNavigation(title: self.title,
+                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                  rightBarButtonImage: rightBarButtonImage,
+                                  rightImageScaleFactor: rightBarButtonScaleFactor,
+                                  contentType: .userPhoto,
+                                  leftButtonTitle: nil, rightButtonTitle: nil)
+  }
+  
+  func setupDelegate() {
+    
+    self.mapView.delegate = self
+    self.navigationBar.delegate = self
+    self.locationGridController.delegate = self
+  }
   
   private func setupDataSource() {
     
@@ -106,7 +118,7 @@ extension LocationController {
     locationGridController.setupViewModel(with: assets)
   }
   
-  private func setContainer(layout view: LocationViewLayout) {
+  private func setupContainer(layout view: LocationViewLayout) {
     
     setupNavigationBar()
     
@@ -136,6 +148,25 @@ extension LocationController {
           self.removeLocationOperation(with: [phasset]) { _ in }
         }
       }
+    }
+  }
+}
+
+extension LocationController: NavigationBarDelegate {
+  
+  func didTapLeftBarButton(_ sender: UIButton) {
+    self.navigationController?.popViewController(animated: true)
+  }
+  
+  func didTapRightBarButton(_ sender: UIButton) {
+    switch locationViewLayout {
+    case .map:
+      guard !self.visibleAssetCollection.isEmpty else { return }
+      setupGridLocationList(with: self.visibleAssetCollection)
+      locationViewLayout = .grid
+    case .grid:
+      setupGridLocationList(with: [])
+      locationViewLayout = .map
     }
   }
 }
@@ -255,42 +286,5 @@ extension LocationController: ClusterManagerDelegate {
   
   func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
     return !(annotation is ClusterAnnotation)
-  }
-}
-
-extension LocationController: Themeble {
-  
-  func setupGridController() {
-    
-    self.addChild(locationGridController)
-    locationGridController.view.frame = containerView.bounds
-    containerView.addSubview(locationGridController.view)
-    locationGridController.didMove(toParent: self)
-  }
-  
-  func setupUI() {
-    mapView.showsCompass = false
-    mapView.showsUserLocation = false
-    mapView.overrideUserInterfaceStyle = .dark
-  }
-  func setupAppearance() {}
-  
-  func setupNavigationBar() {
-    navigationBar.setIsDropShadow = self.locationViewLayout == .grid
-    let rightBarButtonScaleFactor: CGFloat = self.locationViewLayout == .grid ? 0.7 : 0.9
-    let rightBarButtonImage: UIImage = self.locationViewLayout == .grid ? Images.location.map : Images.location.grid
-    navigationBar.setupNavigation(title: self.title,
-                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                  rightBarButtonImage: rightBarButtonImage,
-                                  rightImageScaleFactor: rightBarButtonScaleFactor,
-                                  contentType: .userPhoto,
-                                  leftButtonTitle: nil, rightButtonTitle: nil)
-  }
-  
-  func setupDelegate() {
-    
-    self.mapView.delegate = self
-    self.navigationBar.delegate = self
-    self.locationGridController.delegate = self
   }
 }

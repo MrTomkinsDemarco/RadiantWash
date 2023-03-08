@@ -37,9 +37,28 @@ class LocationInfoController: UIViewController {
     
     self.mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
   }
-}
-
-extension LocationInfoController {
+  
+  func setupUI() {
+    
+    mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
+    
+    let containerHeight: CGFloat = AppDimensions.ModalControllerSettings.mainContainerHeight
+    self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
+    mainContainerHeightConstraint.constant = containerHeight
+    
+    bottomButtonMenuHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
+    bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .removeLocation).uppercased())
+    bottomButtonView.setImage(Images.location.pin)
+    
+    bottomButtonView.delegate = self
+  }
+  
+  func setupNavigation() {
+    
+    navigationBar.setUpNavigation(title: self.title, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
+    navigationBar.topShevronEnable = true
+    navigationBar.delegate = self
+  }
   
   public func setupLocationData() {
     
@@ -166,28 +185,6 @@ extension LocationInfoController: StartingNavigationBarDelegate {
 }
 
 extension LocationInfoController: Themeble {
-  
-  func setupUI() {
-    
-    mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
-    
-    let containerHeight: CGFloat = AppDimensions.ModalControllerSettings.mainContainerHeight
-    self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
-    mainContainerHeightConstraint.constant = containerHeight
-    
-    bottomButtonMenuHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
-    bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .removeLocation).uppercased())
-    bottomButtonView.setImage(Images.location.pin)
-    
-    bottomButtonView.delegate = self
-  }
-  
-  func setupNavigation() {
-    
-    navigationBar.setUpNavigation(title: self.title, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
-    navigationBar.topShevronEnable = true
-    navigationBar.delegate = self
-  }
   
   func setupAppearance() {
     

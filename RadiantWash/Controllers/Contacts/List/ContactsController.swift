@@ -69,7 +69,7 @@ class ContactsController: UIViewController {
     setupObservers()
     setupTableView()
     setupAppearance()
-    handleBottomButtonChangeAppearence(disableAnimation: true)
+    setupBottomButtonAppearence(disableAnimation: true)
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -86,9 +86,174 @@ class ContactsController: UIViewController {
       return
     }
   }
-}
-
-extension ContactsController {
+  
+  private func setupTableView() {
+    
+    tableView.register(UINib(nibName: C.identifiers.xibs.contactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contactCell)
+    if contentType == .allContacts {
+      tableView.delegate = contactListDataSource
+      tableView.dataSource = contactListDataSource
+    } else if contentType == .emptyContacts {
+      tableView.delegate = emptyContactGroupListDataSource
+      tableView.dataSource = emptyContactGroupListDataSource
+    }
+    tableView.separatorStyle = .singleLine
+    tableView.sectionIndexColor = theme.contacSectionIndexColor
+    tableView.keyboardDismissMode = .onDrag
+    tableView.backgroundColor = theme.backgroundColor
+  }
+  
+  private func smoothReloadData(with duration: Double = 0.25) {
+    
+    UIView.transition(with: self.tableView, duration: duration, options: .transitionCrossDissolve) {
+      self.tableView.reloadData()
+    } completion: { _ in
+      debugPrint("data source reloaded")
+    }
+  }
+  
+  private func smoothReloadData(at indexPaths: [IndexPath]) {
+    UIView.transition(with: self.tableView, duration: 0.75, options: .transitionCrossDissolve) {
+      self.tableView.reloadRows(at: indexPaths, with: .none)
+    } completion: { _ in
+      debugPrint("data source reloaded")
+    }
+  }
+  
+  private func setupDelegate() {
+    
+    navigationBar.delegate = self
+    searchBarView.searchBar.delegate = self
+    bottomDoubleButtonView.delegate = self
+    bottomButtonView.delegate = self
+    progressAlert.delegate = self
+  }
+  
+  private func setupObservers() {
+    
+    U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(resetSearchBarState), name: .searchBarDidCancel, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(searchBarClearButtonClicked), name: .searchBarClearButtonClicked, object: nil)
+    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
+  }
+  
+  private func setupNavigation() {
+    
+    self.navigationController?.navigationBar.isHidden = true
+    
+    if contentType == .allContacts {
+      navigationBar.setIsDropShadow = false
+      self.searchBarIsHiden = false
+      navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                    rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+                                    contentType: .userContacts,
+                                    leftButtonTitle: nil,
+                                    rightButtonTitle: nil)
+    } else if contentType == .emptyContacts {
+      self.searchBarIsHiden = true
+      navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                    rightBarButtonImage: nil,
+                                    contentType: .userContacts,
+                                    leftButtonTitle: nil, rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .edit))
+    }
+  }
+  
+  private func setupForDeepCleanNavigation() {
+    
+    let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
+    self.searchBarIsHiden = true
+    navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                  rightBarButtonImage: nil,
+                                  contentType: .userContacts,
+                                  leftButtonTitle: nil, rightButtonTitle: rightNavigationTitle)
+  }
+  
+  private func setNavigationEditMode(isEditing: Bool) {
+    
+    if isEditing {
+      let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
+      self.navigationBar.changeHotLeftTitle(newTitle: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+      self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
+    } else {
+      setupNavigation()
+    }
+  }
+  
+  private func setupUI() {
+    
+    if #available(iOS 15.0, *) {
+      tableView.sectionHeaderTopPadding = 0
+    }
+    
+    if #available(iOS 14.0, *) {
+      setupDropDown()
+    }
+    
+    searchBarHeightConstraint.constant = self.searchBarIsHiden ? 10 : AppDimensions.ContactsController.SearchBar.searchBarContainerHeight
+    searchBarView.isHidden = self.searchBarIsHiden
+    
+    searchBarTopConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarTopInset
+    
+    bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
+    bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
+    bottomDoubleButtonView.setLeftButtonTitle(LocalizationService.Buttons.getButtonTitle(of: .share))
+    
+    bottomButtonView.setImage(I.systemItems.defaultItems.delete)
+  }
+  
+  private func setupViewModel(contacts: [CNContact], reloadData: Bool = true) {
+    self.contactListViewModel = ContactListViewModel(contacts: contacts)
+    self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
+    self.contactListDataSource.delegate = self
+    self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
+      _ = self.contactListViewModel.contactsArray
+      reloadData ? self.smoothReloadData() : ()
+    }
+    
+    self.contactListDataSource.didSelectViewContactInfo = { contact, indexPath in
+      self.selectContactInfo(with: contact, at: indexPath)
+    }
+  }
+  
+  private func setupGroupViewModel(contacts: [ContactsGroup]) {
+    self.emptyContactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
+    self.emptyContactGroupListDataSource = EmptyContactListDataSource(viewModel: self.emptyContactGroupListViewModel, contentType: self.contentType)
+    self.emptyContactGroupListDataSource.delegate = self
+    self.emptyContactGroupListDataSource.didSelectViewContactInfo = { contact, indexPath in
+      self.selectContactInfo(with: contact, at: indexPath)
+    }
+  }
+  
+  private func setupShowExportContactController(segue: UIStoryboardSegue) {
+    
+    guard let segue = segue as? SwiftMessagesSegue else { return }
+    
+    segue.configure(layout: .bottomMessage)
+    segue.dimMode = .gray(interactive: true)
+    segue.interactiveHide = true
+    segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+    segue.messageView.configureNoDropShadow()
+    
+    if let exportContactsController = segue.destination as? ExportContactsController {
+      exportContactsController.leftExportFileFormat = .vcf
+      exportContactsController.rightExportFileFormat = .csv
+      
+      exportContactsController.selectExportFormatCompletion = { format in
+        self.contactContentIsEditing ? self.exportSelectedContacts(with: format) : self.exportAllContacts(with: format)
+      }
+      
+      exportContactsController.selectOption = {
+        self.contactContentIsEditing ? self.didTapCancelEditingButton() : ()
+      }
+    }
+  }
   
   private func setupDataSource() {
     
@@ -102,16 +267,13 @@ extension ContactsController {
     if contentType == .allContacts {
       setupViewModel(contacts: self.contacts)
     } else if contentType == .emptyContacts {
-      setupGroupViemodel(contacts: self.contactGroup)
+      setupGroupViewModel(contacts: self.contactGroup)
     }
   }
-}
-
-extension ContactsController {
   
   @objc func didSelectDeselectContact() {
-    handleBottomButtonChangeAppearence()
-    handleSelectAssetsNavigationCount()
+    setupBottomButtonAppearence()
+    setupSelectAssetsCount()
   }
   
   private func selectedItems() -> Int {
@@ -127,7 +289,7 @@ extension ContactsController {
     self.subscriptionManager.purchasePremiumHandler { status in
       switch status {
       case .lifetime, .purchasedPremium:
-        self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+        self.setupSelectDeselectAll(setSelect: !isSelectedAllItems)
       case .nonPurchased:
         var contactsCount: Int {
           if self.contentType == .emptyContacts {
@@ -138,7 +300,7 @@ extension ContactsController {
         }
         
         if contactsCount < LimitAccessType.selectAllContacts.selectAllLimit {
-          self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+          self.setupSelectDeselectAll(setSelect: !isSelectedAllItems)
         }  else {
           self.subscriptionManager.limitVersionActionHandler(of: .selectAllContacts, at: self)
         }
@@ -146,7 +308,7 @@ extension ContactsController {
     }
   }
   
-  private func handleSelectDeselectAll(setSelect: Bool) {
+  private func setupSelectDeselectAll(setSelect: Bool) {
     
     if contacts.count > 1000 {
       U.UI {
@@ -155,15 +317,15 @@ extension ContactsController {
     }
     U.delay(0.5) {
       self.navigationBar.handleChangeRightButtonSelectState(selectAll: setSelect)
-      self.setContactsSelect(setSelect) {
+      self.setupContactsSelect(setSelect) {
         P.hideIndicator()
-        self.handleBottomButtonChangeAppearence()
-        self.handleSelectAssetsNavigationCount()
+        self.setupBottomButtonAppearence()
+        self.setupSelectAssetsCount()
       }
     }
   }
   
-  private func handleSelectAssetsNavigationCount() {
+  private func setupSelectAssetsCount() {
     
     guard isDeepCleaningSelectableFlow else { return }
     
@@ -177,7 +339,7 @@ extension ContactsController {
     self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
   }
   
-  private func setCancelAndDeselectAllItems() {
+  private func setupCancelAndDeselectAllItems() {
     if let indexPaths = self.tableView.indexPathsForSelectedRows {
       indexPaths.forEach { indexPath in
         _ = tableView.delegate?.tableView?(tableView, willDeselectRowAt: indexPath)
@@ -187,7 +349,7 @@ extension ContactsController {
     }
   }
   
-  private func setContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
+  private func setupContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
     
     for section in 0..<tableView.numberOfSections {
       for row in 0..<tableView.numberOfRows(inSection: section) {
@@ -206,25 +368,25 @@ extension ContactsController {
     completionHandler()
   }
   
-  private func handleStartingSelectableContacts() {
+  private func setupStartingSelectableContacts() {
     
     guard isDeepCleaningSelectableFlow else { return }
     
-    self.handleEdit()
+    self.didTapEdit()
     self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
-    self.setContactsSelect(true) {}
+    self.setupContactsSelect(true) {}
   }
   
-  public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsCollection: [CNContact], contactsGroupCollection: [ContactsGroup]) {
+  public func setupContactsPreviousSelected(selectedContactsIDs: [String], contactsCollection: [CNContact], contactsGroupCollection: [ContactsGroup]) {
     
     if !contactsCollection.isEmpty {
-      handleSinglePrevoiusSelected(contacts: contactsCollection, selectedContactsIDs: selectedContactsIDs)
+      setupSinglePrevoiusSelected(contacts: contactsCollection, selectedContactsIDs: selectedContactsIDs)
     } else  if !contactsGroupCollection.isEmpty {
-      handleGroupedPreviousSelected(contactsGroups: contactsGroupCollection, selectedContactsIDs: selectedContactsIDs)
+      setupGroupedPreviousSelected(contactsGroups: contactsGroupCollection, selectedContactsIDs: selectedContactsIDs)
     }
   }
   
-  private func handleSinglePrevoiusSelected(contacts: [CNContact], selectedContactsIDs: [String]) {
+  private func setupSinglePrevoiusSelected(contacts: [CNContact], selectedContactsIDs: [String]) {
     
     for selectedContactsID in selectedContactsIDs {
       let indexPath = contacts.firstIndex(where: {
@@ -243,7 +405,7 @@ extension ContactsController {
     
     guard isDeepCleaningSelectableFlow else { return }
     
-    self.handleEdit()
+    self.didTapEdit()
     
     if !previouslySelectedIndexPaths.isEmpty {
       for indexPath in previouslySelectedIndexPaths {
@@ -254,7 +416,7 @@ extension ContactsController {
     }
   }
   
-  private func handleGroupedPreviousSelected(contactsGroups: [ContactsGroup], selectedContactsIDs: [String]) {
+  private func setupGroupedPreviousSelected(contactsGroups: [ContactsGroup], selectedContactsIDs: [String]) {
     
     for selectedContactsID in selectedContactsIDs {
       
@@ -278,11 +440,21 @@ extension ContactsController {
       }
     }
   }
-}
-
-extension ContactsController {
   
-  private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
+  private func selectContactInfo(with contact: CNContact, at indexPath: IndexPath) {
+    let storyboard = UIStoryboard(name: Constants.identifiers.storyboards.contacts, bundle: nil)
+    let viewController = storyboard.instantiateViewController(withIdentifier: Constants.identifiers.viewControllers.contactsInfo) as! ContactsInfoController
+    viewController.modalPresentationStyle = .overFullScreen
+    viewController.contact = contact
+    
+    viewController.deleteContact = {
+      self.deleteSelectedContacts(at: [indexPath])
+    }
+    
+    self.present(viewController, animated: true)
+  }
+  
+  private func setupBottomButtonAppearence(disableAnimation: Bool = false) {
     
     var bottomButtonMenyHeight: CGFloat {
       switch Advertisement.manager.advertisementBannerStatus {
@@ -295,15 +467,15 @@ extension ContactsController {
     
     switch contentType {
     case .allContacts:
-      handleAllContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
+      setupAllContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
     case .emptyContacts:
-      handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
+      setupEmptyContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
     default:
       return
     }
   }
   
-  private func handleAllContactsBottomButton(disableAnimation: Bool, with height: CGFloat) {
+  private func setupAllContactsBottomButton(disableAnimation: Bool, with height: CGFloat) {
     
     guard !isDeepCleaningSelectableFlow else {
       bottomDoubleButtonHeightConstraint.constant = 0
@@ -328,7 +500,7 @@ extension ContactsController {
     }
   }
   
-  private func handleEmptyContactsBottomButton(disableAnimation: Bool, with heigt: CGFloat) {
+  private func setupEmptyContactsBottomButton(disableAnimation: Bool, with heigt: CGFloat) {
     
     guard !isDeepCleaningSelectableFlow else {
       bottomButtonHeightConstraint.constant = 0
@@ -355,24 +527,21 @@ extension ContactsController {
   }
   
   @objc func advertisementDidChange() {
-    self.handleBottomButtonChangeAppearence(disableAnimation: true)
+    self.setupBottomButtonAppearence(disableAnimation: true)
   }
-}
-
-extension ContactsController {
   
-  private func setContactsEditingMode(enabled: Bool) {
+  private func setupEditingMode(enabled: Bool) {
     
     tableView.allowsMultipleSelection = enabled
     tableView.allowsSelection = enabled
     self.tableView.reloadDataWithoutAnimation()
   }
   
-  private func handleEdit() {
+  private func didTapEdit() {
     contactContentIsEditing = !contactContentIsEditing
     
     if #available(iOS 14.0, *) {
-      contactContentIsEditing ? deInitdropDownSetup() : dropDownSetup()
+      contactContentIsEditing ? setupDeInitdropDown() : setupDropDown()
     }
     
     if contentType == .allContacts {
@@ -380,13 +549,10 @@ extension ContactsController {
     } else if contentType == .emptyContacts {
       self.emptyContactGroupListDataSource.contactContentIsEditing = contactContentIsEditing
     }
-    self.setContactsEditingMode(enabled: contactContentIsEditing)
+    self.setupEditingMode(enabled: contactContentIsEditing)
     
     isDeepCleaningSelectableFlow ? self.setupForDeepCleanNavigation() : self.setNavigationEditMode(isEditing: contactContentIsEditing)
   }
-}
-
-extension ContactsController {
   
   private func didTapCancelEditingButton() {
     P.showIndicator()
@@ -395,7 +561,7 @@ extension ContactsController {
   }
   
   private func didTapSelectEditingMode() {
-    handleEdit()
+    didTapEdit()
   }
   
   private func didTapExportAllContacts() {
@@ -422,7 +588,7 @@ extension ContactsController {
   }
   
   @available(iOS 14.0, *)
-  func dropDownSetup() {
+  func setupDropDown() {
     let menuItems = getDropDownItems()
     let menu = performMenu(from: menuItems)
     navigationBar.rightBarButtonItem.menu = menu
@@ -436,7 +602,7 @@ extension ContactsController {
   }
   
   @available(iOS 14.0, *)
-  func deInitdropDownSetup() {
+  func setupDeInitdropDown() {
     navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = false
     navigationBar.rightBarButtonItem.menu = nil
   }
@@ -473,9 +639,6 @@ extension ContactsController {
       self.updateContentAfterProcessing?(self.contacts, self.contactGroup, self.contentType, self.contactStoreDidChange)
     })
   }
-}
-
-extension ContactsController {
   
   private func showDeleteContactsAlert() {
     P.showIndicator()
@@ -539,12 +702,12 @@ extension ContactsController {
   private func reloadContactsAfterRefactor(of deletedContacts: [CNContact], from updatableIndexPath: [IndexPath]) {
     
     P.showIndicator()
-    contactContentIsEditing ? self.handleEdit() : ()
+    contactContentIsEditing ? self.didTapEdit() : ()
     U.delay(0.33) {
       
       if self.searchBarView.searchBarIsActive {
         self.resetSearchBarState()
-        self.setActiveSearchBar(setActive: false)
+        self.setupActiveSearchBar(setActive: false)
       }
       
       self.contactStoreDidChange = true
@@ -563,7 +726,7 @@ extension ContactsController {
                 self.tableView.dataSource = self.contactListDataSource
                 
                 P.hideIndicator()
-                self.handleBottomButtonChangeAppearence()
+                self.setupBottomButtonAppearence()
               } else {
                 P.hideIndicator()
                 self.closeController()
@@ -581,12 +744,12 @@ extension ContactsController {
         U.UI {
           if self.contactGroup.flatMap({$0.contacts}).count != 0 {
             self.contactGroup = self.contactGroup.filter({!$0.contacts.isEmpty})
-            self.setupGroupViemodel(contacts: self.contactGroup)
+            self.setupGroupViewModel(contacts: self.contactGroup)
             self.tableView.delegate = self.emptyContactGroupListDataSource
             self.tableView.dataSource = self.emptyContactGroupListDataSource
             self.smoothReloadData(with: 0.25)
             P.hideIndicator()
-            self.handleBottomButtonChangeAppearence()
+            self.setupBottomButtonAppearence()
           } else {
             P.hideIndicator()
             self.closeController()
@@ -595,9 +758,6 @@ extension ContactsController {
       }
     }
   }
-}
-
-extension ContactsController {
   
   private func exportAllContacts(with format: ExportContactsAvailibleFormat) {
     P.showIndicator()
@@ -643,6 +803,73 @@ extension ContactsController {
       }
     }
   }
+  
+  private func setupActiveSearchBar(setActive: Bool) {
+    
+    self.searchBarTopConstraint.constant = setActive ? 5 : AppDimensions.ContactsController.SearchBar.searchBarTopInset
+    self.searchBarView.searchBarIsActive = setActive
+    self.searchBarView.setShowCancelButton(setActive, animated: true)
+    contactListDataSource.searchBarIsFirstResponder = setActive
+    U.animate(0.3) {
+      self.view.layoutIfNeeded()
+      self.searchBarView.layoutIfNeeded()
+      self.navigationBar.containerView.alpha = setActive ? 0 : 1
+      self.navigationBar.layoutIfNeeded()
+    }
+  }
+  
+  private func resetContreollerState(_ withCancelSearch: Bool = false) {
+    self.setupCancelAndDeselectAllItems()
+    self.didTapEdit()
+    withCancelSearch ? self.resetSearchBarState() : ()
+  }
+  
+  @objc func resetSearchBarState() {
+    U.UI {
+      if self.contactListViewModel.searchContact.value != "" {
+        self.contactListViewModel.searchContact.value = ""
+      }
+      
+      if self.searchBarView.searchBar.text != "" {
+        self.searchBarView.searchBar.text = ""
+      }
+      self.contactListViewModel.updateSearchState()
+      self.setupActiveSearchBar(setActive: false)
+      self.setupBottomButtonAppearence()
+      self.contactContentIsEditing ? self.didTapEdit() : ()
+    }
+  }
+  
+  @objc func contentDidBeginDraging() {
+    
+    guard searchBarTopConstraint.constant != AppDimensions.ContactsController.SearchBar.searchBarTopInset else { return }
+    
+    if searchBarView.searchBar.text == "" {
+      setupActiveSearchBar(setActive: false)
+    } else {
+      searchBarTopConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarTopInset
+      U.animate(0.3) {
+        self.navigationBar.containerView.alpha = 1
+        self.navigationBar.layoutIfNeeded()
+        self.view.layoutIfNeeded()
+      }
+    }
+  }
+  
+  @objc func searchBarDidMove(_ notification: Notification) {
+    
+    guard let _ = notification.userInfo else { return }
+  }
+  
+  @objc func searchBarResignFirstResponder() {
+    searchBarView.searchBar.resignFirstResponder()
+    setupActiveSearchBar(setActive: false)
+  }
+  
+  @objc func dissmissKeyboardResponder() {
+    searchBarView.searchBar.resignFirstResponder()
+    setupActiveSearchBar(setActive: false)
+  }
 }
 
 extension ContactsController: BottomDoubleActionButtonDelegate {
@@ -663,80 +890,10 @@ extension ContactsController: BottomActionButtonDelegate {
   }
 }
 
-extension ContactsController {
-  
-  private func setActiveSearchBar(setActive: Bool) {
-    
-    self.searchBarTopConstraint.constant = setActive ? 5 : AppDimensions.ContactsController.SearchBar.searchBarTopInset
-    self.searchBarView.searchBarIsActive = setActive
-    self.searchBarView.setShowCancelButton(setActive, animated: true)
-    contactListDataSource.searchBarIsFirstResponder = setActive
-    U.animate(0.3) {
-      self.view.layoutIfNeeded()
-      self.searchBarView.layoutIfNeeded()
-      self.navigationBar.containerView.alpha = setActive ? 0 : 1
-      self.navigationBar.layoutIfNeeded()
-    }
-  }
-  
-  private func resetContreollerState(_ withCancelSearch: Bool = false) {
-    self.setCancelAndDeselectAllItems()
-    self.handleEdit()
-    withCancelSearch ? self.resetSearchBarState() : ()
-  }
-  
-  @objc func resetSearchBarState() {
-    U.UI {
-      if self.contactListViewModel.searchContact.value != "" {
-        self.contactListViewModel.searchContact.value = ""
-      }
-      
-      if self.searchBarView.searchBar.text != "" {
-        self.searchBarView.searchBar.text = ""
-      }
-      self.contactListViewModel.updateSearchState()
-      self.setActiveSearchBar(setActive: false)
-      self.handleBottomButtonChangeAppearence()
-      self.contactContentIsEditing ? self.handleEdit() : ()
-    }
-  }
-  
-  @objc func contentDidBeginDraging() {
-    
-    guard searchBarTopConstraint.constant != AppDimensions.ContactsController.SearchBar.searchBarTopInset else { return }
-    
-    if searchBarView.searchBar.text == "" {
-      setActiveSearchBar(setActive: false)
-    } else {
-      searchBarTopConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarTopInset
-      U.animate(0.3) {
-        self.navigationBar.containerView.alpha = 1
-        self.navigationBar.layoutIfNeeded()
-        self.view.layoutIfNeeded()
-      }
-    }
-  }
-  
-  @objc func searchBarDidMove(_ notification: Notification) {
-    
-    guard let _ = notification.userInfo else { return }
-  }
-  
-  @objc func searchBarResignFirstResponder() {
-    searchBarView.searchBar.resignFirstResponder()
-    setActiveSearchBar(setActive: false)
-  }
-  
-  @objc func dissmissKeyboardResponder() {
-    searchBarView.searchBar.resignFirstResponder()
-    setActiveSearchBar(setActive: false)
-  }
-}
-
 extension ContactsController: UISearchBarDelegate {
   
   func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    self.setActiveSearchBar(setActive: true)
+    self.setupActiveSearchBar(setActive: true)
   }
   
   func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -762,8 +919,8 @@ extension ContactsController: UISearchBarDelegate {
   
   @objc func searchBarClearButtonClicked() {
     self.contactContentIsEditing ? self.resetContreollerState() : ()
-    self.setCancelAndDeselectAllItems()
-    self.handleBottomButtonChangeAppearence(disableAnimation: true)
+    self.setupCancelAndDeselectAllItems()
+    self.setupBottomButtonAppearence(disableAnimation: true)
   }
 }
 
@@ -865,22 +1022,6 @@ extension ContactsController: SelectDropDownMenuDelegate {
   }
 }
 
-extension ContactsController {
-  
-  private func selectContactInfo(with contact: CNContact, at indexPath: IndexPath) {
-    let storyboard = UIStoryboard(name: Constants.identifiers.storyboards.contacts, bundle: nil)
-    let viewController = storyboard.instantiateViewController(withIdentifier: Constants.identifiers.viewControllers.contactsInfo) as! ContactsInfoController
-    viewController.modalPresentationStyle = .overFullScreen
-    viewController.contact = contact
-    
-    viewController.deleteContact = {
-      self.deleteSelectedContacts(at: [indexPath])
-    }
-    
-    self.present(viewController, animated: true)
-  }
-}
-
 extension ContactsController: ContactDataSourceDelegate {
   
   func viewContact(at indexPath: IndexPath) {
@@ -915,96 +1056,6 @@ extension ContactsController: ContactDataSourceDelegate {
 
 extension ContactsController: Themeble {
   
-  private func setupNavigation() {
-    
-    self.navigationController?.navigationBar.isHidden = true
-    
-    if contentType == .allContacts {
-      navigationBar.setIsDropShadow = false
-      self.searchBarIsHiden = false
-      navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                    rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
-                                    contentType: .userContacts,
-                                    leftButtonTitle: nil,
-                                    rightButtonTitle: nil)
-    } else if contentType == .emptyContacts {
-      self.searchBarIsHiden = true
-      navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                    leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                    rightBarButtonImage: nil,
-                                    contentType: .userContacts,
-                                    leftButtonTitle: nil, rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .edit))
-    }
-  }
-  
-  private func setupForDeepCleanNavigation() {
-    
-    let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
-    self.searchBarIsHiden = true
-    navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                  rightBarButtonImage: nil,
-                                  contentType: .userContacts,
-                                  leftButtonTitle: nil, rightButtonTitle: rightNavigationTitle)
-  }
-  
-  private func setNavigationEditMode(isEditing: Bool) {
-    
-    if isEditing {
-      let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
-      self.navigationBar.changeHotLeftTitle(newTitle: LocalizationService.Buttons.getButtonTitle(of: .cancel))
-      self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
-    } else {
-      setupNavigation()
-    }
-  }
-  
-  private func setupUI() {
-    
-    if #available(iOS 15.0, *) {
-      tableView.sectionHeaderTopPadding = 0
-    }
-    
-    if #available(iOS 14.0, *) {
-      dropDownSetup()
-    }
-    
-    searchBarHeightConstraint.constant = self.searchBarIsHiden ? 10 : AppDimensions.ContactsController.SearchBar.searchBarContainerHeight
-    searchBarView.isHidden = self.searchBarIsHiden
-    
-    searchBarTopConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarTopInset
-    
-    bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
-    bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
-    bottomDoubleButtonView.setLeftButtonTitle(LocalizationService.Buttons.getButtonTitle(of: .share))
-    
-    bottomButtonView.setImage(I.systemItems.defaultItems.delete)
-  }
-  
-  private func setupViewModel(contacts: [CNContact], reloadData: Bool = true) {
-    self.contactListViewModel = ContactListViewModel(contacts: contacts)
-    self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
-    self.contactListDataSource.delegate = self
-    self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
-      _ = self.contactListViewModel.contactsArray
-      reloadData ? self.smoothReloadData() : ()
-    }
-    
-    self.contactListDataSource.didSelectViewContactInfo = { contact, indexPath in
-      self.selectContactInfo(with: contact, at: indexPath)
-    }
-  }
-  
-  private func setupGroupViemodel(contacts: [ContactsGroup]) {
-    self.emptyContactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
-    self.emptyContactGroupListDataSource = EmptyContactListDataSource(viewModel: self.emptyContactGroupListViewModel, contentType: self.contentType)
-    self.emptyContactGroupListDataSource.delegate = self
-    self.emptyContactGroupListDataSource.didSelectViewContactInfo = { contact, indexPath in
-      self.selectContactInfo(with: contact, at: indexPath)
-    }
-  }
-  
   func setupAppearance() {
     
     self.view.backgroundColor = theme.backgroundColor
@@ -1018,84 +1069,6 @@ extension ContactsController: Themeble {
       bottomButtonView.tintColor = theme.activeTitleTextColor
       bottomButtonView.buttonColor = theme.contactsTintColor
       bottomButtonView.updateColorsSettings()
-    }
-  }
-  
-  private func setupTableView() {
-    
-    tableView.register(UINib(nibName: C.identifiers.xibs.contactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contactCell)
-    if contentType == .allContacts {
-      tableView.delegate = contactListDataSource
-      tableView.dataSource = contactListDataSource
-    } else if contentType == .emptyContacts {
-      tableView.delegate = emptyContactGroupListDataSource
-      tableView.dataSource = emptyContactGroupListDataSource
-    }
-    tableView.separatorStyle = .singleLine
-    tableView.sectionIndexColor = theme.contacSectionIndexColor
-    tableView.keyboardDismissMode = .onDrag
-    tableView.backgroundColor = theme.backgroundColor
-  }
-  
-  private func smoothReloadData(with duration: Double = 0.25) {
-    
-    UIView.transition(with: self.tableView, duration: duration, options: .transitionCrossDissolve) {
-      self.tableView.reloadData()
-    } completion: { _ in
-      debugPrint("data source reloaded")
-    }
-  }
-  
-  private func smoothReloadData(at indexPaths: [IndexPath]) {
-    UIView.transition(with: self.tableView, duration: 0.75, options: .transitionCrossDissolve) {
-      self.tableView.reloadRows(at: indexPaths, with: .none)
-    } completion: { _ in
-      debugPrint("data source reloaded")
-    }
-  }
-  
-  private func setupDelegate() {
-    
-    navigationBar.delegate = self
-    searchBarView.searchBar.delegate = self
-    bottomDoubleButtonView.delegate = self
-    bottomButtonView.delegate = self
-    progressAlert.delegate = self
-  }
-  
-  private func setupObservers() {
-    
-    U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(resetSearchBarState), name: .searchBarDidCancel, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(searchBarClearButtonClicked), name: .searchBarClearButtonClicked, object: nil)
-    U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
-  }
-  
-  private func setupShowExportContactController(segue: UIStoryboardSegue) {
-    
-    guard let segue = segue as? SwiftMessagesSegue else { return }
-    
-    segue.configure(layout: .bottomMessage)
-    segue.dimMode = .gray(interactive: true)
-    segue.interactiveHide = true
-    segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
-    segue.messageView.configureNoDropShadow()
-    
-    if let exportContactsController = segue.destination as? ExportContactsController {
-      exportContactsController.leftExportFileFormat = .vcf
-      exportContactsController.rightExportFileFormat = .csv
-      
-      exportContactsController.selectExportFormatCompletion = { format in
-        self.contactContentIsEditing ? self.exportSelectedContacts(with: format) : self.exportAllContacts(with: format)
-      }
-      
-      exportContactsController.selectExtraOptionalOption = {
-        self.contactContentIsEditing ? self.didTapCancelEditingButton() : ()
-      }
     }
   }
 }

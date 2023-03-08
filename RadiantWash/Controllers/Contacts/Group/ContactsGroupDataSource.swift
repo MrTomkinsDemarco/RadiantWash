@@ -30,9 +30,6 @@ class ContactsGroupDataSource: NSObject {
   init(viewModel: ContactGroupListViewModel) {
     self.contactGroupListViewModel = viewModel
   }
-}
-
-extension ContactsGroupDataSource {
   
   private func setupData(cell: GroupContactCell, at indexPath: IndexPath, with position: RowPosition) {
     
@@ -44,7 +41,7 @@ extension ContactsGroupDataSource {
     cell.updateCell(contact, rowPosition: position, sectionIndex: indexPath.section, isSelected: isSelected)
   }
   
-  private func configureHeader(view: GroupedContactsHeaderView, at section: Int) {
+  private func setupHeader(view: GroupedContactsHeaderView, at section: Int) {
     let group = self.contactGroupListViewModel.groupSection[section]
     
     switch contentType {
@@ -64,6 +61,19 @@ extension ContactsGroupDataSource {
       return
     }
   }
+  
+  private func setupPosition(from indexPath: IndexPath, numberOfRows: Int) -> RowPosition {
+    
+    if indexPath.row == 0 {
+      return .top
+    } else if indexPath.row + 1 < numberOfRows {
+      return .middle
+    } else if indexPath.row + 1 == numberOfRows {
+      return .bottom
+    } else {
+      return .none
+    }
+  }
 }
 
 extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
@@ -80,7 +90,7 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
     
     let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.groupContactCell, for: indexPath) as! GroupContactCell
     
-    let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
+    let rowPosition = self.setupPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
     
     self.setupData(cell: cell, at: indexPath, with: rowPosition)
     
@@ -91,7 +101,7 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
     
     let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: C.identifiers.views.contactGroupHeader) as! GroupedContactsHeaderView
     view.delegate = self
-    configureHeader(view: view, at: section)
+    setupHeader(view: view, at: section)
     
     return view
   }
@@ -102,7 +112,7 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     
-    let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
+    let rowPosition = self.setupPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
     
     switch rowPosition {
     case .top:
@@ -117,24 +127,7 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
   }
 }
 
-extension ContactsGroupDataSource {
-  
-  private func checkIndexPosition(from indexPath: IndexPath, numberOfRows: Int) -> RowPosition {
-    
-    if indexPath.row == 0 {
-      return .top
-    } else if indexPath.row + 1 < numberOfRows {
-      return .middle
-    } else if indexPath.row + 1 == numberOfRows {
-      return .bottom
-    } else {
-      return .none
-    }
-  }
-}
-
 extension ContactsGroupDataSource: GroupContactSelectableDelegate {
-  
   
   func didSelecMeregeSection(at index: Int, completionHandler: @escaping (_ isSeletable: Bool) -> Void) {
     

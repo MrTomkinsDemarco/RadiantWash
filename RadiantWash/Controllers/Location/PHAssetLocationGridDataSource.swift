@@ -33,9 +33,6 @@ class PHAssetLocationGridDataSource: NSObject {
     self.contentType = contentType
     self.collectionView = collectionView
   }
-}
-
-extension PHAssetLocationGridDataSource {
   
   private func setup(cell: PhotoCell, at indexPath: IndexPath) {
     
@@ -87,73 +84,6 @@ extension PHAssetLocationGridDataSource {
       self.didSelectedPhassets?(phassets)
     }
   }
-}
-
-extension PHAssetLocationGridDataSource: LocationHeaderCollectionDelegate {
-  
-  func removeLocation(at section: Int) {
-    let phassets = self.phassetLocationViewModel.getPhassets(at: section)
-    self.didSelectDeleteLocation?(phassets)
-  }
-}
-
-extension PHAssetLocationGridDataSource: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-  
-  func numberOfSections(in collectionView: UICollectionView) -> Int {
-    return self.phassetLocationViewModel.numberOfSection()
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.phassetLocationViewModel.numberOfRows(at: section)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
-    self.setup(cell: cell, at: indexPath)
-    return cell
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    self.handleSelectedPhassets(at: indexPath)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-    self.handleSelectedPhassets(at: indexPath)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    
-    switch kind {
-      
-    case UICollectionView.elementKindSectionHeader:
-      
-      let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.locationHeader, for: indexPath)
-      
-      guard let sectionHeader = headerView as? LocationHeaderCollectionReusableView else { return headerView}
-      
-      self.setup(header: sectionHeader, at: indexPath)
-      
-      return sectionHeader
-      
-    default:
-      assert(false, "invalid")
-    }
-    return UICollectionReusableView()
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-    
-    guard let _ = view as? LocationHeaderCollectionReusableView else { return }
-    
-    collectionView.collectionViewLayout.finalLayoutAttributesForDisappearingSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-    return CGSize(width: collectionView.frame.width, height: 55)
-  }
-}
-
-extension PHAssetLocationGridDataSource  {
   
   func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
     guard let asset = self.phassetLocationViewModel.getPhasset(at: indexPath) else { return nil}
@@ -229,9 +159,6 @@ extension PHAssetLocationGridDataSource  {
       }
     }
   }
-}
-
-extension PHAssetLocationGridDataSource {
   
   private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
     
@@ -247,3 +174,69 @@ extension PHAssetLocationGridDataSource {
     return UIMenu(title: "", children: [removeLocationAction])
   }
 }
+
+extension PHAssetLocationGridDataSource: LocationHeaderCollectionDelegate {
+  
+  func removeLocation(at section: Int) {
+    let phassets = self.phassetLocationViewModel.getPhassets(at: section)
+    self.didSelectDeleteLocation?(phassets)
+  }
+}
+
+extension PHAssetLocationGridDataSource: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+  
+  func numberOfSections(in collectionView: UICollectionView) -> Int {
+    return self.phassetLocationViewModel.numberOfSection()
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return self.phassetLocationViewModel.numberOfRows(at: section)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCell
+    self.setup(cell: cell, at: indexPath)
+    return cell
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    self.handleSelectedPhassets(at: indexPath)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    self.handleSelectedPhassets(at: indexPath)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    
+    switch kind {
+      
+    case UICollectionView.elementKindSectionHeader:
+      
+      let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.locationHeader, for: indexPath)
+      
+      guard let sectionHeader = headerView as? LocationHeaderCollectionReusableView else { return headerView}
+      
+      self.setup(header: sectionHeader, at: indexPath)
+      
+      return sectionHeader
+      
+    default:
+      assert(false, "invalid")
+    }
+    return UICollectionReusableView()
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+    
+    guard let _ = view as? LocationHeaderCollectionReusableView else { return }
+    
+    collectionView.collectionViewLayout.finalLayoutAttributesForDisappearingSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    return CGSize(width: collectionView.frame.width, height: 55)
+  }
+}
+  
+

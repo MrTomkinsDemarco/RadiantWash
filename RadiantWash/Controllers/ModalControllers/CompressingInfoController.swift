@@ -44,32 +44,6 @@ class CompressingInfoController: UIViewController {
     
     removeDimmerView()
   }
-}
-
-extension CompressingInfoController {
-  
-  func addDimmerView() {
-    
-    dimmerView.backgroundColor = .black.withAlphaComponent(0.3)
-    let windows: [UIWindow] = UIApplication.shared.windows
-    let firstWindow: UIWindow = windows[0]
-    
-    firstWindow.addSubview(dimmerView)
-    firstWindow.bringSubviewToFront(dimmerView)
-  }
-  
-  func removeDimmerView() {
-    UIView.animate(withDuration: 0.2) {
-      self.dimmerView.removeFromSuperview()
-    } completion: { _ in }
-  }
-  
-  @objc func dissmiss() {
-    self.dismiss(animated: true)
-  }
-}
-
-extension CompressingInfoController: Themeble {
   
   private func setupUI() {
     
@@ -107,6 +81,29 @@ extension CompressingInfoController: Themeble {
     let offset = 27 + 15 * CGFloat(descriptionTextLabel.maxNumberOfLines)
     preferredContentSize = CGSize(width: U.screenWidth - 100, height: offset)
   }
+  
+  func addDimmerView() {
+    
+    dimmerView.backgroundColor = .black.withAlphaComponent(0.3)
+    let windows: [UIWindow] = UIApplication.shared.windows
+    let firstWindow: UIWindow = windows[0]
+    
+    firstWindow.addSubview(dimmerView)
+    firstWindow.bringSubviewToFront(dimmerView)
+  }
+  
+  func removeDimmerView() {
+    UIView.animate(withDuration: 0.2) {
+      self.dimmerView.removeFromSuperview()
+    } completion: { _ in }
+  }
+  
+  @objc func dissmiss() {
+    self.dismiss(animated: true)
+  }
+}
+
+extension CompressingInfoController: Themeble {
   
   func setupAppearance() {
     

@@ -17,9 +17,6 @@ class SettingsDataSource: NSObject {
   init(settingsViewModel: SettingsViewModel) {
     self.settingsViewModel = settingsViewModel
   }
-}
-
-extension SettingsDataSource {
   
   private func getCurrentSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> CurrentSubscriptionCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.currentSubscription, for: indexPath) as! CurrentSubscriptionCell

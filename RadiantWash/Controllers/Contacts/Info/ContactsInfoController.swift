@@ -27,15 +27,34 @@ class ContactsInfoController: UIViewController {
     setupTableView()
     setupUI()
     setupAppearance()
-    setupDelegate()
   }
   
-  @IBAction func didTapCloseActionButton(_ sender: Any) {
-    self.closeController {}
+  private func setupUI() {
+    
+    closeButton.setImage(Images.systemItems.defaultItems.xmark, for: .normal)
+    closeButton.tintColor = theme.contactsTintColor
   }
-}
-
-extension ContactsInfoController {
+  
+  private func setupTableView() {
+    
+    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.contactThumbnail, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.contactThumbnail)
+    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.contactInfo, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.contactInfo)
+    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.actionCell, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.actionCell)
+    
+    self.tableView.delegate = self.contactDataSource
+    self.tableView.dataSource = self.contactDataSource
+    
+    self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    
+    if #available(iOS 15.0, *) {
+      self.tableView.sectionHeaderTopPadding = 0
+    }
+    
+    self.tableView.separatorStyle = .none
+    let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
+    view.backgroundColor = .clear
+    self.tableView.tableHeaderView = view
+  }
   
   private func setupDataSource() {
     
@@ -112,42 +131,14 @@ extension ContactsInfoController {
       completionHandler()
     }
   }
-}
-
-extension ContactsInfoController {
   
-  private func setupTableView() {
-    
-    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.contactThumbnail, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.contactThumbnail)
-    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.contactInfo, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.contactInfo)
-    self.tableView.register(UINib(nibName: Constants.identifiers.xibs.actionCell, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.actionCell)
-    
-    self.tableView.delegate = self.contactDataSource
-    self.tableView.dataSource = self.contactDataSource
-    
-    self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    
-    if #available(iOS 15.0, *) {
-      self.tableView.sectionHeaderTopPadding = 0
-    }
-    
-    self.tableView.separatorStyle = .none
-    let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
-    view.backgroundColor = .clear
-    self.tableView.tableHeaderView = view
+  @IBAction func didTapCloseActionButton(_ sender: Any) {
+    self.closeController {}
   }
 }
 
 
 extension ContactsInfoController: Themeble {
-  
-  private func setupUI() {
-    
-    closeButton.setImage(Images.systemItems.defaultItems.xmark, for: .normal)
-    closeButton.tintColor = theme.contactsTintColor
-  }
-  
-  private func setupDelegate() {}
   
   func setupAppearance() {
     

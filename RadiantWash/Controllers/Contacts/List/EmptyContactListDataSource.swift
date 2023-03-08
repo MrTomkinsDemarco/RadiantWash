@@ -24,9 +24,6 @@ class EmptyContactListDataSource: NSObject {
     self.emptyContactGroupListViewModel = viewModel
     self.contentType = contentType
   }
-}
-
-extension EmptyContactListDataSource {
   
   private func setupData(cell: ContactCell, at indexPath: IndexPath) {
     
@@ -35,7 +32,7 @@ extension EmptyContactListDataSource {
     cell.updateCell(contact, contentType: self.contentType)
   }
   
-  private func checkForEditingMode(cell: ContactCell, at indexPath: IndexPath) {
+  private func setupEditingMode(cell: ContactCell, at indexPath: IndexPath) {
     
     guard let contact = emptyContactGroupListViewModel.getContactOnRow(at: indexPath) else { return }
     cell.isEditingMode = self.contactContentIsEditing
@@ -50,6 +47,36 @@ extension EmptyContactListDataSource {
     if let contact = emptyContactGroupListViewModel.getContact(at: indexPath) {
       didSelectViewContactInfo(contact, indexPath)
     }
+  }
+  
+  private func setupContactImage(_ contact: CNContact) -> UIImage {
+    
+    if contact.imageDataAvailable {
+      if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+        return image
+      }
+    }
+    return I.personalisation.contacts.unavailibleThumb
+  }
+  
+  private func createCellContextMenu(for contactac: CNContact, at indexPath: IndexPath) -> UIMenu {
+    let viewActionImage = I.systemElementsItems.person
+    let shareActionImage = I.systemElementsItems.share
+    let deleteActionImage = I.systemElementsItems.trashBtn
+    
+    let viewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .view), image: viewActionImage) { _ in
+      self.delegate?.viewContact(at: indexPath)
+    }
+    
+    let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareActionImage) { _ in
+      self.delegate?.shareContact(at: indexPath)
+    }
+    
+    let deleteAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) {_ in
+      self.delegate?.deleteContact(at: indexPath)
+    }
+    
+    return UIMenu(title: "", children: [viewAction, shareAction, deleteAction])
   }
 }
 
@@ -72,7 +99,7 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
   
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     guard let cell = tableView.cellForRow(at: indexPath) as? ContactCell else { return }
-    self.checkForEditingMode(cell: cell, at: indexPath)
+    self.setupEditingMode(cell: cell, at: indexPath)
   }
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -127,7 +154,7 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
     
     guard !contactContentIsEditing, let contact = emptyContactGroupListViewModel.getContactOnRow(at: indexPath) else { return  nil}
     let identifier = IndexPath(row: indexPath.row, section: indexPath.section) as NSCopying
-    let image = self.handleContactImageData(contact)
+    let image = self.setupContactImage(contact)
     
     return UIContextMenuConfiguration(identifier: identifier) {
       return ImagePreviewController(item: image)
@@ -156,38 +183,5 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
         }
       }
     }
-  }
-}
-
-extension EmptyContactListDataSource {
-  
-  private func handleContactImageData(_ contact: CNContact) -> UIImage {
-    
-    if contact.imageDataAvailable {
-      if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
-        return image
-      }
-    }
-    return I.personalisation.contacts.unavailibleThumb
-  }
-  
-  private func createCellContextMenu(for contactac: CNContact, at indexPath: IndexPath) -> UIMenu {
-    let viewActionImage = I.systemElementsItems.person
-    let shareActionImage = I.systemElementsItems.share
-    let deleteActionImage = I.systemElementsItems.trashBtn
-    
-    let viewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .view), image: viewActionImage) { _ in
-      self.delegate?.viewContact(at: indexPath)
-    }
-    
-    let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareActionImage) { _ in
-      self.delegate?.shareContact(at: indexPath)
-    }
-    
-    let deleteAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) {_ in
-      self.delegate?.deleteContact(at: indexPath)
-    }
-    
-    return UIMenu(title: "", children: [viewAction, shareAction, deleteAction])
   }
 }

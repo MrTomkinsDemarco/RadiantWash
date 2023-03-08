@@ -35,44 +35,10 @@ class WebController: UIViewController, Storyboarded {
     super.viewDidLoad()
     
     setupNavigationBar()
-    setupUI()
     setupAppearance()
     setupWeb()
     loadWeb(from: url)
   }
-  
-  private func loadWeb(from url: URL?) {
-    
-    urlDidLoading = true
-    webView.loadUrlPage(url)
-  }
-}
-
-extension WebController: StartingNavigationBarDelegate, NavigationBarDelegate {
-  
-  private func close() {
-    self.coordinator?.closeWeb(controller: self, navigation: self.navigationController)
-  }
-  
-  func didTapLeftBarButtonItem(_ sender: UIButton) {
-    self.close()
-  }
-  
-  func didTapRightBarButtonItem(_ sender: UIButton) {
-    self.close()
-  }
-  
-  
-  func didTapLeftBarButton(_ sender: UIButton) {
-    self.close()
-  }
-  
-  func didTapRightBarButton(_ sender: UIButton) {
-    self.close()
-  }
-}
-
-extension WebController: AppearanceDelegate {
   
   private func setupWeb() {
     
@@ -88,11 +54,7 @@ extension WebController: AppearanceDelegate {
     webView.topAnchor.constraint(equalTo: self.navigationBar.bottomAnchor).isActive = true
   }
   
-  private func setupUI() {
-    
-  }
-  
-  private func addHelperNavigationViews() {
+  private func setupHelperNavViews() {
     
     let helperView = UIView()
     
@@ -133,7 +95,7 @@ extension WebController: AppearanceDelegate {
     case .present:
       mainNavigationBar.isHidden = true
       navigationBar.delegate = self
-      self.addHelperNavigationViews()
+      self.setupHelperNavViews()
       navigationBar.setUpNavigation(title: title, rightImage: Images.systemItems.navigationBarItems.dissmiss)
     case .push:
       navigationBar.isHidden = true
@@ -141,6 +103,38 @@ extension WebController: AppearanceDelegate {
       mainNavigationBar.setupNavigation(title: title, leftBarButtonImage: Images.systemItems.navigationBarItems.back, rightBarButtonImage: nil, contentType: .none)
     }
   }
+  
+  private func loadWeb(from url: URL?) {
+    
+    urlDidLoading = true
+    webView.loadUrlPage(url)
+  }
+}
+
+extension WebController: StartingNavigationBarDelegate, NavigationBarDelegate {
+  
+  private func close() {
+    self.coordinator?.closeWeb(controller: self, navigation: self.navigationController)
+  }
+  
+  func didTapLeftBarButtonItem(_ sender: UIButton) {
+    self.close()
+  }
+  
+  func didTapRightBarButtonItem(_ sender: UIButton) {
+    self.close()
+  }
+  
+  func didTapLeftBarButton(_ sender: UIButton) {
+    self.close()
+  }
+  
+  func didTapRightBarButton(_ sender: UIButton) {
+    self.close()
+  }
+}
+
+extension WebController: AppearanceDelegate {
   
   func setupAppearance() {
     

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,7 +12,14 @@
             <connections>
                 <outlet property="baseView" destination="glb-46-RaR" id="Yis-px-NIl"/>
                 <outlet property="cancelButton" destination="4xB-aT-iqG" id="9Gd-QY-399"/>
+                <outlet property="cancelButtonHeightConstraint" destination="H2D-QA-gSI" id="AU8-ku-RzN"/>
+                <outlet property="cancelButtonWidthConstraint" destination="Lln-ct-DVA" id="t82-b8-fsg"/>
                 <outlet property="containerView" destination="lvc-UE-Moh" id="amX-Cu-izd"/>
+                <outlet property="leadingButtonConstraint" destination="bd5-Xj-HAz" id="Pdz-Ga-iWT"/>
+                <outlet property="searchBar" destination="2BA-nc-8WJ" id="Je7-NR-Osq"/>
+                <outlet property="searchBarBottomConstraint" destination="60G-Yp-Grw" id="FML-gW-tap"/>
+                <outlet property="searchBarLeadingConstraint" destination="nVE-al-4Nb" id="nha-C9-QrQ"/>
+                <outlet property="trailingButtonConstraint" destination="Ruh-Ke-PYZ" id="5zm-4O-2oU"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

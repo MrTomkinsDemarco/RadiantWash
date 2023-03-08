@@ -14,9 +14,6 @@ class PremiumFeutureDataSource: NSObject {
   init(premiumFeaturesViewModel: PremiumFeaturesViewModel) {
     self.premiumFeaturesViewModel = premiumFeaturesViewModel
   }
-}
-
-extension PremiumFeutureDataSource {
   
   private func setupData(cell: PremiumFeatureCell, at indexPath: IndexPath) {
     let featureModel = premiumFeaturesViewModel.getFeatureModel(at: indexPath)

@@ -158,473 +158,6 @@ class VideoCompressionController: UIViewController {
     mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
   }
   
-  @IBAction func didTapResolutionTitleActionButton(_ sender: UIButton) {
-    
-    self.presentPopUpInfoController(with: .resolution, from: sender)
-  }
-  
-  @IBAction func didTapFpsTitleActionButton(_ sender: UIButton) {
-    
-    self.presentPopUpInfoController(with: .fps, from: sender)
-  }
-  
-  @IBAction func didTapVideoBitrateTitleActionButton(_ sender: UIButton) {
-    
-    self.presentPopUpInfoController(with: .videoBitrate, from: sender)
-  }
-  
-  @IBAction func didTapKeyframeTitleActionButton(_ sender: UIButton) {
-    
-    self.presentPopUpInfoController(with: .keyframe, from: sender)
-  }
-  
-  @IBAction func didTapAudioFrameTitleActionButton(_ sender: UIButton) {
-    
-    self.presentPopUpInfoController(with: .audioBitrate, from: sender)
-  }
-  
-  @IBAction func didTapResetToDefaultSettingsActionButton(_ sender: Any) {
-    
-    resetToDafaultButton.animateButtonTransform()
-    self.resetToDefault()
-  }
-  
-  @IBAction func didTapRemoveAudioTrackActionButton(_ sender: Any) {
-    
-    removeAudioButton.animateButtonTransform()
-    removeAudioComponent = !removeAudioComponent
-  }
-  
-  @IBAction func swgmentControlDidChange(_ sender: Any) {
-    
-    switchResolutionChange()
-  }
-}
-
-extension VideoCompressionController: BottomActionButtonDelegate {
-  
-  func didTapActionButton() {
-    
-    self.setCompressionConfiguration()
-  }
-}
-
-extension VideoCompressionController {
-  
-  private func setCompressionConfiguration() {
-    
-    guard let asset = self.asset else {
-      ErrorHandler.shared.showCompressionError(.cantLoadFile) {
-        self.dismiss(animated: true, completion: nil)
-      }
-      return
-    }
-    
-    let videoBitrate = self.videoBitrateValue
-    let audioBitrate = self.audioBitrateValue.rawValue
-    let fps = self.videoFpsValue.rawValue
-    let audioSampleRate = 44100
-    let maximumVideoKeyframeInterval = self.videoKeyframeValue
-    
-    var resoultion = self.videoResolutionValue.resolutionSize
-    
-    if !self.isResolutionChangeAvailible {
-      resoultion = VideoResolution.origin.resolutionSize
-    } else if asset.isPortrait {
-      resoultion = CGSize(width: -1, height: resoultion.width)
-    } else {
-      resoultion = CGSize(width: resoultion.width, height: -1)
-    }
-    
-    let config = VideoCompressionConfig(videoBitrate: videoBitrate,
-                                        audioBitrate: audioBitrate,
-                                        fps: fps,
-                                        audioSampleRate: audioSampleRate,
-                                        maximumVideoKeyframeInterval: maximumVideoKeyframeInterval,
-                                        scaleResolution: resoultion,
-                                        fileType: .mp4,
-                                        removeAudioComponent: self.removeAudioComponent)
-    
-    CompressionSettingsConfiguretion.saveCompressionConfiguration(config)
-    
-    self.dismiss(animated: true) {
-      self.selectVideoCompressingConfig?(config)
-    }
-  }
-  
-  private func loadPreSavedConfiguration(_ savedConfig: VideoCompressionConfig) {
-    
-    if let resolution = savedConfig.scaleResolution {
-      self.setResolutionSlider(value: resolution)
-    }
-    
-    self.setVideoBitrateSlider(to: savedConfig.videoBitrate)
-    self.setAudioBitrateSlider(to: savedConfig.audioBitrate)
-    self.setFpsSlider(to: savedConfig.fps)
-    self.setKeyIntervalSlider(value: savedConfig.maximumVideoKeyframeInterval)
-    self.removeAudioComponent = savedConfig.removeAudioComponent
-  }
-  
-  private func setResolutionProblem(_ savedConfig: VideoCompressionConfig) {
-    
-    self.getOriginVideoResolution { size, isPortrait in
-      U.UI {
-        if let resolution = savedConfig.scaleResolution {
-          if isPortrait {
-            let originWidthIsBigger = size.height > resolution.width
-            let originHeightIsBigger = size.width > resolution.height
-            
-            if originWidthIsBigger && originHeightIsBigger {
-              if size.height > 1920 {
-                let res = VideoResolution.res1080p.resolutionSize
-                self.setResolutionSlider(value: res)
-              } else {
-                self.setResolutionSlider(value: size)
-              }
-            } else {
-              self.setResolutionSlider(value: resolution)
-            }
-          } else {
-            let originWidthIsBigger = size.width > resolution.width
-            let originHeighIsBigger = size.height > resolution.height
-            
-            if originWidthIsBigger && originHeighIsBigger {
-              if size.width > 1920 {
-                let res = VideoResolution.res1080p.resolutionSize
-                self.setResolutionSlider(value: res)
-              } else {
-                self.setResolutionSlider(value: size)
-              }
-            } else {
-              self.setResolutionSlider(value: resolution)
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  private func resetToDefault() {
-    
-    let defaultConfiguration = VideoCompressionConfig()
-    loadPreSavedConfiguration(defaultConfiguration)
-    resolutionSegmentControll.selectedSegmentIndex = 0
-    switchResolutionChange()
-  }
-}
-
-extension VideoCompressionController {
-  
-  @objc func resolutionSliderDidChangeValue() {
-    
-    switch resolutionStepSlider.index {
-    case 0:
-      setResolution(value: .res240p)
-    case 1:
-      setResolution(value: .res360p)
-    case 2:
-      setResolution(value: .res480p)
-    case 3:
-      setResolution(value: .res540p)
-    case 4:
-      setResolution(value: .res720p)
-    case 5:
-      setResolution(value: .res1080p)
-    default:
-      return
-    }
-  }
-  
-  private func setResolution(value: VideoResolution) {
-    videoResolutionValue = value
-  }
-  
-  private func setResolutionSlider(value: CGSize) {
-    
-    guard let asset = self.asset else { return }
-    
-    let isPortrait = asset.isPortrait
-    let videoResolutionSliderValues: [VideoResolution] = Array(VideoResolution.allCases.reversed()).dropLast()
-    let portraitResolution = VideoResolution.allCases.first(where: {$0.resolutionSizePortrait.height == value.height})
-    let landscapeResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == value.width})
-    
-    if value.videoResolutionSize() == .origin {
-      resolutionStepSlider.index = UInt(videoResolutionSliderValues.count - 1)
-      videoResolutionValue = .origin
-    }
-    
-    if isPortrait {
-      if let portraitResolution = portraitResolution {
-        videoResolutionValue = portraitResolution
-      }
-    } else {
-      if let landscapeResolution = landscapeResolution {
-        videoResolutionValue = landscapeResolution
-      }
-    }
-    
-    if let index = videoResolutionSliderValues.firstIndex(of: videoResolutionValue) {
-      resolutionStepSlider.index = UInt(index)
-    }
-    
-    isResolutionChangeAvailible = videoResolutionValue != .origin
-    setMenualResolutionSegment(isOn: isResolutionChangeAvailible)
-  }
-  
-  private func getResolutionFrom(_ size: CGSize) -> VideoResolution {
-    
-    let heightResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == size.height})
-    let widthResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width})
-    
-    if let _ = heightResolution {
-      return heightResolution!
-    } else if let _ = widthResolution {
-      return widthResolution!
-    }
-    return .res1080p
-  }
-  
-  private func setMenualResolutionSegment(isOn: Bool) {
-    
-    resolutionSegmentControll.selectedSegmentIndex = isOn ? 1 : 0
-  }
-  
-  private func handleResolutionChangeSliderAvailible(isEnabled: Bool) {
-    U.UI {
-      self.resolutionStepSlider.isEnabled = isEnabled
-      self.resolutionStepSlider.alpha = isEnabled ? 1.0 : 0.5
-    }
-  }
-  
-  private func getOriginVideoResolution(competionHandler: @escaping (_ size: CGSize,_ isPortrait: Bool) -> Void) {
-    
-    guard let asset = self.asset else { return }
-    
-    let isPortrait = asset.isPortrait
-    
-    asset.getPhassetURL { responseURL in
-      
-      guard let url = responseURL else {
-        competionHandler(.zero, isPortrait)
-        return
-      }
-      
-      let avasset = AVAsset(url: url)
-      
-      if let videoTrack = avasset.tracks(withMediaType: .video).first {
-        let size = videoTrack.naturalSize
-        competionHandler(size, isPortrait)
-      } else {
-        competionHandler(.zero, isPortrait)
-      }
-    }
-  }
-  
-  private func switchResolutionChange() {
-    
-    resolutionSegmentControll.selectedSegmentIndex == 0 ? setResolution(value: .origin) : resolutionSliderDidChangeValue()
-    isResolutionChangeAvailible = self.resolutionSegmentControll.selectedSegmentIndex == 1
-  }
-}
-
-extension VideoCompressionController {
-  
-  @objc func fpsSliderDidChangeValue() {
-    
-    switch fpsStepSlider.index {
-    case 0:
-      setFps(value: .fps15)
-    case 1:
-      setFps(value: .fps24)
-    case 2:
-      setFps(value: .fps30)
-    case 3:
-      setFps(value: .fps60)
-    default:
-      return
-    }
-  }
-  
-  private func setFps(value: FPS) {
-    videoFpsValue = value
-  }
-  
-  private func setFpsSlider(to value: Float) {
-    
-    let rawValue = FPS.allCases.first(where: {$0.rawValue == value})
-    let valuesArray: [FPS] = Array(FPS.allCases.reversed())
-    
-    if let savedValue = rawValue {
-      self.videoFpsValue = savedValue
-      if let index = valuesArray.firstIndex(of: savedValue) {
-        fpsStepSlider.index = UInt(index)
-      }
-    }
-  }
-}
-
-extension VideoCompressionController {
-  
-  @objc func videoBitrateSliderDidChangeValue() {
-    setBitrate(value: videoBitrateSlider.index)
-  }
-  
-  private func setVideoBitrateSlider(to value: Int) {
-    self.videoBitrateValue = value
-    self.videoBitrateSlider.index = UInt(value - 1) / 1000_000
-  }
-  
-  private func setBitrate(value: UInt) {
-    videoBitrateValue = Int(value + 1) * 1000_000
-  }
-}
-
-extension VideoCompressionController {
-  
-  @objc func audioBitrateSliderDidChangeValue() {
-    
-    switch audioBitrateSlider.index {
-    case 0:
-      setAudioBitrate(value: .bit96)
-    case 1:
-      setAudioBitrate(value: .bit128)
-    case 2:
-      setAudioBitrate(value: .bit160)
-    case 3:
-      setAudioBitrate(value: .bit192)
-    case 4:
-      setAudioBitrate(value: .bit256)
-    default:
-      return
-    }
-  }
-  
-  @objc func videoKeyframeSliderDidChangeValue() {
-    setKeyframe(value: videoKeyFrameSlider.index)
-  }
-  
-  private func setKeyframe(value: UInt) {
-    videoKeyframeValue = Int(value) + 1
-  }
-  
-  private func setKeyIntervalSlider(value: Int) {
-    videoKeyframeValue = value
-    videoKeyFrameSlider.index = UInt(value - 1)
-  }
-}
-
-extension VideoCompressionController {
-  
-  private func setAudioBitrate(value: AudioBitrate) {
-    audioBitrateValue = value
-  }
-  
-  private func setAudioBitrateSlider(to value: Int) {
-    
-    let rawValue = AudioBitrate.allCases.first(where: {$0.rawValue == value})
-    let valuesArray: [AudioBitrate] = Array(AudioBitrate.allCases.reversed())
-    
-    if let savedValue = rawValue {
-      self.audioBitrateValue = savedValue
-      if let index = valuesArray.firstIndex(of: savedValue) {
-        audioBitrateSlider.index = UInt(index)
-      }
-    }
-  }
-  
-  private func audioSlider(isEnabled: Bool) {
-    self.audioBitrateSlider.isEnabled = isEnabled
-    self.audioBitrateSlider.alpha = isEnabled ? 1.0 : 0.5
-    self.audioBitrateTextLabel.alpha = isEnabled ? 1.0 : 0.5
-  }
-}
-
-extension VideoCompressionController {
-  
-  private func handleRemoveAudioComponentButtom() {
-    
-    let image = removeAudioComponent ? I.personalisation.video.selected : I.personalisation.video.unselected
-    
-    removeAudioButton.addLeftImage(image: image, size: CGSize(width: 15, height: 15), spacing: 5)
-    self.audioSlider(isEnabled: !removeAudioComponent)
-  }
-  
-  private func handlRemoveTrackButtonAvailible(isEnabled: Bool) {
-    U.UI {
-      self.removeAudioButton.isEnabled = isEnabled
-      self.audioSlider(isEnabled: isEnabled)
-    }
-  }
-  
-  private func setResetToDefaultButton(isEnable: Bool) {
-    self.resetToDafaultButton.isEnabled = isEnable
-  }
-}
-
-extension VideoCompressionController {
-  
-  private func handleValuesDidChange() {
-    
-    let defaultConfigurationValues = VideoCompressionConfig()
-    
-    var isDefaultResolution: Bool = false
-    
-    if self.videoResolutionValue == .origin {
-      isDefaultResolution = true
-    } else if self.videoResolutionValue == .res1080p {
-      isDefaultResolution = true
-    } else {
-      isDefaultResolution = false
-    }
-    
-    if isDefaultResolution &&
-        defaultConfigurationValues.videoBitrate == self.videoBitrateValue &&
-        defaultConfigurationValues.audioBitrate == self.audioBitrateValue.rawValue &&
-        defaultConfigurationValues.fps == self.videoFpsValue.rawValue &&
-        defaultConfigurationValues.maximumVideoKeyframeInterval == self.videoKeyframeValue {
-      
-      setResetToDefaultButton(isEnable: false)
-    } else {
-      setResetToDefaultButton(isEnable: true)
-    }
-  }
-  
-  private func handleAudioTrackIsEnable() {
-    
-    if let asset = asset {
-      asset.getPhassetURL { responseURL in
-        if let url =  responseURL {
-          let avasset = AVAsset(url: url)
-          if let _ = avasset.tracks(withMediaType: .audio).first {
-            self.isAudioAvailible = true
-          } else {
-            self.isAudioAvailible = false
-          }
-        }
-      }
-    }
-  }
-}
-
-extension VideoCompressionController {
-  
-  private func presentPopUpInfoController(with model: CustomCompressionSection, from button: UIButton) {
-    
-    let infoViewController = CompressingInfoController()
-    infoViewController.compressingSection = model
-    
-    guard let popOverPresentationController = infoViewController.popoverPresentationController else { return }
-    popOverPresentationController.permittedArrowDirections = []
-    popOverPresentationController.delegate = self
-    popOverPresentationController.sourceView = button
-    popOverPresentationController.canOverlapSourceViewRect = true
-    popOverPresentationController.sourceRect = CGRect(x: button.bounds.midX, y: button.bounds.midY, width: 0, height: 0)
-    self.present(infoViewController, animated: true)
-  }
-}
-
-extension VideoCompressionController: Themeble {
-  
   func setupUI() {
     
     let containerHeight: CGFloat = AppDimensions.ModalControllerSettings.mainContainerHeight
@@ -835,6 +368,446 @@ extension VideoCompressionController: Themeble {
     
     bottomButtonView.delegate = self
   }
+  
+  private func setCompressionConfiguration() {
+    
+    guard let asset = self.asset else {
+      ErrorHandler.shared.showCompressionError(.cantLoadFile) {
+        self.dismiss(animated: true, completion: nil)
+      }
+      return
+    }
+    
+    let videoBitrate = self.videoBitrateValue
+    let audioBitrate = self.audioBitrateValue.rawValue
+    let fps = self.videoFpsValue.rawValue
+    let audioSampleRate = 44100
+    let maximumVideoKeyframeInterval = self.videoKeyframeValue
+    
+    var resoultion = self.videoResolutionValue.resolutionSize
+    
+    if !self.isResolutionChangeAvailible {
+      resoultion = VideoResolution.origin.resolutionSize
+    } else if asset.isPortrait {
+      resoultion = CGSize(width: -1, height: resoultion.width)
+    } else {
+      resoultion = CGSize(width: resoultion.width, height: -1)
+    }
+    
+    let config = VideoCompressionConfig(videoBitrate: videoBitrate,
+                                        audioBitrate: audioBitrate,
+                                        fps: fps,
+                                        audioSampleRate: audioSampleRate,
+                                        maximumVideoKeyframeInterval: maximumVideoKeyframeInterval,
+                                        scaleResolution: resoultion,
+                                        fileType: .mp4,
+                                        removeAudioComponent: self.removeAudioComponent)
+    
+    CompressionSettingsConfiguretion.saveCompressionConfiguration(config)
+    
+    self.dismiss(animated: true) {
+      self.selectVideoCompressingConfig?(config)
+    }
+  }
+  
+  private func loadPreSavedConfiguration(_ savedConfig: VideoCompressionConfig) {
+    
+    if let resolution = savedConfig.scaleResolution {
+      self.setResolutionSlider(value: resolution)
+    }
+    
+    self.setVideoBitrateSlider(to: savedConfig.videoBitrate)
+    self.setAudioBitrateSlider(to: savedConfig.audioBitrate)
+    self.setFpsSlider(to: savedConfig.fps)
+    self.setKeyIntervalSlider(value: savedConfig.maximumVideoKeyframeInterval)
+    self.removeAudioComponent = savedConfig.removeAudioComponent
+  }
+  
+  private func setResolutionProblem(_ savedConfig: VideoCompressionConfig) {
+    
+    self.getOriginVideoResolution { size, isPortrait in
+      U.UI {
+        if let resolution = savedConfig.scaleResolution {
+          if isPortrait {
+            let originWidthIsBigger = size.height > resolution.width
+            let originHeightIsBigger = size.width > resolution.height
+            
+            if originWidthIsBigger && originHeightIsBigger {
+              if size.height > 1920 {
+                let res = VideoResolution.res1080p.resolutionSize
+                self.setResolutionSlider(value: res)
+              } else {
+                self.setResolutionSlider(value: size)
+              }
+            } else {
+              self.setResolutionSlider(value: resolution)
+            }
+          } else {
+            let originWidthIsBigger = size.width > resolution.width
+            let originHeighIsBigger = size.height > resolution.height
+            
+            if originWidthIsBigger && originHeighIsBigger {
+              if size.width > 1920 {
+                let res = VideoResolution.res1080p.resolutionSize
+                self.setResolutionSlider(value: res)
+              } else {
+                self.setResolutionSlider(value: size)
+              }
+            } else {
+              self.setResolutionSlider(value: resolution)
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  private func resetToDefault() {
+    
+    let defaultConfiguration = VideoCompressionConfig()
+    loadPreSavedConfiguration(defaultConfiguration)
+    resolutionSegmentControll.selectedSegmentIndex = 0
+    switchResolutionChange()
+  }
+  
+  @objc func resolutionSliderDidChangeValue() {
+    
+    switch resolutionStepSlider.index {
+    case 0:
+      setResolution(value: .res240p)
+    case 1:
+      setResolution(value: .res360p)
+    case 2:
+      setResolution(value: .res480p)
+    case 3:
+      setResolution(value: .res540p)
+    case 4:
+      setResolution(value: .res720p)
+    case 5:
+      setResolution(value: .res1080p)
+    default:
+      return
+    }
+  }
+  
+  private func setResolution(value: VideoResolution) {
+    videoResolutionValue = value
+  }
+  
+  private func setResolutionSlider(value: CGSize) {
+    
+    guard let asset = self.asset else { return }
+    
+    let isPortrait = asset.isPortrait
+    let videoResolutionSliderValues: [VideoResolution] = Array(VideoResolution.allCases.reversed()).dropLast()
+    let portraitResolution = VideoResolution.allCases.first(where: {$0.resolutionSizePortrait.height == value.height})
+    let landscapeResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == value.width})
+    
+    if value.videoResolutionSize() == .origin {
+      resolutionStepSlider.index = UInt(videoResolutionSliderValues.count - 1)
+      videoResolutionValue = .origin
+    }
+    
+    if isPortrait {
+      if let portraitResolution = portraitResolution {
+        videoResolutionValue = portraitResolution
+      }
+    } else {
+      if let landscapeResolution = landscapeResolution {
+        videoResolutionValue = landscapeResolution
+      }
+    }
+    
+    if let index = videoResolutionSliderValues.firstIndex(of: videoResolutionValue) {
+      resolutionStepSlider.index = UInt(index)
+    }
+    
+    isResolutionChangeAvailible = videoResolutionValue != .origin
+    setMenualResolutionSegment(isOn: isResolutionChangeAvailible)
+  }
+  
+  private func getResolutionFrom(_ size: CGSize) -> VideoResolution {
+    
+    let heightResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == size.height})
+    let widthResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width})
+    
+    if let _ = heightResolution {
+      return heightResolution!
+    } else if let _ = widthResolution {
+      return widthResolution!
+    }
+    return .res1080p
+  }
+  
+  private func setMenualResolutionSegment(isOn: Bool) {
+    
+    resolutionSegmentControll.selectedSegmentIndex = isOn ? 1 : 0
+  }
+  
+  private func handleResolutionChangeSliderAvailible(isEnabled: Bool) {
+    U.UI {
+      self.resolutionStepSlider.isEnabled = isEnabled
+      self.resolutionStepSlider.alpha = isEnabled ? 1.0 : 0.5
+    }
+  }
+  
+  private func getOriginVideoResolution(competionHandler: @escaping (_ size: CGSize,_ isPortrait: Bool) -> Void) {
+    
+    guard let asset = self.asset else { return }
+    
+    let isPortrait = asset.isPortrait
+    
+    asset.getPhassetURL { responseURL in
+      
+      guard let url = responseURL else {
+        competionHandler(.zero, isPortrait)
+        return
+      }
+      
+      let avasset = AVAsset(url: url)
+      
+      if let videoTrack = avasset.tracks(withMediaType: .video).first {
+        let size = videoTrack.naturalSize
+        competionHandler(size, isPortrait)
+      } else {
+        competionHandler(.zero, isPortrait)
+      }
+    }
+  }
+  
+  private func switchResolutionChange() {
+    
+    resolutionSegmentControll.selectedSegmentIndex == 0 ? setResolution(value: .origin) : resolutionSliderDidChangeValue()
+    isResolutionChangeAvailible = self.resolutionSegmentControll.selectedSegmentIndex == 1
+  }
+  
+  @objc func fpsSliderDidChangeValue() {
+    
+    switch fpsStepSlider.index {
+    case 0:
+      setFps(value: .fps15)
+    case 1:
+      setFps(value: .fps24)
+    case 2:
+      setFps(value: .fps30)
+    case 3:
+      setFps(value: .fps60)
+    default:
+      return
+    }
+  }
+  
+  private func setFps(value: FPS) {
+    videoFpsValue = value
+  }
+  
+  private func setFpsSlider(to value: Float) {
+    
+    let rawValue = FPS.allCases.first(where: {$0.rawValue == value})
+    let valuesArray: [FPS] = Array(FPS.allCases.reversed())
+    
+    if let savedValue = rawValue {
+      self.videoFpsValue = savedValue
+      if let index = valuesArray.firstIndex(of: savedValue) {
+        fpsStepSlider.index = UInt(index)
+      }
+    }
+  }
+  
+  @objc func videoBitrateSliderDidChangeValue() {
+    setBitrate(value: videoBitrateSlider.index)
+  }
+  
+  private func setVideoBitrateSlider(to value: Int) {
+    self.videoBitrateValue = value
+    self.videoBitrateSlider.index = UInt(value - 1) / 1000_000
+  }
+  
+  private func setBitrate(value: UInt) {
+    videoBitrateValue = Int(value + 1) * 1000_000
+  }
+  
+  @objc func audioBitrateSliderDidChangeValue() {
+    
+    switch audioBitrateSlider.index {
+    case 0:
+      setAudioBitrate(value: .bit96)
+    case 1:
+      setAudioBitrate(value: .bit128)
+    case 2:
+      setAudioBitrate(value: .bit160)
+    case 3:
+      setAudioBitrate(value: .bit192)
+    case 4:
+      setAudioBitrate(value: .bit256)
+    default:
+      return
+    }
+  }
+  
+  @objc func videoKeyframeSliderDidChangeValue() {
+    setKeyframe(value: videoKeyFrameSlider.index)
+  }
+  
+  private func setKeyframe(value: UInt) {
+    videoKeyframeValue = Int(value) + 1
+  }
+  
+  private func setKeyIntervalSlider(value: Int) {
+    videoKeyframeValue = value
+    videoKeyFrameSlider.index = UInt(value - 1)
+  }
+  
+  private func setAudioBitrate(value: AudioBitrate) {
+    audioBitrateValue = value
+  }
+  
+  private func setAudioBitrateSlider(to value: Int) {
+    
+    let rawValue = AudioBitrate.allCases.first(where: {$0.rawValue == value})
+    let valuesArray: [AudioBitrate] = Array(AudioBitrate.allCases.reversed())
+    
+    if let savedValue = rawValue {
+      self.audioBitrateValue = savedValue
+      if let index = valuesArray.firstIndex(of: savedValue) {
+        audioBitrateSlider.index = UInt(index)
+      }
+    }
+  }
+  
+  private func audioSlider(isEnabled: Bool) {
+    self.audioBitrateSlider.isEnabled = isEnabled
+    self.audioBitrateSlider.alpha = isEnabled ? 1.0 : 0.5
+    self.audioBitrateTextLabel.alpha = isEnabled ? 1.0 : 0.5
+  }
+  
+  private func handleRemoveAudioComponentButtom() {
+    
+    let image = removeAudioComponent ? I.personalisation.video.selected : I.personalisation.video.unselected
+    
+    removeAudioButton.addLeftImage(image: image, size: CGSize(width: 15, height: 15), spacing: 5)
+    self.audioSlider(isEnabled: !removeAudioComponent)
+  }
+  
+  private func handlRemoveTrackButtonAvailible(isEnabled: Bool) {
+    U.UI {
+      self.removeAudioButton.isEnabled = isEnabled
+      self.audioSlider(isEnabled: isEnabled)
+    }
+  }
+  
+  private func setResetToDefaultButton(isEnable: Bool) {
+    self.resetToDafaultButton.isEnabled = isEnable
+  }
+  
+  private func handleValuesDidChange() {
+    
+    let defaultConfigurationValues = VideoCompressionConfig()
+    
+    var isDefaultResolution: Bool = false
+    
+    if self.videoResolutionValue == .origin {
+      isDefaultResolution = true
+    } else if self.videoResolutionValue == .res1080p {
+      isDefaultResolution = true
+    } else {
+      isDefaultResolution = false
+    }
+    
+    if isDefaultResolution &&
+        defaultConfigurationValues.videoBitrate == self.videoBitrateValue &&
+        defaultConfigurationValues.audioBitrate == self.audioBitrateValue.rawValue &&
+        defaultConfigurationValues.fps == self.videoFpsValue.rawValue &&
+        defaultConfigurationValues.maximumVideoKeyframeInterval == self.videoKeyframeValue {
+      
+      setResetToDefaultButton(isEnable: false)
+    } else {
+      setResetToDefaultButton(isEnable: true)
+    }
+  }
+  
+  private func handleAudioTrackIsEnable() {
+    
+    if let asset = asset {
+      asset.getPhassetURL { responseURL in
+        if let url =  responseURL {
+          let avasset = AVAsset(url: url)
+          if let _ = avasset.tracks(withMediaType: .audio).first {
+            self.isAudioAvailible = true
+          } else {
+            self.isAudioAvailible = false
+          }
+        }
+      }
+    }
+  }
+  
+  private func presentPopUpInfoController(with model: CustomCompressionSection, from button: UIButton) {
+    
+    let infoViewController = CompressingInfoController()
+    infoViewController.compressingSection = model
+    
+    guard let popOverPresentationController = infoViewController.popoverPresentationController else { return }
+    popOverPresentationController.permittedArrowDirections = []
+    popOverPresentationController.delegate = self
+    popOverPresentationController.sourceView = button
+    popOverPresentationController.canOverlapSourceViewRect = true
+    popOverPresentationController.sourceRect = CGRect(x: button.bounds.midX, y: button.bounds.midY, width: 0, height: 0)
+    self.present(infoViewController, animated: true)
+  }
+  
+  @IBAction func didTapResolutionTitleActionButton(_ sender: UIButton) {
+    
+    self.presentPopUpInfoController(with: .resolution, from: sender)
+  }
+  
+  @IBAction func didTapFpsTitleActionButton(_ sender: UIButton) {
+    
+    self.presentPopUpInfoController(with: .fps, from: sender)
+  }
+  
+  @IBAction func didTapVideoBitrateTitleActionButton(_ sender: UIButton) {
+    
+    self.presentPopUpInfoController(with: .videoBitrate, from: sender)
+  }
+  
+  @IBAction func didTapKeyframeTitleActionButton(_ sender: UIButton) {
+    
+    self.presentPopUpInfoController(with: .keyframe, from: sender)
+  }
+  
+  @IBAction func didTapAudioFrameTitleActionButton(_ sender: UIButton) {
+    
+    self.presentPopUpInfoController(with: .audioBitrate, from: sender)
+  }
+  
+  @IBAction func didTapResetToDefaultSettingsActionButton(_ sender: Any) {
+    
+    resetToDafaultButton.animateButtonTransform()
+    self.resetToDefault()
+  }
+  
+  @IBAction func didTapRemoveAudioTrackActionButton(_ sender: Any) {
+    
+    removeAudioButton.animateButtonTransform()
+    removeAudioComponent = !removeAudioComponent
+  }
+  
+  @IBAction func swgmentControlDidChange(_ sender: Any) {
+    
+    switchResolutionChange()
+  }
+}
+
+extension VideoCompressionController: BottomActionButtonDelegate {
+  
+  func didTapActionButton() {
+    
+    self.setCompressionConfiguration()
+  }
+}
+
+extension VideoCompressionController: Themeble {
   
   func setupAppearance() {
     
