@@ -625,7 +625,7 @@ class GroupedAssetListController: UIViewController {
         U.delay(1) {
           self.progressAlertController.closeProgressAnimatedController()
           U.delay(1) {
-            ErrorHandler.shared.showDeleteAlertError(self.contentType == .userVideo ? .errorDeleteVideo : .errorDeletePhoto)
+            ErrorManager.shared.showDeleteAlertError(self.contentType == .userVideo ? .errorDeleteVideo : .errorDeletePhoto)
           }
         }
       }

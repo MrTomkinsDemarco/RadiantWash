@@ -1,5 +1,5 @@
 //
-//  VideoCompressionErrorHandler.swift
+//  VideoCompressionErrorManager.swift
 //  RadiantWash
 //
 //  Created by Mac Mini on 18.02.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum VideoCompressionErrorHandler: Error, LocalizedError {
+enum VideoCompressionErrorManager: Error, LocalizedError {
   
   case noVideoFile
   case compressedFailed(_ error: Error)
@@ -17,19 +17,19 @@ enum VideoCompressionErrorHandler: Error, LocalizedError {
   public func showErrorAlert(completionHandler: @escaping () -> Void) {
     switch self {
       case .noVideoFile:
-        ErrorHandler.shared.showCompressionError(.noVideoFile) {
+      ErrorManager.shared.showCompressionError(.noVideoFile) {
           completionHandler()
         }
       case .compressedFailed(let error):
-        ErrorHandler.shared.showCompressionError(.compressionFailed, error) {
+      ErrorManager.shared.showCompressionError(.compressionFailed, error) {
           completionHandler()
         }
       case .errorRemoveAudioComponent:
-        ErrorHandler.shared.showCompressionError(.removeAudio) {
+      ErrorManager.shared.showCompressionError(.removeAudio) {
           completionHandler()
         }
       case .operationIsCanceled:
-        ErrorHandler.shared.showCompressionError(.operationIsCanceled) {
+      ErrorManager.shared.showCompressionError(.operationIsCanceled) {
           completionHandler()
         }
     }

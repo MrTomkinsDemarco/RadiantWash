@@ -81,7 +81,7 @@ extension VideoCompressionManager {
     if writer?.status == .writing {
       writer?.cancelWriting()
     }
-    ErrorHandler.shared.showCompressionError(.operationIsCanceled)
+    ErrorManager.shared.showCompressionError(.operationIsCanceled)
   }
 }
 
@@ -287,7 +287,7 @@ extension VideoCompressionManager {
 
 extension VideoCompressionManager {
   
-  private func startVideoCompressing(asset: AVAsset, fileType: AVFileType, videoTrack: AVAssetTrack, audioTrack: AVAssetTrack?, videoSettigs: [String: Any]?, audioSettings: [String: Any]?, targetFPS: Float, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
+  private func startVideoCompressing(asset: AVAsset, fileType: AVFileType, videoTrack: AVAssetTrack, audioTrack: AVAssetTrack?, videoSettigs: [String: Any]?, audioSettings: [String: Any]?, targetFPS: Float, completionHandler: @escaping (Result<URL, VideoCompressionErrorManager>) -> Void) {
     
     let videoOutputSettings: [String: Any] = [
       kCVPixelBufferPixelFormatTypeKey as String : kCVPixelFormatType_32BGRA
@@ -401,7 +401,7 @@ extension VideoCompressionManager {
 
 extension VideoCompressionManager {
   
-  public func compressVideo(from url: URL, quality: VideoCompressionQuality = .medium, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
+  public func compressVideo(from url: URL, quality: VideoCompressionQuality = .medium, completionHandler: @escaping (Result<URL, VideoCompressionErrorManager>) -> Void) {
     
     let asset = AVAsset(url: url)
     
@@ -428,7 +428,7 @@ extension VideoCompressionManager {
     self.startVideoCompressing(asset: asset, fileType: .mp4, videoTrack: videoTrack, audioTrack: audioTrack, videoSettigs: videoSettings, audioSettings: audioSettings, targetFPS: quality.preSavedValues.fps, completionHandler: completionHandler)
   }
   
-  public func compressVideo(from url: URL, with config: VideoCompressionConfig, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
+  public func compressVideo(from url: URL, with config: VideoCompressionConfig, completionHandler: @escaping (Result<URL, VideoCompressionErrorManager>) -> Void) {
     
     let asset = AVAsset(url: url)
     
@@ -456,7 +456,7 @@ extension VideoCompressionManager {
 
 extension VideoCompressionManager {
   
-  public func removeAudioComponentFromVideo(with url: URL, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
+  public func removeAudioComponentFromVideo(with url: URL, completionHandler: @escaping (Result<URL, VideoCompressionErrorManager>) -> Void) {
     
     let asset = AVURLAsset(url: url)
     

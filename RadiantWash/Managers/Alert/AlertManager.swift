@@ -180,7 +180,7 @@ extension AlertManager {
 
 extension AlertManager {
   
-  public static func showPurchaseAlert(of errorType: ErrorHandler.SubscriptionError, at viewController: UIViewController, expireDate: String? = nil) {
+  public static func showPurchaseAlert(of errorType: ErrorManager.SubscriptionError, at viewController: UIViewController, expireDate: String? = nil) {
     
     let alertDescription = errorType.alertDescription
     let confirmAction = UIAlertAction(title: alertDescription.action, style: .default) { _ in }

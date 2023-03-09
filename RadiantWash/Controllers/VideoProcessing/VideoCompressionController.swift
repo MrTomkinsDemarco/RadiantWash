@@ -372,7 +372,7 @@ class VideoCompressionController: UIViewController {
   private func setCompressionConfiguration() {
     
     guard let asset = self.asset else {
-      ErrorHandler.shared.showCompressionError(.cantLoadFile) {
+      ErrorManager.shared.showCompressionError(.cantLoadFile) {
         self.dismiss(animated: true, completion: nil)
       }
       return

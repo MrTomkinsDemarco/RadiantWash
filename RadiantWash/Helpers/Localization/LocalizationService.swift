@@ -108,7 +108,7 @@ struct LocalizationService {
                                 cancel: L.empty)
       }
       
-      static func restrictedPermissionDescription(for error: ErrorHandler.AccessRestrictedError) -> AlertDescription {
+      static func restrictedPermissionDescription(for error: ErrorManager.AccessRestrictedError) -> AlertDescription {
         let contactsPermissionRestricted = L.Permission.AlertService.Restricted.contacts
         let photoPermissionRestricted = L.Permission.AlertService.Restricted.photoLibrary
         let description = error == .contactsRestrictedError ? contactsPermissionRestricted : photoPermissionRestricted
@@ -121,7 +121,7 @@ struct LocalizationService {
     
     struct Networking {
       
-      static func alertDescription(for error: ErrorHandler.NetworkError) -> AlertDescription {
+      static func alertDescription(for error: ErrorManager.NetworkError) -> AlertDescription {
         switch error {
         case .networkError:
           return AlertDescription(title: Localization.ErrorsHandler.Title.noNetwork,
@@ -248,7 +248,7 @@ struct LocalizationService {
   
   struct Errors {
     
-    static func getEmptyErrorForKey(_ error: ErrorHandler.EmptyResultsError) -> ErrorDescription {
+    static func getEmptyErrorForKey(_ error: ErrorManager.EmptyResultsError) -> ErrorDescription {
       
       let buttonTitle = LocalizationService.Buttons.getButtonTitle(of: .ok)
       
@@ -308,16 +308,16 @@ struct LocalizationService {
       return description
     }
     
-    public static func getCompressionErrorDescriptionForKey(_ compressionError: ErrorHandler.CompressionError, error: Error?) -> ErrorDescription {
+    public static func getCompressionErrorDescriptionForKey(_ compressionError: ErrorManager.CompressionError, error: Error?) -> ErrorDescription {
       
       let actionButtonTitle = LocalizationService.Buttons.getButtonTitle(of: .ok)
       
       var title: String {
         switch compressionError {
         case .operationIsCanceled, .resolutionIsBigger:
-          return ErrorHandler.errorTitle.attention.rawValue
+          return ErrorManager.errorTitle.attention.rawValue
         default:
-          return ErrorHandler.errorTitle.error.rawValue
+          return ErrorManager.errorTitle.error.rawValue
         }
       }
       
@@ -347,7 +347,7 @@ struct LocalizationService {
       return ErrorDescription(title: title, message: message, buttonTitle: actionButtonTitle)
     }
     
-    public static func getDeepCleanDescriptionForKey(_ error: ErrorHandler.DeepCleanProcessingError) -> ErrorDescription {
+    public static func getDeepCleanDescriptionForKey(_ error: ErrorManager.DeepCleanProcessingError) -> ErrorDescription {
       
       let actionButtonTitle = LocalizationService.Buttons.getButtonTitle(of: .ok)
       
@@ -368,31 +368,31 @@ struct LocalizationService {
       return ErrorDescription(title: title, message: message, buttonTitle: actionButtonTitle)
     }
     
-    public static func deleteErrorDescription(_ error: ErrorHandler.DeleteError) -> ErrorDescription {
+    public static func deleteErrorDescription(_ error: ErrorManager.DeleteError) -> ErrorDescription {
       let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
-      let title = ErrorHandler.errorTitle.error.rawValue
-      let message = ErrorHandler.shared.deleteErrorForKey(error)
+      let title = ErrorManager.errorTitle.error.rawValue
+      let message = ErrorManager.shared.deleteErrorForKey(error)
       return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
     }
     
-    public static func mergeErrorDescription(_ error: ErrorHandler.MeergeError) -> ErrorDescription {
+    public static func mergeErrorDescription(_ error: ErrorManager.MeergeError) -> ErrorDescription {
       let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
-      let title = ErrorHandler.errorTitle.attention.rawValue
-      let message = ErrorHandler.shared.mergeErrorForKey(error)
+      let title = ErrorManager.errorTitle.attention.rawValue
+      let message = ErrorManager.shared.mergeErrorForKey(error)
       return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
     }
     
-    public static func leadErrorDescription(_ error: ErrorHandler.LoadError) -> ErrorDescription {
+    public static func leadErrorDescription(_ error: ErrorManager.LoadError) -> ErrorDescription {
       let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
-      let title = ErrorHandler.errorTitle.error.rawValue
-      let message = ErrorHandler.shared.loadErrorForKey(error)
+      let title = ErrorManager.errorTitle.error.rawValue
+      let message = ErrorManager.shared.loadErrorForKey(error)
       return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
     }
     
-    public static func fatalErrorDescription(_ error: ErrorHandler.FatalError) -> ErrorDescription {
+    public static func fatalErrorDescription(_ error: ErrorManager.FatalError) -> ErrorDescription {
       let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
-      let title = ErrorHandler.errorTitle.fatalError.rawValue
-      let message = ErrorHandler.shared.fatalErrorForKey(error)
+      let title = ErrorManager.errorTitle.fatalError.rawValue
+      let message = ErrorManager.shared.fatalErrorForKey(error)
       return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
     }
   }

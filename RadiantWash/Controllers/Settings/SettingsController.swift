@@ -226,7 +226,7 @@ extension SettingsController: SettingActionsDelegate {
       case .connedcted:
         self.subscriptionManager.changeCurrentSubscription()
       case .unreachable:
-        ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+        ErrorManager.shared.showNetworkErrorAlert(.networkError, at: self)
       }
     }
   }
@@ -272,14 +272,14 @@ extension SettingsController: SettingActionsDelegate {
           if !restored {
             if let date = date {
               let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
-              ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
+              ErrorManager.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
             } else {
-              ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self)
+              ErrorManager.shared.showSubsriptionAlertError(for: .restoreError, at: self)
             }
           }
         }
       case .unreachable:
-        ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+        ErrorManager.shared.showNetworkErrorAlert(.networkError, at: self)
       }
     }
   }

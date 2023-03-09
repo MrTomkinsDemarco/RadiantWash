@@ -134,7 +134,7 @@ class VideoCollectionCompressingController: UIViewController {
         self.setupDataSource(with: self.sortingType)
         self.collectionView.setContentOffset(.zero, animated: false)
       } else {
-        ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty) {
+        ErrorManager.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty) {
           self.navigationController?.popViewController(animated: true)
         }
       }

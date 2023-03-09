@@ -692,7 +692,7 @@ class ContactsController: UIViewController {
     } completionHandler: { errorsCount in
       U.delay(0.5) {
         if errorsCount != contacts.count {} else {
-          ErrorHandler.shared.showDeleteAlertError(.errorDeleteContacts)
+          ErrorManager.shared.showDeleteAlertError(.errorDeleteContacts)
         }
         completion()
       }
@@ -763,7 +763,7 @@ class ContactsController: UIViewController {
     P.showIndicator()
     shareManager.shareAllContacts(format) { fileCreate in
       if !fileCreate {
-        ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile)
+        ErrorManager.shared.showLoadAlertError(.errorCreateExportFile)
       }
     }
   }
@@ -787,7 +787,7 @@ class ContactsController: UIViewController {
           P.showIndicator()
           shareManager.shareContacts(contacts, of: format) { fileCreated in
             if !fileCreated {
-              ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile)
+              ErrorManager.shared.showLoadAlertError(.errorCreateExportFile)
             }
           }
         }
@@ -799,7 +799,7 @@ class ContactsController: UIViewController {
     let contacts = contactListViewModel.getContacts(at: [indexPath])
     shareManager.shareContacts(contacts, of: .vcf) { fileCreated in
       if !fileCreated {
-        ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile)
+        ErrorManager.shared.showLoadAlertError(.errorCreateExportFile)
       }
     }
   }

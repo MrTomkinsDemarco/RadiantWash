@@ -196,7 +196,7 @@ extension ContactsExportManager {
                           if let url = url {
                             completionHandler(.archived(url: url))
                           } else {
-                            let error = ErrorHandler.ShareError.errorSavedFile
+                            let error = ErrorManager.ShareError.errorSavedFile
                             completionHandler(.error(error: error))
                           }
                           self.fileManager.deleteAllFiles(at: .systemTemp) {}

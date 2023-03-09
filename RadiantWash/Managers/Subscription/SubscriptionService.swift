@@ -23,7 +23,7 @@ class SubscriptionService {
         return products
       }
     } catch {
-      throw ErrorHandler.StoreError.storeKit(error: error as! StoreKitError)
+      throw ErrorManager.StoreError.storeKit(error: error as! StoreKitError)
     }
   }
   
@@ -76,11 +76,11 @@ extension SubscriptionService {
       finishTransaction ? await transaction.finish() : ()
       return Purchase(product: product, transaction: transaction, finishTransaction: !finishTransaction)
     case .userCancelled:
-      throw ErrorHandler.SubscriptionError.refundsCanceled
+      throw ErrorManager.SubscriptionError.refundsCanceled
     case .pending:
-      throw ErrorHandler.SubscriptionError.purchasePending
+      throw ErrorManager.SubscriptionError.purchasePending
     default:
-      throw ErrorHandler.SubscriptionError.error
+      throw ErrorManager.SubscriptionError.error
     }
   }
   

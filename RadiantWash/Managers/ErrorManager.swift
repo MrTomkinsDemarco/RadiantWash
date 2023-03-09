@@ -1,5 +1,5 @@
 //
-//  ErrorHandler.swift
+//  ErrorManager.swift
 //  RadiantWash
 //
 //  Created by Mac Mini on 18.02.2023.
@@ -7,10 +7,10 @@
 
 import UIKit
 
-class ErrorHandler {
+class ErrorManager {
   
-  static let shared: ErrorHandler = {
-    let instance = ErrorHandler()
+  static let shared: ErrorManager = {
+    let instance = ErrorManager()
     return instance
   }()
   
@@ -35,7 +35,7 @@ class ErrorHandler {
   }
 }
 
-extension ErrorHandler {
+extension ErrorManager {
   
   enum NetworkError: Error {
     case networkError
@@ -54,7 +54,7 @@ extension ErrorHandler {
 }
 
 //  MARK: - Permission Access Restricted Errors -
-extension ErrorHandler {
+extension ErrorManager {
   
   enum AccessRestrictedError: Error {
     case contactsRestrictedError
@@ -78,7 +78,7 @@ extension ErrorHandler {
 }
 
 //  MARK: - Empty Search Results Errors -
-extension ErrorHandler {
+extension ErrorManager {
   
   enum EmptyResultsError: Error {
     case photoLibrararyIsEmpty
@@ -110,7 +110,7 @@ extension ErrorHandler {
   }
 }
 
-extension ErrorHandler {
+extension ErrorManager {
   
   enum ShareError: Error {
     case errorSavedFile
@@ -121,7 +121,7 @@ extension ErrorHandler {
 
 
 //  MARK: - Video Compression Errors Handler -
-extension ErrorHandler {
+extension ErrorManager {
   
   enum CompressionError: Error {
     case cantLoadFile
@@ -141,7 +141,7 @@ extension ErrorHandler {
   }
 }
 
-extension ErrorHandler {
+extension ErrorManager {
   
   enum DeepCleanProcessingError: Error {
     case error
@@ -155,31 +155,31 @@ extension ErrorHandler {
   }
 }
 
-extension ErrorHandler {
-    
+extension ErrorManager {
+  
   enum DeleteError: Error {
-        case errorDeleteContacts
+    case errorDeleteContacts
     case errorDeletePhoto
     case errorDeleteVideo
     
     var errorDescription: ErrorDescription {
       return LocalizationService.Errors.deleteErrorDescription(self)
     }
-    }
+  }
   
   public func deleteErrorForKey(_ error: DeleteError) -> String {
     switch error {
-      case .errorDeleteContacts:
-        return Localization.ErrorsHandler.DeleteError.deleteContactsError
-      case .errorDeletePhoto:
-        return Localization.ErrorsHandler.DeleteError.deletePhotoError
-      case .errorDeleteVideo:
-        return Localization.ErrorsHandler.DeleteError.deleteVideoError
+    case .errorDeleteContacts:
+      return Localization.ErrorsHandler.DeleteError.deleteContactsError
+    case .errorDeletePhoto:
+      return Localization.ErrorsHandler.DeleteError.deletePhotoError
+    case .errorDeleteVideo:
+      return Localization.ErrorsHandler.DeleteError.deleteVideoError
     }
   }
 }
 
-extension ErrorHandler {
+extension ErrorManager {
     
   enum MeergeError: Error {
         case errorMergeContacts
@@ -200,28 +200,28 @@ extension ErrorHandler {
   }
 }
 
-extension ErrorHandler {
-
+extension ErrorManager {
+  
   enum LoadError: Error {
-        case errorLoadContacts
-        case errorCreateExportFile
+    case errorLoadContacts
+    case errorCreateExportFile
     
     var errorDescription: ErrorDescription {
       return LocalizationService.Errors.leadErrorDescription(self)
     }
-    }
-
+  }
+  
   public func loadErrorForKey(_ error: LoadError) -> String {
     switch error {
-      case .errorLoadContacts:
-        return Localization.ErrorsHandler.Errors.errorLoadContact
-      case .errorCreateExportFile:
-        return Localization.ErrorsHandler.Errors.errorCreateExpoert
+    case .errorLoadContacts:
+      return Localization.ErrorsHandler.Errors.errorLoadContact
+    case .errorCreateExportFile:
+      return Localization.ErrorsHandler.Errors.errorCreateExpoert
     }
   }
 }
 
-extension ErrorHandler {
+extension ErrorManager {
   
   enum FatalError: Error {
     case datePickerMinimumDateError
@@ -246,7 +246,7 @@ extension ErrorHandler {
   }
 }
 
-extension ErrorHandler {
+extension ErrorManager {
   
   public func showDeleteAlertError(_ errorType: DeleteError) {
     AlertManager.presentErrorAlert(with: errorType.errorDescription)

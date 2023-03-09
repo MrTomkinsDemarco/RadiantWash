@@ -320,7 +320,7 @@ class MediaContentController: UIViewController {
           if !similarGroup.isEmpty {
             self.showGropedContoller(grouped: similarGroup, photoContent: .similarPhotos, media: .userPhoto)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty) : ()
           }
         }
       }
@@ -341,7 +341,7 @@ class MediaContentController: UIViewController {
           if !duplicateGroup.isEmpty {
             self.showGropedContoller(grouped: duplicateGroup, photoContent: .duplicatedPhotos, media: .userPhoto)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty) : ()
           }
         }
       }
@@ -362,7 +362,7 @@ class MediaContentController: UIViewController {
           if !screenshots.isEmpty {
             self.showAssetViewController(collection: screenshots, photoContent: .singleScreenShots, media: .userPhoto)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.screenShotsIsEmpty) : ()
           }
         }
       }
@@ -384,7 +384,7 @@ class MediaContentController: UIViewController {
           if !similartSelfiesGroup.isEmpty {
             self.showGropedContoller(grouped: similartSelfiesGroup, photoContent: .similarSelfies, media: .userPhoto)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty) : ()
           }
         }
       }
@@ -405,7 +405,7 @@ class MediaContentController: UIViewController {
           if !livePhoto.isEmpty {
             self.showAssetViewController(collection: livePhoto, photoContent: .singleLivePhotos, media: .userPhoto)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.livePhotoIsEmpty) : ()
           }
         }
       }
@@ -445,7 +445,7 @@ class MediaContentController: UIViewController {
           if largeVodeoAsset.count != 0 {
             self.showAssetViewController(collection: largeVodeoAsset, photoContent: .singleLargeVideos, media: .userVideo)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.largeVideoIsEmpty) : ()
           }
         }
       }
@@ -466,7 +466,7 @@ class MediaContentController: UIViewController {
           if duplicatedVideoAsset.count != 0 {
             self.showGropedContoller(grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos, media: .userVideo)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty) : ()
           }
         }
       }
@@ -487,7 +487,7 @@ class MediaContentController: UIViewController {
           if similiarVideoAsset.count != 0 {
             self.showGropedContoller(grouped: similiarVideoAsset, photoContent: .similarVideos, media: .userVideo)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.similarVideoIsEmpty) : ()
           }
         }
       }
@@ -508,7 +508,7 @@ class MediaContentController: UIViewController {
           if screenRecordsAssets.count != 0 {
             self.showAssetViewController(collection: screenRecordsAssets, photoContent: .singleScreenRecordings, media: .userVideo)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty) : ()
           }
         }
       }
@@ -543,7 +543,7 @@ class MediaContentController: UIViewController {
       if similarVideos.count != 0 {
         self.showGropedContoller(grouped: similarVideos, photoContent: .similarVideos, media: .userVideo)
       } else {
-        ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty)
+        ErrorManager.shared.showEmptySearchResultsFor(.similarVideoIsEmpty)
       }
     }
     phassetProcessingOperationQueuer.addOperation(getSimilarVideosByTimeStamp)
@@ -558,7 +558,7 @@ class MediaContentController: UIViewController {
           if !phassets.isEmpty {
             self.showCompressVideoPickerController(with: phassets)
           } else {
-            ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
+            ErrorManager.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
           }
         }
       case .nonPurchased:
@@ -601,7 +601,7 @@ class MediaContentController: UIViewController {
                 self.showLocationController(with: phassets, annotationCollection: annotations)
               }
             } else {
-              ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
+              ErrorManager.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
             }
           }
         }
@@ -627,7 +627,7 @@ class MediaContentController: UIViewController {
           if !contacts.isEmpty {
             self.showContactViewController(contacts: contacts, contentType: .allContacts)
           } else {
-            ErrorHandler.shared.showEmptySearchResultsFor(.contactsIsEmpty)
+            ErrorManager.shared.showEmptySearchResultsFor(.contactsIsEmpty)
           }
         }
       }
@@ -650,7 +650,7 @@ class MediaContentController: UIViewController {
           if totalContacts != 0 {
             self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.emptyContactsIsEmpty) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(.emptyContactsIsEmpty) : ()
           }
         }
       }
@@ -685,7 +685,7 @@ class MediaContentController: UIViewController {
             let group = contactsGroup.sorted(by: {$0.name < $1.name})
             self.showGroupedContactsController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
           } else {
-            !isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(cleanType.emptyResultsError) : ()
+            !isCancelled ? ErrorManager.shared.showEmptySearchResultsFor(cleanType.emptyResultsError) : ()
           }
         }
       }
@@ -1228,14 +1228,14 @@ extension MediaContentController {
             if !contactactGroup.isEmpty {
               self.showContactViewController(contacts: [], contactGroup: contactactGroup, contentType: .emptyContacts)
             } else {
-              ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+              ErrorManager.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
             }
           } else {
             let collection = object.contacts
             if !collection.isEmpty {
               self.showContactViewController(contacts: collection, contentType: photoMediaType)
             } else {
-              ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+              ErrorManager.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
             }
           }
           
@@ -1244,7 +1244,7 @@ extension MediaContentController {
         if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
           self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
         } else {
-          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+          ErrorManager.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
         }
       default:
         return
@@ -1259,16 +1259,16 @@ extension MediaContentController {
           if !collectionGroup.isEmpty {
             self.showGroupedContactsController(contacts: collectionGroup, group: objects.contactCleanType, content: photoMediaType)
           } else {
-            ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+            ErrorManager.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
           }
         } else {
-          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+          ErrorManager.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
         }
       case .userPhoto, .userVideo:
         if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
           self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
         } else {
-          ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+          ErrorManager.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
         }
       default:
         return

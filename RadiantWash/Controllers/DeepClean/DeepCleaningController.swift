@@ -587,7 +587,7 @@ class DeepCleaningController: UIViewController {
       self.photoManager.clearRequestsAfterDeepCleanProcessing()
     } emptyResultsHandler: {
       U.delay(1) {
-        ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanResultsIsEmpty) {
+        ErrorManager.shared.showEmptySearchResultsFor(.deepCleanResultsIsEmpty) {
           self.navigationController?.popViewController(animated: true)
         }
       }
@@ -1103,7 +1103,7 @@ extension DeepCleaningController: BottomActionButtonDelegate {
           if errorsCount == 0 {
             DeepCleanCompleteStateHandler.alertHandler(for: .successfull)
           } else {
-            ErrorHandler.shared.showDeepCleanErrorForkey(.error)
+            ErrorManager.shared.showDeepCleanErrorForkey(.error)
           }
         }
       }

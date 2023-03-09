@@ -207,7 +207,7 @@ class ContactsGroupController: UIViewController {
               }
             }
           } else {
-            ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {
+            ErrorManager.shared.showMergeAlertError(.errorMergeContacts) {
               self.closeController()
             }
           }
@@ -243,7 +243,7 @@ class ContactsGroupController: UIViewController {
             }
           }
         } else {
-          ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {
+          ErrorManager.shared.showMergeAlertError(.errorMergeContacts) {
             self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
             self.updateContactsGroups { contactsGroup in
               self.progressAlert.closeProgressAnimatedController()
@@ -385,11 +385,11 @@ extension ContactsGroupController {
   private func export(contacts: [CNContact], with format: ExportContactsAvailibleFormat) {
     if contacts.isEmpty {
       P.hideIndicator()
-      ErrorHandler.shared.showEmptySearchResultsFor(.contactsIsEmpty) {}
+      ErrorManager.shared.showEmptySearchResultsFor(.contactsIsEmpty) {}
     } else {
       self.shareManager.shareContacts(contacts, of: format) { fileCreated in
         P.hideIndicator()
-        !fileCreated ? ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile) : ()
+        !fileCreated ? ErrorManager.shared.showLoadAlertError(.errorCreateExportFile) : ()
         self.forceDeselectAllItems()
       }
     }

@@ -102,7 +102,7 @@ enum PhotoMediaType: String {
     }
   }
   
-  var emptyContentError: ErrorHandler.EmptyResultsError {
+  var emptyContentError: ErrorManager.EmptyResultsError {
     switch self {
     case .similarPhotos:       return .similarPhotoIsEmpty
     case .duplicatedPhotos:     return .duplicatedPhotoIsEmpty

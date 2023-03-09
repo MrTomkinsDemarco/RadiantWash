@@ -480,7 +480,7 @@ class MediaController: UIViewController {
           self.updateCollection(with: selectedPHAsset, at: indexPath)
         }
       } else {
-        ErrorHandler.shared.showDeleteAlertError(selectedPHAsset.mediaType == .video ? .errorDeleteVideo : .errorDeletePhoto)
+        ErrorManager.shared.showDeleteAlertError(selectedPHAsset.mediaType == .video ? .errorDeleteVideo : .errorDeletePhoto)
       }
     })
     self.photoManager.serviceUtilityOperationsQueuer.addOperation(deletePHAssetOperation)

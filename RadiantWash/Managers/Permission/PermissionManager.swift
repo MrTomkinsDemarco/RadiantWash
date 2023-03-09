@@ -30,7 +30,7 @@ extension PermissionManager {
         completionHandler(status)
       case .denied:
         guard let topController = getTheMostTopController() else { return }
-        ErrorHandler.shared.showRestrictedErrorAlert(.photoLibraryRestrictedError, at: topController) {
+      ErrorManager.shared.showRestrictedErrorAlert(.photoLibraryRestrictedError, at: topController) {
           completionHandler(status)
         }
       case .notDetermined:
@@ -49,7 +49,7 @@ extension PermissionManager {
         completionHandler(status)
       case .denied:
         guard let topController = getTheMostTopController() else { return }
-        ErrorHandler.shared.showRestrictedErrorAlert(.contactsRestrictedError, at: topController) {
+      ErrorManager.shared.showRestrictedErrorAlert(.contactsRestrictedError, at: topController) {
           completionHandler(status)
         }
       case .notDetermined:

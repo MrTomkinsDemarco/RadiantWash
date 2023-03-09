@@ -145,14 +145,14 @@
 		9A45FD8729A0BE4D00AAA6C6 /* ECFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD8629A0BE4D00AAA6C6 /* ECFileManager.swift */; };
 		9A45FD8929A0BE6E00AAA6C6 /* SegueManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD8829A0BE6E00AAA6C6 /* SegueManager.swift */; };
 		9A45FD8B29A0BE8C00AAA6C6 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD8A29A0BE8C00AAA6C6 /* ThemeManager.swift */; };
-		9A45FD8D29A0BEA600AAA6C6 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD8C29A0BEA600AAA6C6 /* ErrorHandler.swift */; };
+		9A45FD8D29A0BEA600AAA6C6 /* ErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD8C29A0BEA600AAA6C6 /* ErrorManager.swift */; };
 		9A45FD8F29A0BEC300AAA6C6 /* DeepCleanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD8E29A0BEC300AAA6C6 /* DeepCleanManager.swift */; };
 		9A45FD9129A0BEED00AAA6C6 /* AdvertisementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9029A0BEED00AAA6C6 /* AdvertisementManager.swift */; };
 		9A45FD9429A0BF3C00AAA6C6 /* Subscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9329A0BF3C00AAA6C6 /* Subscriptions.swift */; };
 		9A45FD9629A0BF7000AAA6C6 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9529A0BF7000AAA6C6 /* SubscriptionManager.swift */; };
 		9A45FD9829A0BF9A00AAA6C6 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9729A0BF9A00AAA6C6 /* Subscription.swift */; };
 		9A45FD9A29A0BFB500AAA6C6 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9929A0BFB500AAA6C6 /* SubscriptionService.swift */; };
-		9A45FD9C29A0BFE300AAA6C6 /* SubscriptionErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9B29A0BFE300AAA6C6 /* SubscriptionErrorHandler.swift */; };
+		9A45FD9C29A0BFE300AAA6C6 /* SubscriptionErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9B29A0BFE300AAA6C6 /* SubscriptionErrorManager.swift */; };
 		9A45FD9E29A0C00900AAA6C6 /* InAppSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9D29A0C00900AAA6C6 /* InAppSubscription.swift */; };
 		9A45FDA029A0C04600AAA6C6 /* SubscriptionObserveDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FD9F29A0C04600AAA6C6 /* SubscriptionObserveDelegate.swift */; };
 		9A45FDA229A0C08E00AAA6C6 /* LimitAccessType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDA129A0C08E00AAA6C6 /* LimitAccessType.swift */; };
@@ -184,7 +184,7 @@
 		9A45FDDF29A0C5DA00AAA6C6 /* VideoCompressionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDDE29A0C5DA00AAA6C6 /* VideoCompressionConfig.swift */; };
 		9A45FDE129A0C5F200AAA6C6 /* VideoCompressionQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDE029A0C5F200AAA6C6 /* VideoCompressionQuality.swift */; };
 		9A45FDE329A0C61A00AAA6C6 /* VideoCompressionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDE229A0C61A00AAA6C6 /* VideoCompressionManager.swift */; };
-		9A45FDE529A0C63900AAA6C6 /* VideoCompressionErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDE429A0C63900AAA6C6 /* VideoCompressionErrorHandler.swift */; };
+		9A45FDE529A0C63900AAA6C6 /* VideoCompressionErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDE429A0C63900AAA6C6 /* VideoCompressionErrorManager.swift */; };
 		9A45FDE729A0C65600AAA6C6 /* CompressionResolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDE629A0C65600AAA6C6 /* CompressionResolution.swift */; };
 		9A45FDEA29A0C6DC00AAA6C6 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDE929A0C6DC00AAA6C6 /* AlertManager.swift */; };
 		9A45FDEC29A0C70800AAA6C6 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FDEB29A0C70800AAA6C6 /* AlertType.swift */; };
@@ -202,8 +202,8 @@
 		9A45FE0529A0CA3100AAA6C6 /* CleanProcessingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0429A0CA3100AAA6C6 /* CleanProcessingType.swift */; };
 		9A45FE0729A0CA4C00AAA6C6 /* DeepCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0629A0CA4C00AAA6C6 /* DeepCleaningType.swift */; };
 		9A45FE0929A0CA6300AAA6C6 /* DeepCleaningState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0829A0CA6300AAA6C6 /* DeepCleaningState.swift */; };
-		9A45FE0C29A0CA9C00AAA6C6 /* ApplicationStartupStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0B29A0CA9C00AAA6C6 /* ApplicationStartupStateCoordinator.swift */; };
-		9A45FE0E29A0CAB200AAA6C6 /* ApplicationStartupState+Web.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0D29A0CAB200AAA6C6 /* ApplicationStartupState+Web.swift */; };
+		9A45FE0C29A0CA9C00AAA6C6 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0B29A0CA9C00AAA6C6 /* ApplicationCoordinator.swift */; };
+		9A45FE0E29A0CAB200AAA6C6 /* ApplicationCoordinatorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE0D29A0CAB200AAA6C6 /* ApplicationCoordinatorExt.swift */; };
 		9A45FE1129A0CB1200AAA6C6 /* UpdateContentDataBaseMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE1029A0CB1200AAA6C6 /* UpdateContentDataBaseMediator.swift */; };
 		9A45FE1329A0CB2C00AAA6C6 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE1229A0CB2C00AAA6C6 /* UpdatingChangesInOpenedScreensMediator.swift */; };
 		9A45FE1529A0CB5000AAA6C6 /* DynamicListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A45FE1429A0CB5000AAA6C6 /* DynamicListener.swift */; };
@@ -535,14 +535,14 @@
 		9A45FD8629A0BE4D00AAA6C6 /* ECFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECFileManager.swift; sourceTree = "<group>"; };
 		9A45FD8829A0BE6E00AAA6C6 /* SegueManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegueManager.swift; sourceTree = "<group>"; };
 		9A45FD8A29A0BE8C00AAA6C6 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
-		9A45FD8C29A0BEA600AAA6C6 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
+		9A45FD8C29A0BEA600AAA6C6 /* ErrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorManager.swift; sourceTree = "<group>"; };
 		9A45FD8E29A0BEC300AAA6C6 /* DeepCleanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanManager.swift; sourceTree = "<group>"; };
 		9A45FD9029A0BEED00AAA6C6 /* AdvertisementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementManager.swift; sourceTree = "<group>"; };
 		9A45FD9329A0BF3C00AAA6C6 /* Subscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriptions.swift; sourceTree = "<group>"; };
 		9A45FD9529A0BF7000AAA6C6 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		9A45FD9729A0BF9A00AAA6C6 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		9A45FD9929A0BFB500AAA6C6 /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
-		9A45FD9B29A0BFE300AAA6C6 /* SubscriptionErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionErrorHandler.swift; sourceTree = "<group>"; };
+		9A45FD9B29A0BFE300AAA6C6 /* SubscriptionErrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionErrorManager.swift; sourceTree = "<group>"; };
 		9A45FD9D29A0C00900AAA6C6 /* InAppSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppSubscription.swift; sourceTree = "<group>"; };
 		9A45FD9F29A0C04600AAA6C6 /* SubscriptionObserveDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionObserveDelegate.swift; sourceTree = "<group>"; };
 		9A45FDA129A0C08E00AAA6C6 /* LimitAccessType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitAccessType.swift; sourceTree = "<group>"; };
@@ -574,7 +574,7 @@
 		9A45FDDE29A0C5DA00AAA6C6 /* VideoCompressionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionConfig.swift; sourceTree = "<group>"; };
 		9A45FDE029A0C5F200AAA6C6 /* VideoCompressionQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionQuality.swift; sourceTree = "<group>"; };
 		9A45FDE229A0C61A00AAA6C6 /* VideoCompressionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionManager.swift; sourceTree = "<group>"; };
-		9A45FDE429A0C63900AAA6C6 /* VideoCompressionErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionErrorHandler.swift; sourceTree = "<group>"; };
+		9A45FDE429A0C63900AAA6C6 /* VideoCompressionErrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionErrorManager.swift; sourceTree = "<group>"; };
 		9A45FDE629A0C65600AAA6C6 /* CompressionResolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionResolution.swift; sourceTree = "<group>"; };
 		9A45FDE929A0C6DC00AAA6C6 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		9A45FDEB29A0C70800AAA6C6 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
@@ -592,8 +592,8 @@
 		9A45FE0429A0CA3100AAA6C6 /* CleanProcessingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanProcessingType.swift; sourceTree = "<group>"; };
 		9A45FE0629A0CA4C00AAA6C6 /* DeepCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningType.swift; sourceTree = "<group>"; };
 		9A45FE0829A0CA6300AAA6C6 /* DeepCleaningState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningState.swift; sourceTree = "<group>"; };
-		9A45FE0B29A0CA9C00AAA6C6 /* ApplicationStartupStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStartupStateCoordinator.swift; sourceTree = "<group>"; };
-		9A45FE0D29A0CAB200AAA6C6 /* ApplicationStartupState+Web.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApplicationStartupState+Web.swift"; sourceTree = "<group>"; };
+		9A45FE0B29A0CA9C00AAA6C6 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
+		9A45FE0D29A0CAB200AAA6C6 /* ApplicationCoordinatorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinatorExt.swift; sourceTree = "<group>"; };
 		9A45FE1029A0CB1200AAA6C6 /* UpdateContentDataBaseMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseMediator.swift; sourceTree = "<group>"; };
 		9A45FE1229A0CB2C00AAA6C6 /* UpdatingChangesInOpenedScreensMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensMediator.swift; sourceTree = "<group>"; };
 		9A45FE1429A0CB5000AAA6C6 /* DynamicListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicListener.swift; sourceTree = "<group>"; };
@@ -1325,7 +1325,7 @@
 				9A45FD8629A0BE4D00AAA6C6 /* ECFileManager.swift */,
 				9A45FD8829A0BE6E00AAA6C6 /* SegueManager.swift */,
 				9A45FD8A29A0BE8C00AAA6C6 /* ThemeManager.swift */,
-				9A45FD8C29A0BEA600AAA6C6 /* ErrorHandler.swift */,
+				9A45FD8C29A0BEA600AAA6C6 /* ErrorManager.swift */,
 				9A45FD8E29A0BEC300AAA6C6 /* DeepCleanManager.swift */,
 				9A45FD9029A0BEED00AAA6C6 /* AdvertisementManager.swift */,
 			);
@@ -1339,7 +1339,7 @@
 				9A45FD9529A0BF7000AAA6C6 /* SubscriptionManager.swift */,
 				9A45FD9729A0BF9A00AAA6C6 /* Subscription.swift */,
 				9A45FD9929A0BFB500AAA6C6 /* SubscriptionService.swift */,
-				9A45FD9B29A0BFE300AAA6C6 /* SubscriptionErrorHandler.swift */,
+				9A45FD9B29A0BFE300AAA6C6 /* SubscriptionErrorManager.swift */,
 				9A45FD9D29A0C00900AAA6C6 /* InAppSubscription.swift */,
 				9A45FD9F29A0C04600AAA6C6 /* SubscriptionObserveDelegate.swift */,
 				9A45FDA129A0C08E00AAA6C6 /* LimitAccessType.swift */,
@@ -1420,7 +1420,7 @@
 				9A45FDDE29A0C5DA00AAA6C6 /* VideoCompressionConfig.swift */,
 				9A45FDE029A0C5F200AAA6C6 /* VideoCompressionQuality.swift */,
 				9A45FDE229A0C61A00AAA6C6 /* VideoCompressionManager.swift */,
-				9A45FDE429A0C63900AAA6C6 /* VideoCompressionErrorHandler.swift */,
+				9A45FDE429A0C63900AAA6C6 /* VideoCompressionErrorManager.swift */,
 				9A45FDE629A0C65600AAA6C6 /* CompressionResolution.swift */,
 			);
 			path = Video;
@@ -1459,8 +1459,8 @@
 		9A45FE0A29A0CA8400AAA6C6 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
-				9A45FE0B29A0CA9C00AAA6C6 /* ApplicationStartupStateCoordinator.swift */,
-				9A45FE0D29A0CAB200AAA6C6 /* ApplicationStartupState+Web.swift */,
+				9A45FE0B29A0CA9C00AAA6C6 /* ApplicationCoordinator.swift */,
+				9A45FE0D29A0CAB200AAA6C6 /* ApplicationCoordinatorExt.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -2279,7 +2279,7 @@
 				9AAACDA829A355AB00446095 /* GradientArcWithClearColorView.swift in Sources */,
 				9AAACDFE29A4A1E600446095 /* SegmentDatePickerComponents.swift in Sources */,
 				9A45FDC329A0C36E00AAA6C6 /* UserNotifficationService.swift in Sources */,
-				9A45FDE529A0C63900AAA6C6 /* VideoCompressionErrorHandler.swift in Sources */,
+				9A45FDE529A0C63900AAA6C6 /* VideoCompressionErrorManager.swift in Sources */,
 				9A3AD2C429A6C00D00815197 /* PremiumFeatures.swift in Sources */,
 				9AAACDEA29A49DD200446095 /* AnimatedProgressBar.swift in Sources */,
 				9A45FDF829A0C7EA00AAA6C6 /* DeepCleanCompleteStateHandler.swift in Sources */,
@@ -2290,7 +2290,7 @@
 				9AC4C75429A5554A0062464D /* DateSelectebleView.swift in Sources */,
 				9AAACD3A29A34B8700446095 /* CommonOperationSearchType.swift in Sources */,
 				9A45FDBE29A0C2B000AAA6C6 /* ClusteringManager.swift in Sources */,
-				9A45FE0C29A0CA9C00AAA6C6 /* ApplicationStartupStateCoordinator.swift in Sources */,
+				9A45FE0C29A0CA9C00AAA6C6 /* ApplicationCoordinator.swift in Sources */,
 				9A45FE2829A0CD5000AAA6C6 /* SingleContactsGroupOperationsListener.swift in Sources */,
 				9AAACDC129A3594A00446095 /* LocalizationTypeStrings.swift in Sources */,
 				9AAACD6229A350D200446095 /* Gradient.swift in Sources */,
@@ -2415,7 +2415,7 @@
 				9AAACD7B29A3533B00446095 /* FontManager+DefaultFonts.swift in Sources */,
 				9A45FDF629A0C7C200AAA6C6 /* ProgressAlertController.swift in Sources */,
 				9A45FDA929A0C14F00AAA6C6 /* ContactsExportManager.swift in Sources */,
-				9A45FE0E29A0CAB200AAA6C6 /* ApplicationStartupState+Web.swift in Sources */,
+				9A45FE0E29A0CAB200AAA6C6 /* ApplicationCoordinatorExt.swift in Sources */,
 				9A3AD28A29A5A36800815197 /* AssetsListController.swift in Sources */,
 				9A45FDDF29A0C5DA00AAA6C6 /* VideoCompressionConfig.swift in Sources */,
 				9AAACDA229A355AB00446095 /* ProgressAtRatioView.swift in Sources */,
@@ -2489,7 +2489,7 @@
 				9A45FD5829A0B92B00AAA6C6 /* PermissionSectionModel.swift in Sources */,
 				9A3AD2BE29A6BF5700815197 /* LifeTimeSubscriptionController.swift in Sources */,
 				9A45FE5429A0D43800AAA6C6 /* UILabelExt.swift in Sources */,
-				9A45FD8D29A0BEA600AAA6C6 /* ErrorHandler.swift in Sources */,
+				9A45FD8D29A0BEA600AAA6C6 /* ErrorManager.swift in Sources */,
 				9A45FD8F29A0BEC300AAA6C6 /* DeepCleanManager.swift in Sources */,
 				9AAACD4729A34D5C00446095 /* BenchTimer.swift in Sources */,
 				9A3AD2B129A6B8E100815197 /* Onboarding.swift in Sources */,
@@ -2500,7 +2500,7 @@
 				9A45FD5D29A0B98F00AAA6C6 /* MediaStoreInfoModel.swift in Sources */,
 				9AC4C76229A589E30062464D /* GroupedContactsHeaderView.swift in Sources */,
 				9A45FDCD29A0C44400AAA6C6 /* NotificationType.swift in Sources */,
-				9A45FD9C29A0BFE300AAA6C6 /* SubscriptionErrorHandler.swift in Sources */,
+				9A45FD9C29A0BFE300AAA6C6 /* SubscriptionErrorManager.swift in Sources */,
 				9AAACDDC29A44A3200446095 /* SubscriptionSegmentControll.swift in Sources */,
 				9A45FDAB29A0C17E00AAA6C6 /* ContactsBackupUpdateListener.swift in Sources */,
 				9AAACDA529A355AB00446095 /* ArcView.swift in Sources */,
@@ -2644,7 +2644,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiantWash/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ECleaner;
+				INFOPLIST_KEY_CFBundleDisplayName = CleanWizard;
 				INFOPLIST_KEY_NSContactsUsageDescription = "$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please grant access to your Photo Library in order to access its contents in the app";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "Example Description";
@@ -2681,7 +2681,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiantWash/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ECleaner;
+				INFOPLIST_KEY_CFBundleDisplayName = CleanWizard;
 				INFOPLIST_KEY_NSContactsUsageDescription = "$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please grant access to your Photo Library in order to access its contents in the app";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "Example Description";

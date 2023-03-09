@@ -13,13 +13,10 @@ class Constants {
   struct project {
     static let appleID = "id6443879376"
     static let appID = "6443879376"
-    static let appStoreName = "Phone Cleaner"
+    static let appStoreName = "CleanWizard"
     static let storeSecretKey = "08bc4dbd91944988a99313dd1d96e81c"
     static let appBundle = "clean.your.iphone"
     static let mail = "support@magicuniverse.org"
-    static let telegram = ""
-    static let facebookURL = ""
-    static let facebookID = ""
   }
   
   struct web {

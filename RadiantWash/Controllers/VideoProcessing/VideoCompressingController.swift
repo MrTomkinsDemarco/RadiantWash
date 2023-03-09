@@ -180,7 +180,7 @@ extension VideoCompressingController {
           }
         }
       } else {
-        ErrorHandler.shared.showCompressionError(.cantLoadFile)
+        ErrorManager.shared.showCompressionError(.cantLoadFile)
       }
     }
   }
@@ -211,7 +211,7 @@ extension VideoCompressingController {
         S.lastSavedLocalIdenifier = identifier
         self.showPHAssetCollectionController()
       } else {
-        ErrorHandler.shared.showCompressionError(.errorSavedFile)
+        ErrorManager.shared.showCompressionError(.errorSavedFile)
       }
     }
   }
@@ -269,7 +269,7 @@ extension VideoCompressingController {
   private func setupViewModel() {
     
     guard let phasset = self.processingPHAsset else {
-      ErrorHandler.shared.showCompressionError(.cantLoadFile) {
+      ErrorManager.shared.showCompressionError(.cantLoadFile) {
         self.navigationController?.popViewController(animated: false)
       }
       return

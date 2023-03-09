@@ -70,7 +70,7 @@ enum ContactasCleaningType {
     }
   }
   
-  var emptyResultsError: ErrorHandler.EmptyResultsError {
+  var emptyResultsError: ErrorManager.EmptyResultsError {
     switch self {
     case .duplicatedPhoneNumnber:
       return .duplicatedNumbersIsEmpty

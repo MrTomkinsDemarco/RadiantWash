@@ -36,7 +36,7 @@ extension AlertManager {
 extension AlertManager {
   
       ///  `restricted alerts`
-  private static func showRestrictedErrorAlert(_ errorHandler: ErrorHandler.AccessRestrictedError, at viewController: UIViewController) {
+  private static func showRestrictedErrorAlert(_ errorHandler: ErrorManager.AccessRestrictedError, at viewController: UIViewController) {
     let errorHandlerDescription = errorHandler.alertDescription
     self.presentAlert(with: errorHandlerDescription, at: viewController) {
       UIPresenter.openSettingPage()

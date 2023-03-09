@@ -1,5 +1,5 @@
 //
-//  SubscriptionErrorHandler.swift
+//  SubscriptionErrorManager.swift
 //  RadiantWash
 //
 //  Created by Mac Mini on 18.02.2023.
@@ -7,7 +7,7 @@
 
 import StoreKit
 
-extension ErrorHandler {
+extension ErrorManager {
   
   enum SubscriptionError: Error {
     case purchaseCanceled
@@ -21,7 +21,7 @@ extension ErrorHandler {
     
     var alertDescription: AlertDescription {
       return AlertDescription(title: "Subsctiption Error!",
-                              description: ErrorHandler.shared.loadError(for: self),
+                              description: ErrorManager.shared.loadError(for: self),
                               action: LocalizationService.Buttons.getButtonTitle(of: .ok),
                               cancel: Localization.empty)
     }

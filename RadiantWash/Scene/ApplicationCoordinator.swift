@@ -1,5 +1,5 @@
 //
-//  ApplicationStartupStateCoordinator.swift
+//  ApplicationCoordinator.swift
 //  RadiantWash
 //
 //  Created by Mac Mini on 18.02.2023.

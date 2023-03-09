@@ -179,7 +179,7 @@ class LifeTimeSubscriptionController: UIViewController {
       case .connedcted:
         self.didTapPurchasePremium()
       case .unreachable:
-        ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+        ErrorManager.shared.showNetworkErrorAlert(.networkError, at: self)
         self.actionButtonHandler(for: .active)
       }
     }
@@ -196,7 +196,7 @@ extension LifeTimeSubscriptionController {
         if purchased {
           self.closeController(sender: self.actionButton)
         } else {
-          ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
+          ErrorManager.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
         }
       }
     }
