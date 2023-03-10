@@ -334,10 +334,9 @@
 		9AAACDE729A49D7F00446095 /* CustomSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDE629A49D7F00446095 /* CustomSegmentedControl.swift */; };
 		9AAACDEA29A49DD200446095 /* AnimatedProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDE929A49DD200446095 /* AnimatedProgressBar.swift */; };
 		9AAACDEC29A49E0500446095 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDEB29A49E0500446095 /* ProgressBar.swift */; };
-		9AAACDEF29A49F9800446095 /* PrimaryShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDEE29A49F9800446095 /* PrimaryShadowButton.swift */; };
-		9AAACDF129A4A01D00446095 /* PrimaryShadowImageWithTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF029A4A01D00446095 /* PrimaryShadowImageWithTextButton.swift */; };
-		9AAACDF329A4A05400446095 /* ShadowButtonWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF229A4A05400446095 /* ShadowButtonWithImage.swift */; };
-		9AAACDF529A4A07300446095 /* ShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF429A4A07300446095 /* ShadowButton.swift */; };
+		9AAACDF129A4A01D00446095 /* CustomMergeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF029A4A01D00446095 /* CustomMergeButton.swift */; };
+		9AAACDF329A4A05400446095 /* CustomButtonWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF229A4A05400446095 /* CustomButtonWithImage.swift */; };
+		9AAACDF529A4A07300446095 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF429A4A07300446095 /* CustomButton.swift */; };
 		9AAACDF729A4A09C00446095 /* GradientButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF629A4A09C00446095 /* GradientButton.swift */; };
 		9AAACDFA29A4A14000446095 /* SegmentDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDF929A4A14000446095 /* SegmentDatePicker.swift */; };
 		9AAACDFC29A4A1C600446095 /* SegmentDatePickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAACDFB29A4A1C600446095 /* SegmentDatePickerType.swift */; };
@@ -725,10 +724,9 @@
 		9AAACDE629A49D7F00446095 /* CustomSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentedControl.swift; sourceTree = "<group>"; };
 		9AAACDE929A49DD200446095 /* AnimatedProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedProgressBar.swift; sourceTree = "<group>"; };
 		9AAACDEB29A49E0500446095 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
-		9AAACDEE29A49F9800446095 /* PrimaryShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowButton.swift; sourceTree = "<group>"; };
-		9AAACDF029A4A01D00446095 /* PrimaryShadowImageWithTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowImageWithTextButton.swift; sourceTree = "<group>"; };
-		9AAACDF229A4A05400446095 /* ShadowButtonWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButtonWithImage.swift; sourceTree = "<group>"; };
-		9AAACDF429A4A07300446095 /* ShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButton.swift; sourceTree = "<group>"; };
+		9AAACDF029A4A01D00446095 /* CustomMergeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMergeButton.swift; sourceTree = "<group>"; };
+		9AAACDF229A4A05400446095 /* CustomButtonWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonWithImage.swift; sourceTree = "<group>"; };
+		9AAACDF429A4A07300446095 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		9AAACDF629A4A09C00446095 /* GradientButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientButton.swift; sourceTree = "<group>"; };
 		9AAACDF929A4A14000446095 /* SegmentDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePicker.swift; sourceTree = "<group>"; };
 		9AAACDFB29A4A1C600446095 /* SegmentDatePickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePickerType.swift; sourceTree = "<group>"; };
@@ -1829,10 +1827,9 @@
 		9AAACDED29A49E6900446095 /* Button */ = {
 			isa = PBXGroup;
 			children = (
-				9AAACDEE29A49F9800446095 /* PrimaryShadowButton.swift */,
-				9AAACDF029A4A01D00446095 /* PrimaryShadowImageWithTextButton.swift */,
-				9AAACDF229A4A05400446095 /* ShadowButtonWithImage.swift */,
-				9AAACDF429A4A07300446095 /* ShadowButton.swift */,
+				9AAACDF029A4A01D00446095 /* CustomMergeButton.swift */,
+				9AAACDF229A4A05400446095 /* CustomButtonWithImage.swift */,
+				9AAACDF429A4A07300446095 /* CustomButton.swift */,
 				9AAACDF629A4A09C00446095 /* GradientButton.swift */,
 			);
 			path = Button;
@@ -2297,7 +2294,7 @@
 				9AAACDF729A4A09C00446095 /* GradientButton.swift in Sources */,
 				9A3AD2ED29A6D64900815197 /* PreviewAVController.swift in Sources */,
 				9A45FE7C29A0D7AD00AAA6C6 /* URLExt.swift in Sources */,
-				9AAACDF129A4A01D00446095 /* PrimaryShadowImageWithTextButton.swift in Sources */,
+				9AAACDF129A4A01D00446095 /* CustomMergeButton.swift in Sources */,
 				9A45FE4E29A0D38B00AAA6C6 /* UIFontExt.swift in Sources */,
 				9A3AD2C029A6BF9A00815197 /* PremiumFeaturesViewModel.swift in Sources */,
 				9A45FD7629A0BBB000AAA6C6 /* ContactViewModel.swift in Sources */,
@@ -2408,7 +2405,7 @@
 				9AD8F42129A8A80C00E700E4 /* ContentBannerCell.swift in Sources */,
 				9A45FD6429A0BA1E00AAA6C6 /* CompressingViewModel.swift in Sources */,
 				9A45FD3329A0B3ED00AAA6C6 /* SceneDelegate.swift in Sources */,
-				9AAACDF529A4A07300446095 /* ShadowButton.swift in Sources */,
+				9AAACDF529A4A07300446095 /* CustomButton.swift in Sources */,
 				9A3AD33C29A74B6C00815197 /* DropDownMenuCell.swift in Sources */,
 				9A3AD2D529A6C37500815197 /* EmptyContactListDataSource.swift in Sources */,
 				9AAACD6729A3516400446095 /* FontManager.swift in Sources */,
@@ -2455,7 +2452,6 @@
 				9AAACD7F29A3538E00446095 /* FontManager+Banner.swift in Sources */,
 				9A45FE5A29A0D4E000AAA6C6 /* UICollectionViewExt.swift in Sources */,
 				9A45FD6E29A0BB0500AAA6C6 /* ContactsGroup.swift in Sources */,
-				9AAACDEF29A49F9800446095 /* PrimaryShadowButton.swift in Sources */,
 				9A3AD33729A7484A00815197 /* MediaTypeCell.swift in Sources */,
 				9A45FD8329A0BDF200AAA6C6 /* SingleSmartClean.swift in Sources */,
 				9A45FE7629A0D75600AAA6C6 /* DateExt.swift in Sources */,
@@ -2484,7 +2480,7 @@
 				9A45FDB529A0C22300AAA6C6 /* SettingsManager.swift in Sources */,
 				9A45FDD429A0C54600AAA6C6 /* PermissionManager.swift in Sources */,
 				9AAACDA729A355AB00446095 /* WindowBuilder.swift in Sources */,
-				9AAACDF329A4A05400446095 /* ShadowButtonWithImage.swift in Sources */,
+				9AAACDF329A4A05400446095 /* CustomButtonWithImage.swift in Sources */,
 				9A3AD28729A5A17D00815197 /* MediaContentController.swift in Sources */,
 				9A45FD5829A0B92B00AAA6C6 /* PermissionSectionModel.swift in Sources */,
 				9A3AD2BE29A6BF5700815197 /* LifeTimeSubscriptionController.swift in Sources */,
@@ -2642,6 +2638,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WUBFYSDPZ3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiantWash/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CleanWizard;
@@ -2679,6 +2676,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WUBFYSDPZ3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiantWash/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CleanWizard;

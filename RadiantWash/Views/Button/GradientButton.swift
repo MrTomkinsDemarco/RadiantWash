@@ -47,7 +47,7 @@ class GradientButton: UIButton {
     super.layoutSubviews()
     
     configureShadow()
-    buttonSetup()
+    setupButton()
     setupGradient()
   }
   
@@ -68,7 +68,7 @@ class GradientButton: UIButton {
     secondaryLayer.applyShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -5, blur: 19, spread: -1)
   }
   
-  private func buttonSetup() {
+  private func setupButton() {
     
     self.setCorner(10)
     self.setTitle(buttonTitle, for: .normal)

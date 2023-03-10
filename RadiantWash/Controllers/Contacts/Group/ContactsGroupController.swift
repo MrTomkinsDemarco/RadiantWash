@@ -96,6 +96,7 @@ class ContactsGroupController: UIViewController {
     tableView.separatorStyle = .none
     tableView.backgroundColor = .clear
     tableView.contentInset.top = 20
+    tableView.separatorStyle = .singleLine
   }
   
   private func setupObserversAndDelegate() {
@@ -326,8 +327,10 @@ class ContactsGroupController: UIViewController {
     self.bottomButtonBarView.title(buttonTitle)
     
     if disableAnimation {
-      self.bottomButtonBarView.layoutIfNeeded()
-      self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight - 70:  U.bottomSafeAreaHeight - 90
+      DispatchQueue.main.async {
+        self.bottomButtonBarView.layoutIfNeeded()
+        self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight - 70:  U.bottomSafeAreaHeight - 90
+      }
     } else {
       U.animate(0.5) {
         self.bottomButtonBarView.layoutIfNeeded()

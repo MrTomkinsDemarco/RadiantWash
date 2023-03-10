@@ -12,7 +12,7 @@
         <!--Location Controller-->
         <scene sceneID="keV-S7-vkd">
             <objects>
-                <viewController storyboardIdentifier="LocationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6mh-8L-8K6" customClass="LocationController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LocationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6mh-8L-8K6" customClass="LocationController" customModule="RadiantWash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5k7-K5-m0C">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

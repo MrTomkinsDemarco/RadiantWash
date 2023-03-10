@@ -11,8 +11,8 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
   
   @IBOutlet weak var baseView: UIView!
   @IBOutlet weak var currentAssetsDate: UILabel!
-  @IBOutlet weak var deleteSelectedButton: ShadowButtonWithImage!
-  @IBOutlet weak var selectAllButton: ShadowButton!
+  @IBOutlet weak var deleteSelectedButton: CustomButtonWithImage!
+  @IBOutlet weak var selectAllButton: CustomButton!
   
   public var indexPath: IndexPath?
   public var onSelectAll: (() -> Void)?
@@ -31,12 +31,12 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
   }
   
-  @IBAction func didTapDeleteSelectedAssetsActionButton(_ sender: ShadowButtonWithImage) {
+  @IBAction func didTapDeleteSelectedAssetsActionButton(_ sender: CustomButtonWithImage) {
     deleteSelectedButton.animateButtonTransform()
     onDeleteSelected?()
   }
   
-  @IBAction func didTapSelectAllActionButton(_ sender: ShadowButton) {
+  @IBAction func didTapSelectAllActionButton(_ sender: CustomButton) {
     selectAllButton.animateButtonTransform()
     onSelectAll?()
   }
@@ -50,7 +50,7 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     let image = I.systemItems.defaultItems.trashBin
     deleteSelectedButton.contentType = mediaContentType
     selectAllButton.contentType = mediaContentType
-    deleteSelectedButton.setMainButton(text: deletedText, image: image)
+    deleteSelectedButton.setupMainButton(text: deletedText, image: image)
     
     deleteSelectedButton.setButtonFont(FontManager.collectionElementsFont(of: .buttons))
     currentAssetsDate.font = FontManager.collectionElementsFont(of: .title)
@@ -60,7 +60,7 @@ extension GroupedAssetsReusableHeaderView: Themeble {
   public func handleSelectableAsstes(to select: Bool) {
     
     let handledImage = !select ? I.systemItems.selectItems.circleMark : I.systemItems.selectItems.roundedCheckMark
-    selectAllButton.setImage(handledImage, enabled: select)
+    selectAllButton.setupImage(handledImage, enabled: select)
   }
   
   public func handleDeleteAssets(to select: Bool) {

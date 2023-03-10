@@ -53,6 +53,7 @@ class GroupContactCell: UITableViewCell {
     contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
     contactSubtitleTextLabel.font = FontManager.contactsFont(of: .cellSubtitle)
     selectableContactImageViewWidthConstraint.constant = AppDimensions.ContactsController.Collection.selectableGoupAssetViewWidth
+    separatorInset.left = 20
   }
   
   private func superPrepareForReuse() {
@@ -70,24 +71,24 @@ class GroupContactCell: UITableViewCell {
     bottomBaseViewConstraint.constant = 0
   }
   
-  public func setupCustomSeparator() {
-    
-    self.baseView.addSubview(customSeparator)
-    customSeparator.translatesAutoresizingMaskIntoConstraints = false
-    
-    customSeparator.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 23).isActive = true
-    customSeparator.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -23).isActive = true
-    customSeparator.heightAnchor.constraint(equalToConstant: 3).isActive = true
-    customSeparator.bottomAnchor.constraint(equalTo: self.baseView.bottomAnchor, constant: 0).isActive = true
-    
-    customSeparator.addSubview(helperSeparatorView)
-    helperSeparatorView.translatesAutoresizingMaskIntoConstraints = false
-    
-    helperSeparatorView.leadingAnchor.constraint(equalTo: customSeparator.leadingAnchor).isActive = true
-    helperSeparatorView.trailingAnchor.constraint(equalTo: customSeparator.trailingAnchor).isActive = true
-    helperSeparatorView.bottomAnchor.constraint(equalTo: customSeparator.bottomAnchor).isActive = true
-    helperSeparatorView.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
-  }
+//  public func setupCustomSeparator() {
+//
+//    self.baseView.addSubview(customSeparator)
+//    customSeparator.translatesAutoresizingMaskIntoConstraints = false
+//
+//    customSeparator.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 23).isActive = true
+//    customSeparator.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -23).isActive = true
+//    customSeparator.heightAnchor.constraint(equalToConstant: 3).isActive = true
+//    customSeparator.bottomAnchor.constraint(equalTo: self.baseView.bottomAnchor, constant: 0).isActive = true
+//
+//    customSeparator.addSubview(helperSeparatorView)
+//    helperSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+//
+//    helperSeparatorView.leadingAnchor.constraint(equalTo: customSeparator.leadingAnchor).isActive = true
+//    helperSeparatorView.trailingAnchor.constraint(equalTo: customSeparator.trailingAnchor).isActive = true
+//    helperSeparatorView.bottomAnchor.constraint(equalTo: customSeparator.bottomAnchor).isActive = true
+//    helperSeparatorView.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
+//  }
   
   public func updateCell(_ contact: CNContact, rowPosition: RowPosition, sectionIndex: Int, isSelected: Bool) {
     
@@ -98,10 +99,10 @@ class GroupContactCell: UITableViewCell {
     switch rowPosition {
     case .top:
       self.setupBestContactMerge(isShow: true)
-      self.setupCustomSeparator()
+//      self.setupCustomSeparator()
     case .middle:
       self.setupBestContactMerge(isShow: false)
-      self.setupCustomSeparator()
+//      self.setupCustomSeparator()
     default:
       self.setupBestContactMerge(isShow: false)
     }

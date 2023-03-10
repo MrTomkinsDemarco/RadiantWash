@@ -16,8 +16,8 @@ protocol GroupedHeadersButtonDelegate: AnyObject {
 class GroupedContactsHeaderView: UITableViewHeaderFooterView {
   
   @IBOutlet weak var headerTitleTextLabel: UILabel!
-  @IBOutlet weak var deleteButton: PrimaryShadowButton!
-  @IBOutlet weak var mergeButton: PrimaryShadowImageWithTextButton!
+  @IBOutlet weak var deleteButton: UIButton!
+  @IBOutlet weak var mergeButton: CustomMergeButton!
   
   var delegate: GroupedHeadersButtonDelegate?
   
@@ -27,7 +27,7 @@ class GroupedContactsHeaderView: UITableViewHeaderFooterView {
     super.awakeFromNib()
     
     configureView()
-    updadeColors()
+    updateColors()
     setupActionButtons()
   }
   
@@ -53,10 +53,11 @@ class GroupedContactsHeaderView: UITableViewHeaderFooterView {
     headerTitleTextLabel.font = FontManager.contactsFont(of: .headetTitle)
   }
   
-  private func updadeColors() {
+  private func updateColors() {
     
     mergeButton.setTitleColor(theme.contactsTintColor, for: .normal)
     headerTitleTextLabel.textColor = theme.sectionTitleTextColor
+    deleteButton.backgroundColor = .clear
   }
   
   private func setupActionButtons() {

@@ -16,7 +16,7 @@ class LocationHeaderCollectionReusableView: UICollectionReusableView {
   
   @IBOutlet weak var locationTitleTextLabel: UILabel!
   @IBOutlet weak var dateComponentsTextLabel: UILabel!
-  @IBOutlet weak var removeAllLocationButton: ShadowButton!
+  @IBOutlet weak var removeAllLocationButton: CustomButton!
   
   private var locationManager = CLLocationManager()
   private var calendar = Calendar.current
@@ -40,7 +40,7 @@ class LocationHeaderCollectionReusableView: UICollectionReusableView {
     setupAppearance()
   }
   
-  @IBAction func didTapRemoveAllLocationActionButton(_ sender: ShadowButton) {
+  @IBAction func didTapRemoveAllLocationActionButton(_ sender: CustomButton) {
     removeAllLocationButton.animateButtonTransform()
     if let section = section {
       delegate?.removeLocation(at: section)
@@ -93,7 +93,7 @@ extension LocationHeaderCollectionReusableView {
       dateComponentsTextLabel.text = ""
     }
     
-    removeAllLocationButton.setImage(Images.location.slashPin, enabled: true)
+    removeAllLocationButton.setupImage(Images.location.slashPin, enabled: true)
   }
 }
 

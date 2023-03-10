@@ -116,13 +116,13 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
     
     switch rowPosition {
     case .top:
-      return 130
+      return 100
     case .middle:
-      return 110
+      return 80
     case .bottom:
-      return 130
+      return 100
     case .none:
-      return 110
+      return 80
     }
   }
 }

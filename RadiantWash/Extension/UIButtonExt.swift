@@ -163,9 +163,9 @@ extension UIButton {
   
   func setTitleWithoutAnimation(title: String?) {
     
-    UIView.performWithoutAnimation {
-      setTitle(title, for: .normal)
-      layoutIfNeeded()
+    DispatchQueue.main.async {
+      self.setTitle(title, for: .normal)
+//      layoutIfNeeded()
     }
   }
   
