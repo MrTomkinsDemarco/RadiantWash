@@ -21,7 +21,6 @@ enum ElementhCount {
 typealias A = AlertManager
 class AlertManager: NSObject {}
 
-//    MARK: handle delete alert
 extension AlertManager {
   
   public static func showDeleteAlert(with media: MediaContentType, of elementsCount: ElementhCount, completionHandler: @escaping () -> Void) {
@@ -123,8 +122,6 @@ extension AlertManager {
   }
 }
 
-
-  //    MARK: handle error results, error for data
 extension AlertManager {
   
   public static func presentErrorAlert(with description: ErrorDescription, completionHandler: (() -> Void)? = nil) {
@@ -143,7 +140,6 @@ extension AlertManager {
   }
 }
 
-//    MARK: compression action sheet
 extension AlertManager {
   
   public static func showCompressionVideoFileComplete(fileSize: String, shareCompletionHandler: @escaping () -> Void, savedInPhotoLibraryCompletionHandler: @escaping () -> Void) {

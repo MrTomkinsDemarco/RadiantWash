@@ -79,7 +79,6 @@ class PremiumFeatureView: UIView {
     titleTextLabel.numberOfLines = 2
   }
   
-  
   public func setupLifeTimeFeatures(feature: PremiumFeature) {
     
     contentImageView.image = feature.thumbnail

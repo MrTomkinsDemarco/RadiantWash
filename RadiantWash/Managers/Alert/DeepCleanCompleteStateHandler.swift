@@ -17,7 +17,7 @@ enum DeepCleanCompleteStateHandler {
   }
   
   static func alertHandler(for state: DeepCleanCompleteStateHandler, completionHandler: (() -> Void)? = nil) {
-    AlertManager.showDeepCleanProcessing(with: state) {
+    A.showDeepCleanProcessing(with: state) {
       completionHandler?()
     }
   }

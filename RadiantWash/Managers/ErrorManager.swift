@@ -48,7 +48,7 @@ extension ErrorManager {
   public func showNetworkErrorAlert(_ errorType: NetworkError, at viewController: UIViewController) {
     switch errorType {
     case .networkError:
-      AlertManager.showNetworkError(with: errorType.alertDescription, at: viewController)
+      A.showNetworkError(with: errorType.alertDescription, at: viewController)
     }
   }
 }
@@ -68,10 +68,10 @@ extension ErrorManager {
   public func showRestrictedErrorAlert(_ errorType: AccessRestrictedError, at viewController: UIViewController, completionHandler: @escaping () -> Void) {
     switch errorType {
     case .contactsRestrictedError:
-      AlertManager.showPermissionAlert(of: .restrictedContacts, at: viewController)
+      A.showPermissionAlert(of: .restrictedContacts, at: viewController)
       completionHandler()
     case .photoLibraryRestrictedError:
-      AlertManager.showPermissionAlert(of: .restrictedPhotoLibrary, at: viewController)
+      A.showPermissionAlert(of: .restrictedPhotoLibrary, at: viewController)
       completionHandler()
     }
   }
@@ -104,7 +104,7 @@ extension ErrorManager {
   
   public func showEmptySearchResultsFor(_ error: EmptyResultsError, completionHandler: (() -> Void)? = nil) {
     let errorDescription = LocalizationService.Errors.getEmptyErrorForKey(error)
-    AlertManager.presentErrorAlert(with: errorDescription) {
+    A.presentErrorAlert(with: errorDescription) {
       completionHandler?()
     }
   }
@@ -118,9 +118,6 @@ extension ErrorManager {
   }
 }
 
-
-
-//  MARK: - Video Compression Errors Handler -
 extension ErrorManager {
   
   enum CompressionError: Error {
@@ -135,7 +132,7 @@ extension ErrorManager {
   
   public func showCompressionError(_ compressionError: CompressionError,_ error: Error? = nil , completionHandler: (() -> Void)? = nil) {
     let errorDescription = LocalizationService.Errors.getCompressionErrorDescriptionForKey(compressionError, error: error)
-    AlertManager.presentErrorAlert(with: errorDescription) {
+    A.presentErrorAlert(with: errorDescription) {
       completionHandler?()
     }
   }
@@ -149,7 +146,7 @@ extension ErrorManager {
   
   public func showDeepCleanErrorForkey(_ error: DeepCleanProcessingError, completionHandler: (() -> Void)? = nil) {
     let errorDescription = LocalizationService.Errors.getDeepCleanDescriptionForKey(error)
-    AlertManager.presentErrorAlert(with: errorDescription) {
+    A.presentErrorAlert(with: errorDescription) {
       completionHandler?()
     }
   }
@@ -249,20 +246,20 @@ extension ErrorManager {
 extension ErrorManager {
   
   public func showDeleteAlertError(_ errorType: DeleteError) {
-    AlertManager.presentErrorAlert(with: errorType.errorDescription)
+    A.presentErrorAlert(with: errorType.errorDescription)
   }
   
   public func showLoadAlertError(_ errorType: LoadError) {
-    AlertManager.presentErrorAlert(with: errorType.errorDescription)
+    A.presentErrorAlert(with: errorType.errorDescription)
   }
   
   public func showMergeAlertError(_ errorType: MeergeError, compltionHandler: (() -> Void)? = nil) {
-    AlertManager.presentErrorAlert(with: errorType.errorDescription) {
+    A.presentErrorAlert(with: errorType.errorDescription) {
       compltionHandler?()
     }
   }
   
   public func showFatalErrorAlert(_ errorType: FatalError) {
-    AlertManager.presentErrorAlert(with: errorType.errorDescription)
+    A.presentErrorAlert(with: errorType.errorDescription)
   }
 }

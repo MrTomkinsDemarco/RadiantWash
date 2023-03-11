@@ -561,7 +561,7 @@ class MainController: UIViewController {
   private func prepareDeepCleanController(animated: Bool = true) {
     
     guard PhotoLibraryPermissions().authorized && ContactsPermissions().authorized else {
-      AlertManager.showPermissionAlert(of: .deniedDeepClean, at: self)
+      A.showPermissionAlert(of: .deniedDeepClean, at: self)
       return
     }
     

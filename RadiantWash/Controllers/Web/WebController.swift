@@ -74,8 +74,6 @@ class WebController: UIViewController, Storyboarded {
     helperView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor).isActive = true
     helperView.topAnchor.constraint(equalTo: self.navigationBar.topAnchor, constant: -topHeight).isActive = true
     helperView.bottomAnchor.constraint(equalTo: self.navigationBar.topAnchor, constant: margin).isActive = true
-    
-    navigationBar.dropShadow = true
   }
   
   private func setupActivityIndicator() {

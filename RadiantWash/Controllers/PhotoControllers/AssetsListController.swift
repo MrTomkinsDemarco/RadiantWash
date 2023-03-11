@@ -74,7 +74,7 @@ class AssetsListController: UIViewController {
     
     guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
     
-    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedPHAssets.count)) {
+    A.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedPHAssets.count)) {
       let progress: ProgressAlertType = .progressDeleteAlertType(self.contentType)
       self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
       U.delay(1) {

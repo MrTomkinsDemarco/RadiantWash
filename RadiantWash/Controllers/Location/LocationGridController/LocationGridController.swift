@@ -73,7 +73,7 @@ class LocationGridController: UIViewController {
     self.phassetLocationGridDataSource.collectionView = self.collectionView
     
     self.phassetLocationGridDataSource.didSelectDeleteLocation = { phassets in
-      AlertManager.showDeleteLocationsAlert {
+      A.showDeleteLocationsAlert {
         if let phassetsAtSection = phassets {
           self.delegate?.removeLocations(at: phassetsAtSection, completionHandler: { _ in })
         }

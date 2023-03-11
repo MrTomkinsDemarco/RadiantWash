@@ -11,19 +11,19 @@ typealias C = Constants
 class Constants {
   
   struct project {
-    static let appleID = "id6443879376"
-    static let appID = "6443879376"
+    static let appleID = "id6446185264"
+    static let appID = "6446185264"
     static let appStoreName = "CleanWizard"
-    static let storeSecretKey = "08bc4dbd91944988a99313dd1d96e81c"
-    static let appBundle = "clean.your.iphone"
-    static let mail = "support@magicuniverse.org"
+    static let storeSecretKey = "e379ad4a39794a1c8fa4b9e9f1807c37"
+    static let appBundle = "com.cleanwizardapp.cleanwizard"
+    static let mail = "cleanwizardsupr@gmail.com"
   }
   
   struct web {
-    static let policy = "https://magic-universe.webflow.io/privacy-policy"
-    static let terms = "https://magic-universe.webflow.io/terms-of-use"
-    static let shareApp = URL(string: "https://apps.apple.com/us/app")!
-    static let contact = "https://magic-universe.webflow.io/contact"
+    static let policy = "https://www.cleanwizardapp.com/privacy-policy"
+    static let terms = "https://www.cleanwizardapp.com/terms-of-use"
+    static let shareApp = URL(string: "https://apps.apple.com/us/app")!//old
+    static let contact = "https://www.cleanwizardapp.com"//old
   }
   
   struct gadAdvertisementKey {
@@ -32,13 +32,13 @@ class Constants {
      - parameter gadProductionKey use when app in production
      */
     
-    static let GADApplicationIdentifier = "ca-app-pub-7972352523738799~8564484489"
-    static let gadProductionKey = "ca-app-pub-7972352523738799/6144783829"
-    static let gadInterstitialProductionKey = ""
-    static let gadRewardedIntProductionKey = ""
-    static let gadRewardedProductionKey = ""
+    static let GADApplicationIdentifier = "ca-app-pub-2414191652218286~1983949714"
+    static let gadProductionKey = "ca-app-pub-2414191652218286/8166214686"
+    static let gadInterstitialProductionKey = "ca-app-pub-2414191652218286/8278180734"
+    static let gadRewardedIntProductionKey = "ca-app-pub-2414191652218286/7819564477"
+    static let gadRewardedProductionKey = "ca-app-pub-2414191652218286/7819564477"
     
-    static let GADTestAppIdentifier = "ca-app-pub-3940256099942544~1458002511"
+//    static let GADTestAppIdentifier = "ca-app-pub-3940256099942544~1458002511"
     static let gadTestKey = "ca-app-pub-3940256099942544/2934735716"
     static let gadInterstitialTestKey = "ca-app-pub-3940256099942544/4411468910"
     static let gadRewardedTestKey = "ca-app-pub-3940256099942544/1712485313"

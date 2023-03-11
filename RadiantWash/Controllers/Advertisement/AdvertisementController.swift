@@ -106,7 +106,8 @@ extension AdvertisementController: SubscriptionObserver {
           }
         }
       case .unreachable:
-        self.advertisementHandler(status: .hiden)
+        print("")
+//        self.advertisementHandler(status: .hiden)
       }
     }
   }

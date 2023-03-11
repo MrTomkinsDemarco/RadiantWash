@@ -20,7 +20,7 @@ enum SearchOperationStateHandler {
   }
   
   static func alertHandler(for state: SearchOperationStateHandler, completionHandler: @escaping () -> Void) {
-    AlertManager.showOperationProcessing(with: state) {
+    A.showOperationProcessing(with: state) {
       completionHandler()
     }
   }

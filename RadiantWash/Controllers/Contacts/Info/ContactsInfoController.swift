@@ -111,7 +111,7 @@ class ContactsInfoController: UIViewController {
       self.contactDataSource = ContactDataSource(viewModel: self.contactViewModel)
       
       self.contactDataSource.didTapSelectDeleteContact = {
-        AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: 1)) {
+        A.showDeleteAlert(with: .userContacts, of: .getRaw(from: 1)) {
           self.closeController {
             self.deleteContact()
           }

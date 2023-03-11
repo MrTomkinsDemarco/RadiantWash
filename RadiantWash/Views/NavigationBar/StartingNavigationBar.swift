@@ -26,12 +26,6 @@ class StartingNavigationBar: UIView {
     }
   }
   
-  var dropShadow: Bool = false {
-    didSet {
-      self.setDropShadow()
-    }
-  }
-  
   public var buttonSize = AppDimensions.NavigationBar.startingNavigationBarButtonSize {
     didSet {
       self.setButtonsSize(buttonSize)
@@ -71,12 +65,6 @@ class StartingNavigationBar: UIView {
     containerView.frame = self.bounds
     containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     
-    //    leftBarButton.clipsToBounds = true
-    //    leftBarButton.layer.cornerRadius = 10
-    //
-    //    rightBarButton.clipsToBounds = true
-    //    rightBarButton.layer.cornerRadius = 10
-    
     titleLabel.textColor = theme.titleTextColor
     titleLabel.font = FontManager.navigationBarFont(of: .title)
     
@@ -88,13 +76,6 @@ class StartingNavigationBar: UIView {
     topShevronView.isHidden = !topShevronEnable
     topShevronView.setCorner(3)
     topShevronView.backgroundColor = theme.topShevronBackgroundColor
-  }
-  
-  public func setDropShadow() {
-    
-    guard dropShadow else { return }
-    
-    layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
   }
   
   public func setUpNavigation(title: String?, leftImage: UIImage? = nil, rightImage: UIImage? = nil, targetImageScaleFactor: CGFloat = 0.5) {

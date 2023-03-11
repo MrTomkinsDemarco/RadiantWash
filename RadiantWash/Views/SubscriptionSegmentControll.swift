@@ -345,17 +345,17 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
   
   private func transformButton(at index: Int, animated: Bool) {
   
-//    let duration = animated ? 0.2 : 0
-//
-//    UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) {
-//      self.maskedSubscriptionButtons[index].shadowView.transform = CGAffineTransform(scaleX: 1.0, y: 1.09)
-//    } completion: { _ in
-//      for (btnIndex, button) in self.maskedSubscriptionButtons.enumerated() {
-//        if btnIndex != index {
-//          button.shadowView.transform = .identity
-//        }
-//      }
-//    }
+    let duration = animated ? 0.2 : 0
+
+    UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) {
+      self.maskedSubscriptionButtons[index].shadowView.transform = CGAffineTransform(scaleX: 1.0, y: 1.09)
+    } completion: { _ in
+      for (btnIndex, button) in self.maskedSubscriptionButtons.enumerated() {
+        if btnIndex != index {
+          button.shadowView.transform = .identity
+        }
+      }
+    }
   }
   
   private func getLeadingPosition(from index: Int) -> CGFloat {
@@ -466,7 +466,7 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
     
     for (index, subscriptionModel) in subscriptions.enumerated() {
       let subscriptionButton = SegmentSubscriptionButton()
-//      subscriptionButton.shadowViewInset = self.viewSelectorInset
+      subscriptionButton.shadowViewInset = self.viewSelectorInset
       subscriptionButton.configure(model: subscriptionModel, index: index)
       subscriptionButton.delegate = self
       subscriptionButtons.append(subscriptionButton)
@@ -479,8 +479,8 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
     
       for (index, subscriptionModel) in subscriptions.enumerated() {
         let subscriptionButton = SegmentSubscriptionButton()
-//        subscriptionButton.shadowView.cellBackgroundColor = theme.premiumColor
-//        subscriptionButton.shadowViewInset = self.viewSelectorInset
+        subscriptionButton.shadowView.cellBackgroundColor = theme.premiumColor
+        subscriptionButton.shadowViewInset = self.viewSelectorInset
         subscriptionButton.configure(model: subscriptionModel, index: index)
         subscriptionButton.delegate = self
         maskedSubscriptionButtons.append(subscriptionButton)
@@ -492,9 +492,9 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
     
     guard !maskedSubscriptionButtons.isEmpty else { return }
     
-//    maskedSubscriptionButtons.forEach {
-//      $0.shadowView.cellBackgroundColor = self.premiumMaskedBackgroundColor
-//    }
+    maskedSubscriptionButtons.forEach {
+      $0.shadowView.cellBackgroundColor = self.premiumMaskedBackgroundColor
+    }
   }
   
   private func configureStackView() {

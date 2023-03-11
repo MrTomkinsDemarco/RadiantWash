@@ -7,7 +7,6 @@
 
 import UIKit
 import Contacts
-import GoogleMobileAds
 import SwiftRater
 
 @main

@@ -77,7 +77,7 @@ class PermissionsController: UIViewController, Storyboarded {
     
     if #available(iOS 14.5, *) {
       if AppTrackerPermissions().notDetermined {
-        AlertManager.showPermissionAlert(of: .appTracker, at: self) {
+        A.showPermissionAlert(of: .appTracker, at: self) {
           AppTrackerPermissions().requestForPermission { _, _ in }
         }
       } else {
@@ -91,7 +91,7 @@ class PermissionsController: UIViewController, Storyboarded {
   private func setupAtLeastOnePermission() {
     
     if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
-      AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
+      A.showPermissionAlert(of: .onePermissionRule, at: self)
     } else {
       guard !didTapContinueButton else { return }
       didTapContinueButton = !didTapContinueButton
@@ -106,7 +106,7 @@ class PermissionsController: UIViewController, Storyboarded {
     case .authorized:
       return
     case .denied:
-      AlertManager.showPermissionAlert(of: .openSettings, at: self, for: permission)
+      A.showPermissionAlert(of: .openSettings, at: self, for: permission)
     case .notDetermined:
       permission.requestForPermission { granted, error in
         cell.setupButtonState(permission: permission)

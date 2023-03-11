@@ -79,7 +79,7 @@ extension ErrorManager {
   }
   
   public func showSubsriptionAlertError(for key: SubscriptionError, at viewController: UIViewController, expreDate: String? = nil) {
-    AlertManager.showPurchaseAlert(of: key, at: viewController)
+    A.showPurchaseAlert(of: key, at: viewController)
   }
   
   @available(iOS 15.0, *)

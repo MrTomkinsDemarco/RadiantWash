@@ -193,7 +193,7 @@ class ContactsGroupController: UIViewController {
         U.delay(1) {
           if success {
             if self.contactGroup.count == indexes.count {
-              AlertManager.showAlert(for: .mergeCompleted) {
+              A.showAlert(for: .mergeCompleted) {
                 U.delay(1) {
                   self.updateRemovedIndexes(indexes, errorsCount: errorsCount)
                   self.closeController()
@@ -229,12 +229,12 @@ class ContactsGroupController: UIViewController {
         self.updateProgressMergeAlert(with: 1, total: "1 / 1")
         if errorsCount != mergedSingleGroup.contacts.count - 1 {
           if self.contactGroup.count == 1 {
-            AlertManager.showAlert(for: .mergeCompleted) {
+            A.showAlert(for: .mergeCompleted) {
               self.contactGroup = []
               self.closeController()
             }
           } else {
-            AlertManager.showAlert(for: .mergeCompleted) {
+            A.showAlert(for: .mergeCompleted) {
               self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
               self.updateContactsGroups { contactsGroup in
                 self.progressAlert.closeProgressAnimatedController()
@@ -573,16 +573,16 @@ extension ContactsGroupController: SelectDropDownMenuDelegate {
 extension ContactsGroupController: SingleContactsGroupOperationsListener {
   
   func didMergeContacts(in section: Int) {
-    AlertManager.showAlert(for: .mergeContacts) {
+    A.showAlert(for: .mergeContacts) {
       self.mergeContacts(in: section)
     }
   }
   
   func didDeleteFullContactsGroup(in section: Int) {
-    AlertManager.showDeleteAlert(with: .userContacts, of: .many) {
+    A.showDeleteAlert(with: .userContacts, of: .many) {
       self.deleteContacts(in: section) { errorsCount in
         if errorsCount == 0 {
-          AlertManager.showAlert(for: .deleteContactsCompleted) {}
+          A.showAlert(for: .deleteContactsCompleted) {}
           self.updateRemovedIndexes([section], errorsCount: 0)
           self.contactGroup.count == 0 ? self.closeController() : ()
         } else {
@@ -635,7 +635,7 @@ extension ContactsGroupController: NavigationBarDelegate {
 extension ContactsGroupController: BottomActionButtonDelegate {
   
   func didTapActionButton() {
-    AlertManager.showAlert(for: .mergeContacts) {
+    A.showAlert(for: .mergeContacts) {
       P.showIndicator()
       self.mergeSelectedItems()
     }

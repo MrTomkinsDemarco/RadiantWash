@@ -132,7 +132,7 @@ extension Advertisement {
   
   private func loadInterstitialAd(completionHandler: @escaping (_ status: InterstitialLoadStatus) -> Void) {
     
-    let unitID = self.getInterstitialUnitKeyID(for: .testing)
+    let unitID = self.getInterstitialUnitKeyID(for: .production)
     let request = GADRequest()
     GADInterstitialAd.load(withAdUnitID: unitID, request: request, completionHandler: { [self] ad, error in
       if let error = error {
@@ -172,7 +172,7 @@ extension Advertisement {
   
   private func loadRewardedAd(completionHadnler: @escaping (_ status: RewardedLoadStatus) -> Void) {
     
-    let unitID = self.getRewardedUnitKeyID(for: .testing)
+    let unitID = self.getRewardedUnitKeyID(for: .production)
     let request = GADRequest()
     GADRewardedAd.load(withAdUnitID: unitID, request: request, completionHandler: { [self] ad, error in
       if let error = error {
@@ -212,7 +212,7 @@ extension Advertisement {
   private func registerrewardedInterstitialAd(completionHandler: @escaping (_ status: InterstitialRewardedRegisteredStatus) -> Void) {
     
       ///`set unit testing id`
-    let unitID = self.getRewardedInterstitalUnitID(for: .testing)
+    let unitID = self.getRewardedInterstitalUnitID(for: .production)
     let request = GADRequest()
     
     GADRewardedInterstitialAd.load(withAdUnitID: unitID, request: request) { ad, error in

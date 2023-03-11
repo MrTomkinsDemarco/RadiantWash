@@ -613,7 +613,7 @@ class GroupedAssetListController: UIViewController {
   
   private func showDeleteConfirmAlert() {
     
-    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedAssets.count)) {
+    A.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedAssets.count)) {
       self.deleteSelectedAssets()
     }
   }
@@ -631,7 +631,7 @@ class GroupedAssetListController: UIViewController {
       }
       completionHandler(success)
     }
-    AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: assets.count)) {
+    A.showDeleteAlert(with: self.contentType, of: .getRaw(from: assets.count)) {
       let type: ProgressAlertType = .progressDeleteAlertType(self.contentType)
       self.progressAlertController.showSimpleProgressAlerControllerBar(of: type, from: self)
       U.delay(1) {

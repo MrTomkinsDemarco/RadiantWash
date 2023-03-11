@@ -37,7 +37,7 @@ class SubscriptionManager: NSObject {
   
   private var purchasedPremium: Bool {
     get {
-      return true//U.userDefaults.bool(forKey: C.key.subscription.purchasePremium)
+      return U.userDefaults.bool(forKey: C.key.subscription.purchasePremium)
     } set {
       if purchasedPremium != newValue {
         debugPrint("****")
@@ -316,8 +316,7 @@ extension SubscriptionManager {
       case .selectAllPhotos, .selectAllVideos, .selectAllContacts, .selectAllContactsGroups, .deepClean:
         let description = type.alertDescription
         
-        AlertManager.showLimitAccessAlert(with: description, at: viewController) {
-//          UIPresenter.showViewController(of: .subscription)
+        A.showLimitAccessAlert(with: description, at: viewController) {
           if let topController = topController() {
             let pc = PresentedControllerType.subscription.navigationController
             pc.modalPresentationStyle = .fullScreen
@@ -326,7 +325,6 @@ extension SubscriptionManager {
           }
         }
       case .exportAllContacts:
-//        UIPresenter.showViewController(of: .subscription)
       if let topController = topController() {
         let pc = PresentedControllerType.subscription.navigationController
         pc.modalPresentationStyle = .fullScreen
@@ -334,7 +332,6 @@ extension SubscriptionManager {
         }
       }
       case .multiplySearch:
-//        UIPresenter.showViewController(of: .subscription)
       if let topController = topController() {
         let pc = PresentedControllerType.subscription.navigationController
         pc.modalPresentationStyle = .fullScreen

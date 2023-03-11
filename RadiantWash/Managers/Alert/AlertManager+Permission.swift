@@ -7,7 +7,6 @@
 
 import UIKit
 
-  //    MARK: - PERMISSION ALERTS HANDLER -
 extension AlertManager {
   
   public static func showPermissionAlert(of alertType: AlertPermissionType, at viewController: UIViewController, for permission: Permission? = nil, completionHandler: (() -> Void)? = nil) {

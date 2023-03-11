@@ -9,6 +9,9 @@ import UIKit
 
 class SegmentSubscriptionButton: UIView {
   
+  public var shadowView = BgSubscribeView()
+  public var shadowViewInset: UIEdgeInsets = UIEdgeInsets.zero
+  
   private var segmentButton = UIButton()
   
   private var titleTextLabel = UILabel()
@@ -35,6 +38,10 @@ class SegmentSubscriptionButton: UIView {
   }
 
   private func setupView() {
+    
+    shadowView.viewShadowOffsetOriginX = 3
+    shadowView.viewShadowOffsetOriginY = 3
+    shadowView.bottomAlpha = 0.5
     
     segmentButton.addTarget(self, action: #selector(segmentDidSelect), for: .touchUpInside)
     titleTextLabel.textAlignment = .center
@@ -67,6 +74,18 @@ class SegmentSubscriptionButton: UIView {
     }
   }
   
+  private func setupShadow() {
+    
+    shadowView.frame = self.bounds
+    self.addSubview(shadowView)
+
+    shadowView.translatesAutoresizingMaskIntoConstraints = false
+    shadowView.topAnchor.constraint(equalTo: self.topAnchor, constant: shadowViewInset.top + 1).isActive = true
+    shadowView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -shadowViewInset.bottom).isActive = true
+    shadowView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: shadowViewInset.left).isActive = true
+    shadowView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant:  -shadowViewInset.right).isActive = true
+  }
+  
   public func setupTitleFont(font: UIFont) {
     self.titleTextLabel.font = font
   }
@@ -92,7 +111,7 @@ class SegmentSubscriptionButton: UIView {
   public func setupPriceGradient(colors: [UIColor], font: UIFont) {
     self.gradeintColors = colors
     self.priceTextLabel.font = font
-    self.gradientSetup()
+    self.setupGradient()
   }
   
   public func setupDescriptionColor(color: UIColor) {
@@ -104,12 +123,13 @@ class SegmentSubscriptionButton: UIView {
     
     self.backgroundColor = .clear
     
-    self.labelsStackSetup()
+    self.setupShadow()
+    self.setupLabelsStack()
     self.setupButton()
-    self.gradientSetup()
+    self.setupGradient()
   }
   
-  public func gradientSetup() {
+  public func setupGradient() {
     
     if !gradeintColors.isEmpty {
       if let price = self.priceTextLabel.text, let font = self.priceTextLabel.font {
@@ -130,7 +150,7 @@ class SegmentSubscriptionButton: UIView {
     segmentButton.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
   }
   
-  private func labelsStackSetup() {
+  private func setupLabelsStack() {
 
     let stackView = UIStackView(arrangedSubviews: [titleTextLabel, priceTextLabel, descriptionTextLabel])
     stackView.axis = .vertical
@@ -155,5 +175,59 @@ class SegmentSubscriptionButton: UIView {
   
   @objc func segmentDidSelect() {
     delegate?.indexSelect(index: self.index)
+  }
+}
+
+class BgSubscribeView: UIView {
+  
+  var topShadowView = UIView()
+  
+  public var viewShadowOffsetOriginX: CGFloat = 0
+  public var viewShadowOffsetOriginY: CGFloat = 0
+  
+  public var topShadowOffsetOriginX: CGFloat = 0
+  public var topShadowOffsetOriginY: CGFloat = 0
+  public var topBlurValue: CGFloat = 0
+  public var topAlpha: Float = 0.9
+  public var bottomAlpha: Float = 1.0
+  public var shadowBlurValue: CGFloat = 10
+  public var cornerRadius: CGFloat = 14
+  
+  public var cellBackgroundColor: UIColor = Theme.light.cellBackGroundColor
+  public var topShadowColor: UIColor = .clear
+  public var cellShadowColor: UIColor = .clear
+  
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    setupViews()
+  }
+  
+  private func setupViews() {
+    
+    self.backgroundColor = .clear
+
+    self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor,
+                                         shadow: cellShadowColor,
+                                         alpha: bottomAlpha, x: viewShadowOffsetOriginX,
+                                         y: viewShadowOffsetOriginY,
+                                         blur: shadowBlurValue,
+                                         corners: [.allCorners],
+                                         radius: cornerRadius)
+
+    topShadowView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
+    self.insertSubview(topShadowView, at: 0)
+    self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear,
+                                                       shadow: topShadowColor,
+                                                       alpha: topAlpha,
+                                                       x: topShadowOffsetOriginX,
+                                                       y: topShadowOffsetOriginY,
+                                                       blur: topBlurValue,
+                                                       corners: [],
+                                                       radius: cornerRadius)
+
+    for (index, view) in self.subviews.enumerated() {
+      view.tag = index
+    }
   }
 }

@@ -648,7 +648,7 @@ class ContactsController: UIViewController {
     }
     U.delay(0.33) {
       P.hideIndicator()
-      AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: indexPaths.count)) {
+      A.showDeleteAlert(with: .userContacts, of: .getRaw(from: indexPaths.count)) {
         P.showIndicator()
         U.delay(0.33) {
           self.contactManager.contactsProcessingOperationQueuer.cancelAll()
@@ -659,7 +659,7 @@ class ContactsController: UIViewController {
   }
   
   private func deleteSingleContact(at indexPath: IndexPath) {
-    AlertManager.showDeleteAlert(with: .userContacts, of: .one) {
+    A.showDeleteAlert(with: .userContacts, of: .one) {
       P.showIndicator()
       U.delay(0.33) {
         self.contactManager.contactsProcessingOperationQueuer.cancelAll()

@@ -456,7 +456,7 @@ class MediaController: UIViewController {
   
   private func showConfirmDeletePHAsset(at indexPath: IndexPath) {
     
-    AlertManager.showDeleteAlert(with: self.contentType, of: .one) {
+    A.showDeleteAlert(with: self.contentType, of: .one) {
       self.deletePHAsset(at: indexPath)
     }
   }
