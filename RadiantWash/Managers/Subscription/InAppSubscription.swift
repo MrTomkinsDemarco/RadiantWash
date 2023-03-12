@@ -269,7 +269,7 @@ extension InAppSubscription {
         completionHandler(false, nil)
       } else if !result.restoredPurchases.isEmpty {
         
-        let appleValidator = AppleReceiptValidator(service: .sandbox, sharedSecret: self.accountSecretKey)
+        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: self.accountSecretKey)
         
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
           switch result {

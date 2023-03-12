@@ -48,7 +48,10 @@ class AdvertisementController: UIViewController {
       }
     }
     
-    self.advertisementHightConstraint.constant = advertisemntContaineHeight
+    DispatchQueue.main.async {
+      self.advertisementHightConstraint.constant = advertisemntContaineHeight
+    }
+    
     
     if status == .hiden {
       DispatchQueue.main.async {
@@ -106,23 +109,24 @@ extension AdvertisementController: SubscriptionObserver {
           }
         }
       case .unreachable:
-        print("")
-//        self.advertisementHandler(status: .hiden)
+       
+        self.advertisementHandler(status: .hiden)
       }
     }
   }
   
   func setupAdvertisementBanner() {
-    
-    let size = GADAdSizeFullWidthPortraitWithHeight(50)
-    var advertisementBannerView: GADBannerView!
-    advertisementBannerView = GADBannerView(adSize: size)
-    advertisementBannerView.adUnitID = Advertisement.manager.getUnitID(for: .production)
-    advertisementBannerView.tag = Advertisement.manager.advertimentBannerTag
-    advertisementBannerView.delegate = self
-    advertisementBannerView.rootViewController = self
-    advertisementBannerView.load(GADRequest())
-    self.advertisementView.addSubview(advertisementBannerView)
+    DispatchQueue.main.async {
+      let size = GADAdSizeFullWidthPortraitWithHeight(50)
+      var advertisementBannerView: GADBannerView!
+      advertisementBannerView = GADBannerView(adSize: size)
+      advertisementBannerView.adUnitID = Advertisement.manager.getUnitID(for: .production)
+      advertisementBannerView.tag = Advertisement.manager.advertimentBannerTag
+      advertisementBannerView.delegate = self
+      advertisementBannerView.rootViewController = self
+      advertisementBannerView.load(GADRequest())
+      self.advertisementView.addSubview(advertisementBannerView)
+    }
   }
   
   func subscriptionDidChange() {
